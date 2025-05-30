@@ -164,12 +164,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="gamemain\character.cpp" />
-    <ClCompile Include="gamemain\enemy.cpp" />
+    <ClCompile Include="gamemain\character\character.cpp" />
+    <ClCompile Include="gamemain\enemy\enemy.cpp" />
     <ClCompile Include="gamemain\gamemain.cpp" />
-    <ClCompile Include="gamemain\gameobject.cpp" />
-    <ClCompile Include="gamemain\stage.cpp" />
-    <ClCompile Include="gamemain\timer.cpp" />
+    <ClCompile Include="gamemain\gameobject\gameobject.cpp" />
+    <ClCompile Include="gamemain\stage\stage.cpp" />
+    <ClCompile Include="gamemain\timer\timer.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -178,12 +178,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gamemain\character.h" />
-    <ClInclude Include="gamemain\enemy.h" />
+    <ClInclude Include="gamemain\character\character.h" />
+    <ClInclude Include="gamemain\enemy\enemy.h" />
     <ClInclude Include="gamemain\gamemain.h" />
-    <ClInclude Include="gamemain\gameobject.h" />
-    <ClInclude Include="gamemain\stage.h" />
-    <ClInclude Include="gamemain\timer.h" />
+    <ClInclude Include="gamemain\gameobject\gameobject.h" />
+    <ClInclude Include="gamemain\stage\stage.h" />
+    <ClInclude Include="gamemain\timer\timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
