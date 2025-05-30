@@ -1,9 +1,9 @@
 #pragma once
 #include "vivid.h"
-#include "character.h"
-#include "enemy.h"
-#include "stage.h"
-#include "gameobject.h"
+#include "character/character.h"
+#include "enemy/enemy.h"
+#include "stage/stage.h"
+#include "gameobject/gameobject.h"
 
 class GameMain
 {

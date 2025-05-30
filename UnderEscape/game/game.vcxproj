@@ -180,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="gamemain\character\character.h" />
     <ClInclude Include="gamemain\enemy\enemy.h" />
+    <ClInclude Include="gamemain\enemy\enemy_status_id.h" />
     <ClInclude Include="gamemain\gamemain.h" />
     <ClInclude Include="gamemain\gameobject\gameobject.h" />
     <ClInclude Include="gamemain\stage\stage.h" />
