@@ -23,7 +23,9 @@ Stage stage;
 void
 Display(void)
 {
+    //ゲームメイン更新
     gamemain.Update();
+    //ゲームメイン描画
     gamemain.Draw();
 }
 
