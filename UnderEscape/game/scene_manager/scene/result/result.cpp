@@ -43,17 +43,17 @@ bool ResultScene::GetCursor()
 
 void ResultScene::Update()
 {
-	switch (GameMainScene::GameMainScene().GameFlg())
-	{
-	case true://クリア画面
-		SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMECLEAR);
-		break;
-	case false://ゲームオーバー画面
-		SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMEOVER);
-		break;
-	default:
-		break;
-	}
+	//switch (GameMainScene.GameFlg())
+	//{
+	//case true://クリア画面
+	//	SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMECLEAR);
+	//	break;
+	//case false://ゲームオーバー画面
+	//	SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMEOVER);
+	//	break;
+	//default:
+	//	break;
+	//}
 
 	/*if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::RETURN))
 		SceneManager::GetInstance().ChangeScene(SCENE_ID::TITLE);*/
@@ -69,5 +69,20 @@ void ResultScene::Draw()
 
 void ResultScene::Finalize()
 {
+}
+
+void ResultScene::Update(bool gFlg)
+{
+	switch (gFlg)
+	{
+	case true://クリア画面
+		SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMECLEAR);
+		break;
+	case false://ゲームオーバー画面
+		SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMEOVER);
+		break;
+	default:
+		break;
+	}
 }
 

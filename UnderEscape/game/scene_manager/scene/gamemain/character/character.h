@@ -6,6 +6,8 @@
 class Character
 {
 public:
+	//インスタンスの取得
+	static Character& GetInstance(void);
 	//初期化
 	void Initialize(vivid::Vector2);
 	//更新

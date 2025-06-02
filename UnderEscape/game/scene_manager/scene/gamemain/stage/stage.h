@@ -4,9 +4,7 @@
 class Stage
 {
 public:
-	Stage(void);
-	~Stage(void) = default;
-
+	static Stage& GetInstance(void);
 	void Initialize(void);
 	void Update(void);
 	void Draw(void);
@@ -38,9 +36,15 @@ private:
 	//é’ï¡ï®ÇÃç¿ïW
 	vivid::Vector2 wall_pos;
 	//é’ï¡ï®ÇÃïù
-	float wall_width;
+	static const float wall_width;
 	//é’ï¡ï®ÇÃçÇÇ≥
-	float wall_height;
+	static const float wall_height;
 	//é’ï¡ï®ÇÃêF
-	unsigned int wall_color;
+	static unsigned int wall_color;
+
+	Stage(void) = default;
+	~Stage(void) = default;
+	Stage(const Stage& rhs) = default;
+	Stage& operator = (const Stage& rhs) = default;
+
 };
