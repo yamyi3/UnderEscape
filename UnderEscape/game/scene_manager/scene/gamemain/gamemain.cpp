@@ -1,10 +1,10 @@
 #include "gamemain.h"
 
-GameMain::GameMain(void)
+GameMainScene::GameMainScene(void)
 {
 }
 
-void GameMain::Initialize(void)
+void GameMainScene::Initialize(void)
 {
     stage.Initialize();
     character.Initialize(stage.GetRoundpos());
@@ -12,7 +12,7 @@ void GameMain::Initialize(void)
     gameobject.Initialize(stage.GetRoundpos());
 }
 
-void GameMain::Update(void)
+void GameMainScene::Update(void)
 {
     stage.Update();
     character.Update();
@@ -23,7 +23,7 @@ void GameMain::Update(void)
 
 }
 
-void GameMain::Draw(void)
+void GameMainScene::Draw(void)
 {
     enemy.Draw();
     stage.Draw();
@@ -31,7 +31,7 @@ void GameMain::Draw(void)
     gameobject.Draw();
 }
 
-void GameMain::Finalize(void)
+void GameMainScene::Finalize(void)
 {
     character.Finalize();
     enemy.Finalize();

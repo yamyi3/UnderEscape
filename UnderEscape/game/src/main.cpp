@@ -11,11 +11,9 @@
  */
 
 #include "vivid.h"
-#include "../gamemain/gamemain.h"
+#include "../scene_manager/scene/gamemain/gamemain.h"
 
-GameMain gamemain;
-Character character;
-Stage stage;
+GameMainScene gamemain;
 
 /*!
  *  @brief      •`‰æŠÖ”
