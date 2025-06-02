@@ -1,16 +1,17 @@
 #include "character.h"
 
-Character::Character(void)
-	: ch_speed(walk_speed)
-	, color(0xffffffff)
-	, m_LandingFlag(false)
-	, cCatch(false)
-	, cAlive(true)
-	, gauge(0)
-	, gauge_count_frame(0)
-	, down_gauge_count(0)
-{
-}
+float	Character::ch_speed = walk_speed;
+unsigned Character::color = 0xffffffff;
+bool	Character::m_LandingFlag = false;
+bool	Character::cCatch = false;
+bool	Character::cAlive = true;
+int		Character::gauge = 0;
+int		Character::gauge_count_frame = 0;
+int		Character::down_gauge_count = 0;
+
+const float Character::run_speed = 1.0f;		//自機の通常移動速度
+const float Character::dash_speed = 1.5f;		//自機のダッシュ時の移動速度
+const float Character::walk_speed = 0.5f;		//自機の歩行時の移動速度
 
 void Character::Initialize(vivid::Vector2 rPos)
 {

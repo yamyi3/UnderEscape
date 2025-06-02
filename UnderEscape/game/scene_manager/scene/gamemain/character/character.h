@@ -6,10 +6,6 @@
 class Character
 {
 public:
-	//コンストラクタ
-	Character(void);
-	//デストラクタ
-	~Character(void) = default;
 	//初期化
 	void Initialize(vivid::Vector2);
 	//更新
@@ -66,12 +62,12 @@ private:
 
 	float ch_width = 125.0f;			//自機の幅
 	float ch_height = 192.0f;			//自機の高さ
-	unsigned int color;					//自機の色
+	static unsigned int color;				//自機の色
 
-	float ch_speed;						//自機の移動速度
-	const float run_speed = 1.0f;		//自機の通常移動速度
-	const float dash_speed = 1.5f;		//自機のダッシュ時の移動速度
-	const float walk_speed = 0.5f;		//自機の歩行時の移動速度
+	static float ch_speed;				//自機の移動速度
+	static const float run_speed;		//自機の通常移動速度
+	static const float dash_speed;		//自機のダッシュ時の移動速度
+	static const float walk_speed;		//自機の歩行時の移動速度
 	const float jump_speed = -20.0f;	//自機のジャンプの速度
 	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
@@ -80,13 +76,19 @@ private:
 	vivid::Rect gauge_rect;				//ゲージ画像の表示幅
 	vivid::Vector2 gPos;				//ゲージの表示座標
 	const int max_gauge = 10;			//自機の発見ゲージの最大量
-	int gauge;							//自機の現在の発見ゲージの量
+	static int gauge;							//自機の現在の発見ゲージの量
 	const int one_gauge_frame = 60;		//発見ゲージ1個分あたりの増加にかかるフレーム数
-	int gauge_count_frame;				//発見ゲージが溜まっている間のフレーム数カウンタ
+	static int gauge_count_frame;				//発見ゲージが溜まっている間のフレーム数カウンタ
 	const int downer_frame = 180;		//発見ゲージが1減るまでにかかるフレーム数
-	int down_gauge_count;				//ゲージ減少のカウンタ
+	static int down_gauge_count;				//ゲージ減少のカウンタ
 
-	bool m_LandingFlag = false;			//接地フラグ
-	bool cCatch;						//オブジェクトを所持しているか判別するフラグ
-	bool cAlive;						//生存フラグ
+	static bool m_LandingFlag;			//接地フラグ
+	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
+	static bool cAlive;					//生存フラグ
+
+	//インスタンスの生成
+	Character(void) = default;
+	~Character(void) = default;
+	Character(const Character& rhs) = default;
+	Character& operator = (const Character& rhs) = default;
 };
