@@ -43,7 +43,7 @@ bool ResultScene::GetCursor()
 
 void ResultScene::Update()
 {
-	switch (GamemainScene::GamemainScene().GameFlg())
+	switch (GameMainScene::GameMainScene().GameFlg())
 	{
 	case true://ƒNƒŠƒA‰æ–Ê
 		SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMECLEAR);

@@ -1,6 +1,6 @@
 #include"scene_manager.h"
 #include"scene//title/title.h"
-#include"../gamemain/gamemain.h"
+#include"scene/gamemain/gamemain.h"
 #include"scene/result/result.h"
 #include"scene/result/GameClear/GameClear.h"
 #include"scene/result/GameOver/GameOver.h"
@@ -77,7 +77,7 @@ void SceneManager::Change()
 		m_Scene = new TitleScene();
 		break;
 	case SCENE_ID::GAMEMAIN:
-		m_Scene = new GamemainScene();
+		m_Scene = new GameMainScene();
 		break;
 	case SCENE_ID::RESULT:
 		m_Scene = new ResultScene();
