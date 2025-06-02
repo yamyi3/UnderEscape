@@ -170,6 +170,12 @@
     <ClCompile Include="gamemain\gameobject\gameobject.cpp" />
     <ClCompile Include="gamemain\stage\stage.cpp" />
     <ClCompile Include="gamemain\timer\timer.cpp" />
+    <ClCompile Include="scene_manager\scene\result\GameClear\GameClear.cpp" />
+    <ClCompile Include="scene_manager\scene\result\GameOver\GameOver.cpp" />
+    <ClCompile Include="scene_manager\scene\result\result.cpp" />
+    <ClCompile Include="scene_manager\scene\scene.cpp" />
+    <ClCompile Include="scene_manager\scene\title\title.cpp" />
+    <ClCompile Include="scene_manager\scene_manager.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +191,13 @@
     <ClInclude Include="gamemain\gameobject\gameobject.h" />
     <ClInclude Include="gamemain\stage\stage.h" />
     <ClInclude Include="gamemain\timer\timer.h" />
+    <ClInclude Include="scene_manager\scene\result\GameClear\GameClear.h" />
+    <ClInclude Include="scene_manager\scene\result\GameOver\GameOver.h" />
+    <ClInclude Include="scene_manager\scene\result\result.h" />
+    <ClInclude Include="scene_manager\scene\scene.h" />
+    <ClInclude Include="scene_manager\scene\scene_id.h" />
+    <ClInclude Include="scene_manager\scene\title\title.h" />
+    <ClInclude Include="scene_manager\scene_manager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

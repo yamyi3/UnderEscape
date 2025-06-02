@@ -5,7 +5,7 @@
 #include "stage/stage.h"
 #include "gameobject/gameobject.h"
 
-class GameMain
+class GameMain 
 {
 public:
 	GameMain(void);
