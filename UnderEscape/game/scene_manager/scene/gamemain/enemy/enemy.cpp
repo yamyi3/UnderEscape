@@ -17,28 +17,29 @@ void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float
 	else
 	{
 		ePos = pos;
+		eGround = ground;
 		Rwool = R;
 		Lwool = L;
 		eVector = vector;
 		gravity = 100;
 		jpflg = 0;
-		eCircleCenterPos.x = ePos.x + eCircleRadius;
-		eCircleCenterPos.y = ePos.y + eCircleRadius;
+		eCircleCenterPos.x = ePos.x-e_width_size/2/* + eCircleRadius*/;
+		eCircleCenterPos.y = ePos.y-e_height_size/2/* + eCircleRadius*/;
 	}
 }
 
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector)
 {
-	Initialize(pos, L, R, vector,500.0f);
+	Initialize(pos, L, R, vector,600.0f);
 }
 
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R)
 {
-	Initialize(pos, L, R, 1,500.0f);
+	Initialize(pos, L, R, 1,600.0f);
 }
 void Enemy::Initialize(void)
 {
-	Enemy::Initialize({ 300.0f, 500.0f },300.0f,300.0f);
+	Enemy::Initialize({ 300.0f, 500.0f },300.0f,600.0f);
 }
 
 void Enemy::Update(void)
@@ -110,12 +111,16 @@ void Enemy::Update(void)
 	}
 	ePos = Gravity(ePos, eGround, e_height_size, eAnchor, enemy_jump_height, enemy_jump_upspeed, enemy_jump_downspeed);
 
+	eCircleCenterPos.x = ePos.x - e_width_size / 2/* + eCircleRadius*/;
+	eCircleCenterPos.y = ePos.y - e_height_size / 2/* + eCircleRadius*/;
 }
 
 void Enemy::Draw(void)
 {
 	eScale.x = abs(eScale.x) * eVector;
-	vivid::DrawTexture("data\\abe.png", { ePos.x - (e_width_size / 2),ePos.y }, 0xffffffff, eRect, eAnchor, eScale);
+	vivid::DrawTexture("data\\“GŽ‹ŠE.png", { ePos.x - e_visibility_width_size / 2,ePos.y - e_visibility_height_size / 2 },0x6fffffff);
+
+	vivid::DrawTexture("data\\abe.png", { ePos.x - (e_width_size / 2),ePos.y-(e_height_size/2)}, 0xffffffff, eRect, eAnchor, eScale);
 	if (eStatus == eSTATUS::Surprised)
 	{
 		exclamationPos = { ePos.x,(ePos.y - eAnchor.y) - ((exclamation_height_size - exclamationAnchor.y) - (e_height_size / 5)) * (eScale.y) };
@@ -123,7 +128,6 @@ void Enemy::Draw(void)
 		vivid::DrawTexture("data\\ball.png", { exclamationPos.x - (exclamation_width_size / 2),exclamationPos.y }, 0xffffffff, exclamationRect, exclamationAnchor, exclamationScale);
 	}
 
-	vivid::DrawTexture("data\\“GŽ‹ŠE.png", ePos);
 }
 
 void Enemy::Finalize(void)

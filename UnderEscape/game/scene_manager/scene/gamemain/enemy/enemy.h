@@ -37,6 +37,9 @@ public:
 	);
 
 private:
+	const int e_visibility_width_size = 400;
+	const int e_visibility_height_size = 400;
+
 	const int e_width_size = 64;						//エネミーの横のドット数
 	const int e_height_size = 64;                       //エネミーの縦;;;;のドット数
 	vivid::Vector2 ePos = { 0.0f,0.0f };				//エネミーの描画に使用するポジション
