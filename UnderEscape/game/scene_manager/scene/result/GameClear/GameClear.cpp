@@ -20,7 +20,7 @@ void GameClear::Update()
 		GameClear::Scene();
 	}
 }
-
+//•`‰æ
 void GameClear::Draw()
 {
 	cursor_move();
