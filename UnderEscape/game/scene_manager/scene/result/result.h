@@ -1,4 +1,3 @@
-#pragma once
 //リザルトシーンクラス
 #pragma once
 #include"../scene.h"
@@ -12,6 +11,9 @@ public:
 	void Update()override;
 	void Draw()override;
 	void Finalize()override;
+	//更新
+	void Update(bool);
+
 	void cursor_move();		//カーソルの移動
 	bool GetCursor();		//カーソルの取得
 private:

@@ -1,15 +1,23 @@
 #include "gamemain.h"
 
+#include "character/character.h"
+#include "enemy/enemy.h"
+#include "stage/stage.h"
+#include "gameobject/gameobject.h"
+
+Enemy enemy;
+Gameobject gameobject;
+
 GameMainScene::GameMainScene(void)
 {
 }
 
 void GameMainScene::Initialize(void)
 {
-    stage.Initialize();
-    character.Initialize(stage.GetRoundpos());
+    Stage::GetInstance().Initialize();
+    Character::GetInstance().Initialize(Stage::GetInstance().GetRoundpos());
     enemy.Initialize({ 300.0f, 700.0f }, 300.0f, 500.0f,1,700);
-    gameobject.Initialize(stage.GetRoundpos());
+    gameobject.Initialize(Stage::GetInstance().GetRoundpos());
 }
 
 void GameMainScene::Update(void)
@@ -24,27 +32,27 @@ void GameMainScene::Update(void)
     }
     enemy.Update();
 
-    stage.Update();
-    character.Update();
-    character.RoundHit(stage.GetRoundpos());
-    character.CheckHit(stage.GetWallpos(), stage.GetWallWidth(), stage.GetWallHeight(), enemy.GetCircleCenterPos(), enemy.GetCircleRadius());
+    Stage::GetInstance().Update();
+    Character::GetInstance().Update();
+    Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundpos());
+    Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(), Stage::GetInstance().GetWallHeight(), enemy.GetCircleCenterPos(), enemy.GetCircleRadius());
 
-    gameobject.Update(character.GetCharapos(), character.CheckObtainItem(gameobject.getItemPos(), gameobject.GetItemCenter(), gameobject.GetItemWidth(), gameobject.GetItemHeight()), character.GetCharaWidth(), character.GetCharaHeight(), character.CheckThrow(), stage.GetRoundpos(), character.checkPut());
+    gameobject.Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(gameobject.getItemPos(), gameobject.GetItemCenter(), gameobject.GetItemWidth(), gameobject.GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().CheckThrow(), Stage::GetInstance().GetRoundpos(), Character::GetInstance().checkPut());
 
 }
 
 void GameMainScene::Draw(void)
 {
     enemy.Draw();
-    stage.Draw();
-    character.Draw();
+    Stage::GetInstance().Draw();
+    Character::GetInstance().Draw();
     gameobject.Draw();
 }
 
 void GameMainScene::Finalize(void)
 {
-    character.Finalize();
+    Character::GetInstance().Finalize();
     enemy.Finalize();
-    stage.Finalize();
+    Stage::GetInstance().Finalize();
     gameobject.Finalize();
 }

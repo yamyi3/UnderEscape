@@ -1,10 +1,13 @@
 #include "stage.h"
 
-Stage::Stage(void)
-	: wall_width(200)
-	, wall_height(200)
-	, wall_color(0xff000000)
+const float Stage::wall_width = 200.0f;
+const float Stage::wall_height = 200.0f;
+unsigned int Stage::wall_color = 0xff000000;
+
+Stage& Stage::GetInstance(void)
 {
+	static Stage	instance;
+	return instance;
 }
 
 void Stage::Initialize(void)

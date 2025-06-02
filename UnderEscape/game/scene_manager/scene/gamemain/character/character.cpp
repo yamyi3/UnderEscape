@@ -13,6 +13,12 @@ const float Character::run_speed = 1.0f;		//自機の通常移動速度
 const float Character::dash_speed = 1.5f;		//自機のダッシュ時の移動速度
 const float Character::walk_speed = 0.5f;		//自機の歩行時の移動速度
 
+Character& Character::GetInstance(void)
+{
+	static Character	instance;
+	return instance;
+}
+
 void Character::Initialize(vivid::Vector2 rPos)
 {
 	cPos = {100.0f, rPos.y - ch_height};
