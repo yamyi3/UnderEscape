@@ -1,6 +1,6 @@
 #include"scene_manager.h"
 #include"scene//title/title.h"
-#include"scene/gamemain/gamemain.h"
+#include"../gamemain/gamemain.h"
 #include"scene/result/result.h"
 #include"scene/result/GameClear/GameClear.h"
 #include"scene/result/GameOver/GameOver.h"
