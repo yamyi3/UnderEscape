@@ -1,0 +1,4 @@
+﻿  gamemain.cpp
+C:\Users\GamePG\Documents\GitHub\UnderEscape\UnderEscape\game\scene_manager\scene\gamemain\gamemain.cpp(21,23): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\GamePG\Documents\GitHub\UnderEscape\UnderEscape\game\scene_manager\scene\gamemain\gamemain.cpp(22,23): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+  game.vcxproj -> C:\Users\GamePG\Documents\GitHub\UnderEscape\UnderEscape\project\x64\Debug\game.exe
