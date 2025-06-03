@@ -17,4 +17,6 @@ public:
 	bool GameFlg() { return true; }
 
 private:
+	//©‹@ˆÚ“®‚Æ•ÇˆÚ“®‚ÌØ‚è‘Ö‚¦À•W
+	vivid::Vector2	change_pos;
 };

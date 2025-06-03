@@ -1,0 +1,35 @@
+﻿  GameClear.cpp
+  GameOver.cpp
+  result.cpp
+  title.cpp
+  scene_manager.cpp
+C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\GameOver\GameOver.h(5,24): warning C4584: 'GameOver': 基底クラス 'IScene' は既に 'ResultScene' の基底クラスです。
+  (ソース ファイル 'scene_manager/scene/result/GameOver/GameOver.cpp' をコンパイルしています)
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\scene.h(6,7):
+      'IScene' の宣言を確認してください
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\result.h(5,7):
+      'ResultScene' の宣言を確認してください
+  
+C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\GameClear\GameClear.h(5,25): warning C4584: 'GameClear': 基底クラス 'IScene' は既に 'ResultScene' の基底クラスです。
+  (ソース ファイル 'scene_manager/scene/result/GameClear/GameClear.cpp' をコンパイルしています)
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\scene.h(6,7):
+      'IScene' の宣言を確認してください
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\result.h(5,7):
+      'ResultScene' の宣言を確認してください
+  
+C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\GameClear\GameClear.h(5,25): warning C4584: 'GameClear': 基底クラス 'IScene' は既に 'ResultScene' の基底クラスです。
+  (ソース ファイル 'scene_manager/scene_manager.cpp' をコンパイルしています)
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\scene.h(6,7):
+      'IScene' の宣言を確認してください
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\result.h(5,7):
+      'ResultScene' の宣言を確認してください
+  
+C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\GameOver\GameOver.h(5,24): warning C4584: 'GameOver': 基底クラス 'IScene' は既に 'ResultScene' の基底クラスです。
+  (ソース ファイル 'scene_manager/scene_manager.cpp' をコンパイルしています)
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\scene.h(6,7):
+      'IScene' の宣言を確認してください
+      C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\result.h(5,7):
+      'ResultScene' の宣言を確認してください
+  
+C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\game\scene_manager\scene\result\result.cpp(86,2): warning C4809: switch 文に冗長な 'default' ラベルが存在します。可能な 'case' 条件はすべて記述されています
+  game.vcxproj -> C:\Users\PC_User\Desktop\UnderEscape\UnderEscape\UnderEscape\project\x64\Debug\game.exe
