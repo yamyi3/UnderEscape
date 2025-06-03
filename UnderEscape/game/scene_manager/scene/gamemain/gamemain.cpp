@@ -9,6 +9,7 @@ Enemy enemy;
 Gameobject gameobject;
 
 GameMainScene::GameMainScene(void)
+    : change_pos ((vivid::WINDOW_WIDTH / 5.0f * 2.0f), 0.0f)
 {
 }
 
@@ -35,9 +36,12 @@ void GameMainScene::Update(void)
     Stage::GetInstance().Update();
     Character::GetInstance().Update();
     Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundpos());
-    Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(), Stage::GetInstance().GetWallHeight(), enemy.GetCircleCenterPos(), enemy.GetCircleRadius());
+    Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),
+                Stage::GetInstance().GetWallHeight(), enemy.GetCircleCenterPos(), enemy.GetCircleRadius());
 
-    gameobject.Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(gameobject.getItemPos(), gameobject.GetItemCenter(), gameobject.GetItemWidth(), gameobject.GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().CheckThrow(), Stage::GetInstance().GetRoundpos(), Character::GetInstance().checkPut());
+    gameobject.Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(gameobject.getItemPos(), gameobject.GetItemCenter(),
+                gameobject.GetItemWidth(), gameobject.GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(), 
+                Character::GetInstance().CheckThrow(), Stage::GetInstance().GetRoundpos(), Character::GetInstance().checkPut());
 
 }
 

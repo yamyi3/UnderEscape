@@ -17,17 +17,17 @@ Stage& Stage::GetInstance(void)
 
 void Stage::Initialize(void)
 {
+	max_round = 3;
 	int n = 0;
 	for (int i = 0; i < max_round; i++)
 	{
 		round_pos[i].x = n;
 		n += round_width;
-		round_pos[i].y = (float)vivid::WINDOW_HEIGHT - 300;
+		round_pos[i].y = 900;
 	}
 	wall_pos.y = round_pos[0].y - wall_height;
 	wall_pos.x = 400;
 	sc_speed = run_speed;
-	max_round = 3;
 	round_width = vivid::WINDOW_WIDTH;
 }
 
