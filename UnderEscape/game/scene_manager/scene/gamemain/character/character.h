@@ -45,18 +45,28 @@ public:
 	{
 		return cPos;
 	}
+	//自機の幅の取得
 	float GetCharaWidth(void)
 	{
 		return ch_width;
 	}
+	//自機の高さの取得
 	float GetCharaHeight(void)
 	{
 		return ch_height;
 	}
+	//自機のアイテム取得フラグの取得
 	bool GetCatchFlg(void)
 	{
 		return cCatch;
 	}
+
+	//歩行速度の取得
+	float GetWalk(void) { return walk_speed; }
+	//通常速度の取得
+	float GetRun(void) { return run_speed; }
+	//ダッシュ速度の取得
+	float GetDash(void) { return dash_speed; }
 
 private:
 	vivid::Vector2 cPos;				//自機の座標

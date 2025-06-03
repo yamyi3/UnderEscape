@@ -1,4 +1,5 @@
 #include "character.h"
+#include "../stage/stage.h"
 
 float	Character::ch_speed = walk_speed;
 unsigned Character::color = 0xffffffff;
