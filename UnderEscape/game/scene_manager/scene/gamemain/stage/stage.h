@@ -16,10 +16,15 @@ public:
 	void Finalize(void);
 	//ステージのスクロール処理
 	void ScrollStage(void);
-	//地面座標の取得
-	vivid::Vector2 GetRoundpos(void)
+	//地面座標のスタート地点取得
+	vivid::Vector2 GetStartpos(void)
 	{
-		return round_pos[0];
+		return vivid::Vector2(0.0f, 0.0f);
+	}
+	//地面のゴール地点の座標取得
+	vivid::Vector2 GetGoalpos(void)
+	{
+		return vivid::Vector2((Stage::max_round * Stage::round_width), 0.0f);
 	}
 	//障害物座標の取得
 	vivid::Vector2 GetWallpos(void)
