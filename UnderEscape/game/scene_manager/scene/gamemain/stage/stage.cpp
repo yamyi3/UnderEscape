@@ -9,6 +9,11 @@ const float	Stage::run_speed = Character::GetInstance().GetRun();
 const float	Stage::dash_speed = Character::GetInstance().GetDash();
 const float	Stage::walk_speed = Character::GetInstance().GetWalk();
 
+const float Stage::round_width = vivid::WINDOW_WIDTH;
+
+vivid::Vector2 Stage::start_pos = { 0.0f, vivid::WINDOW_HEIGHT - 300.0f };
+vivid::Vector2 Stage::goal_pos = { Stage::round_width * 3 , vivid::WINDOW_HEIGHT - 300.0f };
+
 Stage& Stage::GetInstance(void)
 {
 	static Stage	instance;
@@ -23,12 +28,11 @@ void Stage::Initialize(void)
 	{
 		round_pos[i].x = n;
 		n += round_width;
-		round_pos[i].y = 900;
+		round_pos[i].y = vivid::WINDOW_HEIGHT - 300.0f;
 	}
 	wall_pos.y = round_pos[0].y - wall_height;
 	wall_pos.x = 400;
 	sc_speed = run_speed;
-	round_width = vivid::WINDOW_WIDTH;
 }
 
 void Stage::Update(void)

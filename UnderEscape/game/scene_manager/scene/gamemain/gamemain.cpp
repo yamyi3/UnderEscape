@@ -18,7 +18,7 @@ void GameMainScene::Initialize(void)
     Stage::GetInstance().Initialize();
     Character::GetInstance().Initialize(Stage::GetInstance().GetStartpos());
     enemy.Initialize({ 300.0f, 700.0f }, 300.0f, 500.0f,1,700);
-    gameobject.Initialize(Stage::GetInstance().GetStartpos());
+    gameobject.Initialize(Stage::GetInstance().GetRoundHeight());
 }
 
 void GameMainScene::Update(void)
@@ -45,13 +45,13 @@ void GameMainScene::Update(void)
 
     Stage::GetInstance().Update();
     Character::GetInstance().Update();
-    Character::GetInstance().RoundHit(Stage::GetInstance().GetStartpos());
+    Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight());
     Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),
                 Stage::GetInstance().GetWallHeight(), enemy.GetCircleCenterPos(), enemy.GetCircleRadius());
 
     gameobject.Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(gameobject.getItemPos(), gameobject.GetItemCenter(),
                 gameobject.GetItemWidth(), gameobject.GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(), 
-                Character::GetInstance().CheckThrow(), Stage::GetInstance().GetStartpos(), Character::GetInstance().checkPut());
+                Character::GetInstance().CheckThrow(), Stage::GetInstance().GetRoundHeight(), Character::GetInstance().checkPut());
 
 }
 

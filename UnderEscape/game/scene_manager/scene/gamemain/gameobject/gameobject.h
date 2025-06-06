@@ -17,9 +17,9 @@ public:
 	~Gameobject(void) = default;
 
 	//初期化
-	void Initialize(vivid::Vector2);
+	void Initialize(float);
 	//更新
-	void Update(vivid::Vector2, bool, float, float, bool, vivid::Vector2, bool);
+	void Update(vivid::Vector2, bool, float, float, bool, float, bool);
 	//描画
 	void Draw(void);
 	//解放
@@ -28,12 +28,10 @@ public:
 	void BreakMove(void);
 	//プレイヤーが持っている状態の処理
 	void GetMove(vivid::Vector2, float, float);
-	//プレイヤーが投げた後の処理
-	void ThrowMove(vivid::Vector2);
 	//プレイヤーが置いた後の処理
-	void PutMove(vivid::Vector2);
+	void PutMove(float);
 	//プレイヤーが投げた後の処理(マウス）
-	void ThrowMove3(vivid::Vector2, vivid::Vector2);
+	void ThrowMove3(float, vivid::Vector2);
 
 	//アイテムオブジェクトの座標取得
 	vivid::Vector2 getItemPos(void)

@@ -150,10 +150,10 @@ void Character::Control(void)
 }
 
 //地面との当たり判定
-void Character::RoundHit(vivid::Vector2 rPos)
+void Character::RoundHit(float rHeight)
 {
-		if (cPos.y + ch_height > rPos.y && cPos.y < rPos.y) {
-			cPos.y = rPos.y - ch_height;
+		if (cPos.y + ch_height > rHeight && cPos.y < rHeight) {
+			cPos.y = rHeight - ch_height;
 			m_Velocity.y = 0.0f;
 			//地面と当たったら接地フラグをtrueにする
 			m_LandingFlag = true;
