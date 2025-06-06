@@ -22,7 +22,7 @@ public:
 	//©‹@‚Ì‘€ìˆ—
 	void Control(void);
 	//’n–Ê‚ğ‚·‚è”²‚¯‚È‚¢‚æ‚¤‚É‚·‚éˆ—
-	void RoundHit(vivid::Vector2);
+	void RoundHit(float);
 	//áŠQ•¨(•Ç)‚ÉŠ®‘S‚É‰B‚ê‚Ä‚¢‚é‚Ìˆ—
 	bool CheckWallHit(vivid::Vector2, float, float);
 	//“G‚Ì‹ŠE‚É“ü‚Á‚Ä‚¢‚È‚¢‚©‚Ì”»’f

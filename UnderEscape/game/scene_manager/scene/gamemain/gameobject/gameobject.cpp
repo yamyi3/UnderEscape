@@ -6,16 +6,16 @@ Gameobject::Gameobject(void)
 {
 }
 
-void Gameobject::Initialize(vivid::Vector2 rPos)
+void Gameobject::Initialize(float rHeight)
 {
 	iPos.x = 800.0f;
-	iPos.y = rPos.y - item_height;
+	iPos.y = rHeight - item_height;
 	iColor = 0xffffffff;
 	iCenter.x = (iPos.x + item_width) / 2;
 	iCenter.y = (iPos.y + item_height) / 2;
 }
 
-void Gameobject::Update(vivid::Vector2 cPos, bool cFlg, float cWidth, float cHeight, bool cThrowFlg, vivid::Vector2 rPos, bool cPutFlg)
+void Gameobject::Update(vivid::Vector2 cPos, bool cFlg, float cWidth, float cHeight, bool cThrowFlg, float rHeight, bool cPutFlg)
 {
 	if (cFlg)
 	{
@@ -37,10 +37,10 @@ void Gameobject::Update(vivid::Vector2 cPos, bool cFlg, float cWidth, float cHei
 		GetMove(cPos, cWidth, cHeight);
 		break;
 	case ITEM_STATE::THROW:
-		ThrowMove3(rPos, cPos);
+		ThrowMove3(rHeight, cPos);
 		break;
 	case ITEM_STATE::PLACE:
-		PutMove(rPos);
+		PutMove(rHeight);
 	}
 
 }
@@ -77,19 +77,19 @@ void Gameobject::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 	V = 0.0;
 }
 
-void Gameobject::PutMove(vivid::Vector2 rPos)
+void Gameobject::PutMove(float rHeight)
 {
-	if (iPos.y + item_height < rPos.y)
+	if (iPos.y + item_height < rHeight)
 		iPos.y += 7.5;
 	else
 	{
-		iPos.y = rPos.y - item_height;
+		iPos.y = rHeight - item_height;
 	}
 	iColor = 0xffffffff;
 }
 
 //自機がアイテムを投げた時の処理マウスのポインタ参照(山なり）
-void Gameobject::ThrowMove3(vivid::Vector2 rPos, vivid::Vector2 c_pos)
+void Gameobject::ThrowMove3(float rHeight, vivid::Vector2 c_pos)
 {
 
 	if (catchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
@@ -101,16 +101,16 @@ void Gameobject::ThrowMove3(vivid::Vector2 rPos, vivid::Vector2 c_pos)
 
 	V = -(Mouse.y / Yspeed);
 
-	if (iPos.y + item_height < rPos.y)
+	if (iPos.y + item_height < rHeight)
 	{
 		iPos.x += Mouse.x / Xspeed;
 		iPos.y += V + (item_fall * Ga);
 		iColor = 0xff00ffff;
 	}
 
-	if (iPos.y + item_height >= rPos.y)
+	if (iPos.y + item_height >= rHeight)
 	{
-		iPos.y = rPos.y - item_height;
+		iPos.y = rHeight - item_height;
 		item_state = ITEM_STATE::PLACE;
 		iColor = 0xffffffff;
 	}

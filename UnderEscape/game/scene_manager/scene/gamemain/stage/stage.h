@@ -41,10 +41,21 @@ public:
 	{
 		return wall_height;
 	}
+	//地面の高さの取得
+	float GetRoundHeight(void)
+	{
+		return round_pos->y;
+	}
 
 private:
 	//地面の座標
 	vivid::Vector2 round_pos[3];
+
+	//ステージの始点の座標
+	static vivid::Vector2	start_pos;
+
+	//ステージの終点の座標
+	static vivid::Vector2	goal_pos;
 
 	//遮蔽物の座標
 	vivid::Vector2 wall_pos;
@@ -56,7 +67,7 @@ private:
 	static unsigned int wall_color;
 
 	//地面1枚の幅
-	float	round_width;
+	static const float	round_width;
 	//地面の画像の枚数
 	int		max_round;
 	//スクロールの速度
