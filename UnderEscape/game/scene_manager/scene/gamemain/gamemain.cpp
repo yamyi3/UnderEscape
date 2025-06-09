@@ -33,7 +33,7 @@ void GameMainScene::Update(void)
     }
     enemy.Update();
 
-    if ((Stage::GetInstance().GetStartpos().x + change_pos.x) < Character::GetInstance().GetCharapos().x 
+    /*if ((Stage::GetInstance().GetStartpos().x + change_pos.x) < Character::GetInstance().GetCharapos().x 
         || (Stage::GetInstance().GetGoalpos().x + change_pos.x) > Character::GetInstance().GetCharapos().x)
     {
         Character::GetInstance().Control();
@@ -41,7 +41,9 @@ void GameMainScene::Update(void)
     else
     {
         Stage::GetInstance().ScrollStage();
-    }
+    }*/
+
+    Character::GetInstance().Update();
 
     Stage::GetInstance().Update();
     Character::GetInstance().Update();
