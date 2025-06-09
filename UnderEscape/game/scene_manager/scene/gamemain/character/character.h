@@ -2,6 +2,17 @@
 #pragma once
 #include "vivid.h"
 
+enum class CHARA_STATE
+{
+	WAIT,
+	WALK,
+	RUN,
+	SNEAK,
+	JUMP,
+
+	MAX,
+};
+
 //自機クラス
 class Character
 {
@@ -39,28 +50,17 @@ public:
 	void UpperGauge(void);
 	//ゲージの下降処理
 	void DownerGauge(void);
+	//アニメーションの更新
+	void UpdateAnimation(void);
 
 	//座標の取得
-	vivid::Vector2 GetCharapos(void)
-	{
-		return cPos;
-	}
+	vivid::Vector2 GetCharapos(void) { return cPos; }
 	//自機の幅の取得
-	float GetCharaWidth(void)
-	{
-		return ch_width;
-	}
+	float GetCharaWidth(void) { return ch_width; }
 	//自機の高さの取得
-	float GetCharaHeight(void)
-	{
-		return ch_height;
-	}
+	float GetCharaHeight(void) { return ch_height; }
 	//自機のアイテム取得フラグの取得
-	bool GetCatchFlg(void)
-	{
-		return cCatch;
-	}
-
+	bool GetCatchFlg(void) { return cCatch; }
 	//歩行速度の取得
 	float GetWalk(void) { return walk_speed; }
 	//通常速度の取得
@@ -72,8 +72,23 @@ private:
 	vivid::Vector2 cPos;				//自機の座標
 	vivid::Vector2 m_Velocity;			//慣性を含む速度計算
 
-	float ch_width = 125.0f;			//自機の幅
-	float ch_height = 192.0f;			//自機の高さ
+	//->描画関係
+	int	c_anime_frame;								//アニメーションの更新
+	int	c_anime_timer;								//アニメーションタイマー
+	int	c_change_anime_timer;						//アニメーションの切り替え基準値
+	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像
+	{ "data\\自機\\前待機.png",		//待機
+		"data\\自機\\後待機.png",	//歩行
+		"data\\自機\\前歩行.png",	//ダッシュ
+		"data\\自機\\後歩行.png",	//しゃがみ
+		"data\\自機\\後歩行.png" };	//ジャンプ
+	vivid::Rect	c_rect;								//画像の描画範囲
+	vivid::Vector2	m_anchor;						//自機の拡大基準点
+	vivid::Vector2	c_scale;						//自機のスケール
+	//<-描画関係
+
+	float ch_width = 72.0f;			//自機の幅
+	float ch_height = 180.0f;			//自機の高さ
 	static unsigned int color;				//自機の色
 
 	static float ch_speed;				//自機の移動速度
@@ -97,6 +112,8 @@ private:
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
 	static bool cAlive;					//生存フラグ
+
+	CHARA_STATE chara_state;			//自機の状態
 
 	//インスタンスの生成
 	Character(void) = default;
