@@ -28,6 +28,10 @@ void Character::Initialize(vivid::Vector2 rPos)
 	gauge_rect.bottom = 30;
 	gauge_rect.left = 0;
 	gauge_rect.right = 20 * gauge;
+	chara_state = CHARA_STATE::WAIT;
+
+	m_anchor = { ch_width / 2,ch_height / 2 };
+	c_scale = { 1.0f,1.0f };
 }
 
 void Character::Update(void)
@@ -38,19 +42,27 @@ void Character::Update(void)
 
 void Character::Draw(void)
 {
-	vivid::Rect rect;
-	rect.top = 0;
-	rect.bottom = 30;
-	rect.left = 0;
-	rect.right = 200;
+	vivid::Rect g_rect;
+	g_rect.top = 0;
+	g_rect.bottom = 30;
+	g_rect.left = 0;
+	g_rect.right = 200;
 
 	gauge_rect.top = 0;
 	gauge_rect.bottom = 30;
 	gauge_rect.left = 0;
 	gauge_rect.right = 20 * gauge;
 
-	vivid::DrawTexture("data\\minihuman透過1.png", cPos, color);
-	vivid::DrawTexture("data\\gauge.png", gPos, 0xffffffff, rect);
+	c_anime_frame = 1;
+
+	c_rect.top = 0;
+	c_rect.bottom = ch_height;
+	c_rect.left = ch_width*c_anime_frame-1;
+	c_rect.right = c_rect.left + ch_width;
+
+	//vivid::DrawTexture("data\\仮置き人間\\minihuman透過1.png", cPos, color, c_rect);
+	vivid::DrawTexture("data\\自機\\前歩行.png", cPos, color, c_rect,m_anchor,c_scale);
+	vivid::DrawTexture("data\\gauge.png", gPos, 0xffffffff, g_rect);
 	vivid::DrawTexture("data\\gauge.png", gPos, 0xff00ffff, gauge_rect);
 }
 
@@ -92,10 +104,12 @@ void Character::Control(void)
 
 	//デフォルトはwalk_speedにする
 	ch_speed = run_speed;
+	chara_state = CHARA_STATE::WALK;
 	//左SHIFTを押している間はrun_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
 	{
 		ch_speed = dash_speed;
+		chara_state = CHARA_STATE::RUN;
 	}
 	//左CTRLを押している間はwalk_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
@@ -128,6 +142,7 @@ void Character::Control(void)
 		accelerator.y += jump_speed;
 		//接地フラグをfalseにして空中ジャンプを出来ないようにする
 		m_LandingFlag = false;
+		chara_state = CHARA_STATE::JUMP;
 	}
 
 	//落下処理
@@ -146,6 +161,10 @@ void Character::Control(void)
 	if (abs(m_Velocity.x) < cut_speed)
 	{
 		m_Velocity.x = 0.0f;
+		if (m_LandingFlag)
+		{
+			chara_state = CHARA_STATE::WAIT;
+		}
 	}
 }
 
@@ -309,4 +328,9 @@ void Character::DownerGauge(void)
 		}
 		down_gauge_count = 0;
 	}
+}
+
+void Character::UpdateAnimation(void)
+{
+
 }
