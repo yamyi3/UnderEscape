@@ -274,6 +274,35 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, vivid
 	}
 }
 
+void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool EnemyHitFlg)
+{	
+	//•Ç‚É“–‚½‚Á‚½(áŠQ•¨‚É‰B‚ê‚½‚Æ‚«)
+	if (CheckWallHit(wPos, wWidth, wHeight))
+	{
+		DownerGauge();
+
+#ifdef _DEBUG
+		color = 0xff0000ff;
+#endif // DEBUG
+	}
+	//áŠQ•¨‚ÌŠO‚Å“G‚Ì‹ŠE‚É“ü‚Á‚½
+	else if (EnemyHitFlg)
+	{
+		UpperGauge();
+#ifdef _DEBUG
+		color = 0xffff0000;
+#endif // DEBUG
+	}
+	//ƒfƒtƒHƒ‹ƒg‚Ìó‘Ô
+	else
+	{
+		DownerGauge();
+#ifdef _DEBUG
+		color = 0xffffffff;
+#endif // DEBUG
+	}
+}
+
 bool Character::CheckThrow(void)
 {
 	if (cCatch)

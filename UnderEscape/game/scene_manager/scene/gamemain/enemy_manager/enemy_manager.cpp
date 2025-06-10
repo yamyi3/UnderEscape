@@ -1,0 +1,145 @@
+#include "enemy_manager.h"
+
+EnemyManager& EnemyManager::GetInstance()
+{
+	static  EnemyManager instance;
+	// TODO: return ステートメントをここに挿入します
+	return instance;
+}
+
+void EnemyManager::Initialize()
+{
+}
+
+void EnemyManager::Update()
+{
+	ENEMY_LIST::iterator it = m_Enemy.begin();
+	ENEMY_LIST::iterator end = m_Enemy.end();
+
+	while (it != end)
+	{
+		if (!(*it)->IsActive())
+		{
+			(*it)->Finalize();
+
+			delete(*it);
+
+			it = m_Enemy.erase(it);
+
+			continue;
+		}
+		(*it)->Update();
+
+		++it;
+	}
+}
+
+void EnemyManager::Draw()
+{
+	ENEMY_LIST::iterator it = m_Enemy.begin();
+	ENEMY_LIST::iterator end = m_Enemy.end();
+
+	while (it != end)
+	{
+		(*it)->Draw();
+
+		++it;
+	}
+}
+
+void EnemyManager::Finalize()
+{
+	ENEMY_LIST::iterator it = m_Enemy.begin();
+	ENEMY_LIST::iterator end = m_Enemy.end();
+	while (it != end)
+	{
+		(*it)->Finalize();
+
+		delete(*it);
+
+		++it;
+	}
+	m_Enemy.clear();
+}
+
+void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vector, float ground)
+{
+	Enemy* enemy = nullptr;
+	enemy = new Enemy();
+	if (!enemy)return;
+	enemy->Initialize(pos, L, R, vector, ground);
+
+	m_Enemy.push_back(enemy);
+}
+
+void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vector)
+{
+	Enemy* enemy = nullptr;
+	enemy = new Enemy();
+	if (!enemy)return;
+	enemy->Initialize(pos, L, R, vector);
+
+	m_Enemy.push_back(enemy);
+}
+
+void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R)
+{
+	Enemy* enemy = nullptr;
+	enemy = new Enemy();
+	if (!enemy)return;
+	enemy->Initialize(pos, L, R);
+
+	m_Enemy.push_back(enemy);
+}
+
+void EnemyManager::GenerateEnemy(vivid::Vector2 pos)
+{
+	Enemy* enemy = nullptr;
+	enemy = new Enemy();
+	if (!enemy)return;
+	enemy->Initialize(pos);
+
+	m_Enemy.push_back(enemy);
+}
+
+void EnemyManager::GenerateEnemy()
+{
+	Enemy* enemy = nullptr;
+	enemy = new Enemy();
+	if (!enemy)return;
+	enemy->Initialize();
+
+	m_Enemy.push_back(enemy);
+}
+
+bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width)
+{
+	ENEMY_LIST::iterator it = m_Enemy.begin();
+	ENEMY_LIST::iterator end = m_Enemy.end();
+
+	while (it != end)
+	{
+		Enemy* enemy = (*it);
+
+		if ((*it)->CheckHitPlayer(center_pos, height, width))
+			return true;
+
+		++it;
+	}
+	return false;
+}
+
+void EnemyManager::sound_sensor(vivid::Vector2 sound_source, float sound_size)
+{
+	ENEMY_LIST::iterator it = m_Enemy.begin();
+	ENEMY_LIST::iterator end = m_Enemy.end();
+
+	while (it != end)
+	{
+		Enemy* enemy = (*it);
+
+		(*it)->sound_sensor(sound_source, sound_size);
+
+		++it;
+	}
+}
