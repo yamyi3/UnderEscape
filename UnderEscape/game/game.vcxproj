@@ -165,7 +165,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="scene_manager\scene\gamemain\character\character.cpp" />
-    <ClCompile Include="scene_manager\scene\gamemain\enemy\enemy.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\gamemain.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\gameobject\gameobject.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\stage.cpp" />
@@ -185,8 +186,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scene_manager\scene\gamemain\character\character.h" />
-    <ClInclude Include="scene_manager\scene\gamemain\enemy\enemy.h" />
-    <ClInclude Include="scene_manager\scene\gamemain\enemy\enemy_status_id.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy_status_id.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\gamemain.h" />
     <ClInclude Include="scene_manager\scene\gamemain\gameobject\gameobject.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\stage.h" />

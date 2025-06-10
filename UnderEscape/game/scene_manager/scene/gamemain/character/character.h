@@ -42,6 +42,7 @@ public:
 	bool CheckObtainItem(vivid::Vector2, vivid::Vector2, float, float);
 	//•Ç‚â‹ŠE‚É“–‚½‚Á‚½‚ÌF‚Ì•ÏX
 	void CheckHit(vivid::Vector2, float, float, vivid::Vector2, float);
+	void CheckHit(vivid::Vector2, float, float,bool);
 	//“Š‚°‚½”»’è
 	bool CheckThrow(void);
 	//’u‚¢‚½”»’è
