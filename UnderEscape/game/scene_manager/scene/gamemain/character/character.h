@@ -7,7 +7,8 @@ enum class CHARA_STATE
 	WAIT,
 	WALK,
 	RUN,
-	SNEAK,
+	SNEAKWAIT,
+	SNEAKWALK,
 	JUMP,
 
 	MAX,
@@ -63,9 +64,9 @@ public:
 	//自機のアイテム取得フラグの取得
 	bool GetCatchFlg(void) { return cCatch; }
 	//歩行速度の取得
-	float GetWalk(void) { return walk_speed; }
+	float GetSneak(void) { return sneak_speed; }
 	//通常速度の取得
-	float GetRun(void) { return run_speed; }
+	float GetWalk(void) { return walk_speed; }
 	//ダッシュ速度の取得
 	float GetDash(void) { return dash_speed; }
 
@@ -78,24 +79,26 @@ private:
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
 	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像
-	{ "data\\自機\\前待機.png",		//待機
-		"data\\自機\\後待機.png",	//歩行
-		"data\\自機\\前歩行.png",	//ダッシュ
-		"data\\自機\\後歩行.png",	//しゃがみ
-		"data\\自機\\後歩行.png" };	//ジャンプ
-	vivid::Rect	c_rect;								//画像の描画範囲
-	vivid::Vector2	m_anchor;						//自機の拡大基準点
+	{	"data\\自機\\前待機スプレッド.png",			//待機
+		"data\\自機\\前歩きスプレッド.png",			//歩行
+		"data\\自機\\前歩きスプレッド.png",			//ダッシュ
+		"data\\自機\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
+		"data\\自機\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
+		"data\\自機\\主人公現時点立ち絵.png" };		//ジャンプ
+	vivid::Rect		c_rect;								//画像の描画範囲
+	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
+	float			c_rotate;						//自機の回転角度
 	//<-描画関係
 
-	float ch_width = 72.0f;			//自機の幅
-	float ch_height = 180.0f;			//自機の高さ
-	static unsigned int color;				//自機の色
+	static const float ch_width;		//自機の幅
+	static const float ch_height;		//自機の高さ
+	static unsigned int color;			//自機の色
 
-	static float ch_speed;				//自機の移動速度
-	static const float run_speed;		//自機の通常移動速度
-	static const float dash_speed;		//自機のダッシュ時の移動速度
+	static float ch_speed;				//自機の移動速度(代入用の変数)
 	static const float walk_speed;		//自機の歩行時の移動速度
+	static const float dash_speed;		//自機のダッシュ時の移動速度
+	static const float sneak_speed;		//自機のしゃがみ時の移動速度
 	const float jump_speed = -20.0f;	//自機のジャンプの速度
 	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
@@ -104,9 +107,9 @@ private:
 	vivid::Rect gauge_rect;				//ゲージ画像の表示幅
 	vivid::Vector2 gPos;				//ゲージの表示座標
 	const int max_gauge = 10;			//自機の発見ゲージの最大量
-	static int gauge;							//自機の現在の発見ゲージの量
+	static int gauge;					//自機の現在の発見ゲージの量
 	const int one_gauge_frame = 60;		//発見ゲージ1個分あたりの増加にかかるフレーム数
-	static int gauge_count_frame;				//発見ゲージが溜まっている間のフレーム数カウンタ
+	static int gauge_count_frame;		//発見ゲージが溜まっている間のフレーム数カウンタ
 	const int downer_frame = 180;		//発見ゲージが1減るまでにかかるフレーム数
 	static int down_gauge_count;				//ゲージ減少のカウンタ
 

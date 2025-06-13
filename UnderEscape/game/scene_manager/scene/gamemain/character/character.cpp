@@ -1,7 +1,7 @@
 #include "character.h"
 #include "../stage/stage.h"
 
-float	Character::ch_speed = walk_speed;
+float	Character::ch_speed = sneak_speed;
 unsigned Character::color = 0xffffffff;
 bool	Character::m_LandingFlag = false;
 bool	Character::cCatch = false;
@@ -10,9 +10,11 @@ int		Character::gauge = 0;
 int		Character::gauge_count_frame = 0;
 int		Character::down_gauge_count = 0;
 
-const float Character::run_speed = 1.0f;		//自機の通常移動速度
-const float Character::dash_speed = 1.5f;		//自機のダッシュ時の移動速度
-const float Character::walk_speed = 0.5f;		//自機の歩行時の移動速度
+const float Character::ch_width		= 72.0f;	//自機の幅
+const float Character::ch_height	= 180.0f;	//自機の高さ
+const float Character::walk_speed	= 1.0f;		//自機の通常移動速度
+const float Character::dash_speed	= 1.5f;		//自機のダッシュ時の移動速度
+const float Character::sneak_speed	= 0.5f;		//自機の歩行時の移動速度
 
 Character& Character::GetInstance(void)
 {
@@ -30,8 +32,9 @@ void Character::Initialize(vivid::Vector2 rPos)
 	gauge_rect.right = 20 * gauge;
 	chara_state = CHARA_STATE::WAIT;
 
-	m_anchor = { ch_width / 2,ch_height / 2 };
-	c_scale = { 1.0f,1.0f };
+	c_anchor	= {ch_width / 2,ch_height / 2 };
+	c_scale		= {  1.0f,1.0f };
+	c_rotate	= 0.0f;
 }
 
 void Character::Update(void)
@@ -61,7 +64,7 @@ void Character::Draw(void)
 	c_rect.right = c_rect.left + ch_width;
 
 	//vivid::DrawTexture("data\\仮置き人間\\minihuman透過1.png", cPos, color, c_rect);
-	vivid::DrawTexture("data\\自機\\前歩行.png", cPos, color, c_rect,m_anchor,c_scale);
+	vivid::DrawTexture("data\\自機\\前歩行.png", cPos, color, c_rect,c_anchor,c_scale);
 	vivid::DrawTexture("data\\gauge.png", gPos, 0xffffffff, g_rect);
 	vivid::DrawTexture("data\\gauge.png", gPos, 0xff00ffff, gauge_rect);
 }
@@ -103,7 +106,7 @@ void Character::Control(void)
 	vivid::Vector2 accelerator = {};
 
 	//デフォルトはwalk_speedにする
-	ch_speed = run_speed;
+	ch_speed = walk_speed;
 	chara_state = CHARA_STATE::WALK;
 	//左SHIFTを押している間はrun_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
@@ -114,7 +117,7 @@ void Character::Control(void)
 	//左CTRLを押している間はwalk_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
 	{
-		ch_speed = walk_speed;
+		ch_speed = sneak_speed;
 	}
 	//Aを押している間は左移動
 	if (keyboard::Button(keyboard::KEY_ID::A))
