@@ -73,11 +73,11 @@ private:
 	//スクロールの速度
 	float	sc_speed;
 	//自機の通常速度
-	static const float	run_speed;
+	static const float	walk_speed;
 	//自機のダッシュ速度
 	static const float	dash_speed;
 	//自機の歩行速度
-	static const float	walk_speed;
+	static const float	sneak_speed;
 
 	//シングルトンパターンの設定
 	Stage(void) = default;
