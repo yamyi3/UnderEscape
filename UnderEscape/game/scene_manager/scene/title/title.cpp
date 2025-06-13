@@ -3,36 +3,25 @@
 #include"../../scene_manager.h" 
 //コンストラクタ
 TitleScene::TitleScene()
+:team_time      (0)                 //チームロゴの透明、不透明になるまでのカウント
+,title_time     (0)                 //タイトルロゴの透明、不透明になるまでのカウント
+,hold_time      (100)               //チームロゴの表示時間
+,color_max_time (60)                //ロゴ完全に透明、不透明になるまでの時間
+,title_color    (0x00000000)        //タイトルロゴの色の管理
+,team_color     (0x00000000)        //チームロゴの色の管理
+,back_color     (0xffffffff)        //背景の色（固定）
+,back_pos       { 0.0f,0.0f }       //背景の位置（原点）
+,start_pos1     { 400.0f,700.0f }   //START[ENTER]の位置
+,start_pos2     { 28.0f,100.0f }    //START[ENTER]の位置
+,title_pos      { 28.0f,100.0f }    //タイトルロゴの位置
+,team_pos       { 550.0f,0.0f }     //チームロゴの位置
+,title_sw       (false)             //タイトルロゴの透明、不透明の切り替え
+,team_sw        (false)             //チームロゴの透明、不透明の切り替え
 {
-    team_time = 0;                //チームロゴの透明、不透明になるまでのカウント
-    title_time = 0;                //タイトルロゴの透明、不透明になるまでのカウント
-    hold_time = 0;                //チームロゴの表示時間
-    color_max_time = 0;                //ロゴ完全に透明、不透明になるまでの時間
-    title_color = 0x00000000;       //タイトルロゴの色の管理
-    team_color = 0x00000000;       //チームロゴの色の管理
-    back_color = 0x00000000;       //背景の色（固定）
-    pos = { 0.0f,0.0f };    //背景の位置（原点）
-    spos1 = { 0.0f,0.0f };    //START[ENTER]の位置
-    spos2 = { 0.0f,0.0f };    //タイトルロゴの位置
-    tpos1 = { 0.0f,0.0f };    //チームロゴの位置
-    title_sw = false;            //タイトルロゴの透明、不透明の切り替え
-    team_sw = false;            //チームロゴの透明、不透明の切り替え
 }
 //初期化
 void TitleScene::Initialize()
 {
-    hold_time = 100;
-    team_time = 0;
-    title_time = 0;
-    color_max_time = 60;
-    title_color = 0x00000000;
-    team_color = 0x00000000;
-    back_color = 0xffffffff;
-    spos1 = { 400.0f,700.0f };
-    spos2 = { 28.0f,100.0f };
-    tpos1 = { 550.0f,0.0f };
-    title_sw = false;
-    team_sw = false;
 }
 void TitleScene::Title_Update()
 {
@@ -64,7 +53,6 @@ void TitleScene::Title_Update()
     }
 
 }
-
 void TitleScene::Team_Update()
 {
     team_time += 1;
@@ -95,18 +83,28 @@ void TitleScene::Team_Update()
     }
     if (team_time >= color_max_time && team_sw == true)
 
-        Title = Title_Draw::Title_Logo;
+        Title = Opning_Draw::Title_Logo;
+}
+void TitleScene::Title_Draw()
+{
+    //vivid::DrawTexture("data\\自機\\背景イメージ.png", back_pos, title_color);
+    vivid::DrawTexture("data\\自機\\タイトルロゴ.png", start_pos2, title_color);
+    vivid::DrawText(40, "START[ENTER]", start_pos1, title_color);
+}
+void TitleScene::Team_Draw()
+{
+    vivid::DrawTexture("data\\ade.png", start_pos2, team_color);
 }
 //更新
 void TitleScene::Update()
 {
     switch (Title)
     {
-    case TitleScene::Title_Draw::Team_Logo:
+    case TitleScene::Opning_Draw::Team_Logo:
         Team_Update();
         break;
 
-    case TitleScene::Title_Draw::Title_Logo:
+    case TitleScene::Opning_Draw::Title_Logo:
         Title_Update();
         break;
     default:
@@ -119,18 +117,15 @@ void TitleScene::Update()
 //描画
 void TitleScene::Draw()
 {
-    vivid::DrawTexture("data\\Title_背景.png", pos, back_color);
+    vivid::DrawTexture("data\\Title_背景.png", back_pos, back_color);
     switch (Title)
     {
-    case TitleScene::Title_Draw::Team_Logo:
-        vivid::DrawTexture("data\\TeamLogo.jpg", tpos1, team_color);
+    case TitleScene::Opning_Draw::Team_Logo:
+        Team_Draw();
         break;
 
-    case TitleScene::Title_Draw::Title_Logo:
-        vivid::DrawTexture("data\\Title_背景.png", pos, back_color);
-        vivid::DrawTexture("data\\背景イメージ.png", pos, title_color);
-        vivid::DrawTexture("data\\Title.webp", spos2, title_color);
-        vivid::DrawText(40, "START[ENTER]", spos1, title_color);
+    case TitleScene::Opning_Draw::Title_Logo:
+        Title_Draw();
         break;
     default:
         break;
