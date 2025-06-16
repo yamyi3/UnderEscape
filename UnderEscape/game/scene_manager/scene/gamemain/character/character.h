@@ -14,6 +14,14 @@ enum class CHARA_STATE
 	MAX,
 };
 
+enum class SKILL_STATE
+{
+	DEFAULT,
+	TENTACLE,
+
+	MAX
+};
+
 //自機クラス
 class Character
 {
@@ -54,6 +62,11 @@ public:
 	void DownerGauge(void);
 	//アニメーションの更新
 	void UpdateAnimation(void);
+
+
+	void ChangeTentacle();
+	void TentacleUpdate();
+
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -120,8 +133,15 @@ private:
 
 	CHARA_STATE chara_state;			//自機の状態
 
+	int TentacleCount;
+	int TentacleCTTimer;
+	static const int tentacle_CT;
+	static const int tentacle_move_time;
+	vivid::Vector2 cPosLog;
+	vivid::Vector2 c_TentaclePos;
+	SKILL_STATE chara_skill_state;		//自機のスキル使用状態
 	//インスタンスの生成
-	Character(void) = default;
+	Character(void);
 	~Character(void) = default;
 	Character(const Character& rhs) = default;
 	Character& operator = (const Character& rhs) = default;

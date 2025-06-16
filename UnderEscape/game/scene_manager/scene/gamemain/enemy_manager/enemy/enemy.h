@@ -18,6 +18,8 @@ public:
 	void Update(void);
 	//描画
 	void Draw(void);
+
+	void Finalize(void);
 	//エネミーのポジションを出力
 	vivid::Vector2 GetEnemyPos(void);
 	//視界の半径を出力

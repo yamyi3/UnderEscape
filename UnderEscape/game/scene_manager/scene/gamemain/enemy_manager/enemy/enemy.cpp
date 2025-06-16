@@ -262,8 +262,8 @@ void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 bool Enemy::e_wool_jump()
 {
 	//‰¼’u‚«‚ÅFƒWƒƒƒ“ƒv
-	if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
-		return 1;
+	/*if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
+		return 1;*/
 
 	return 0;
 }
