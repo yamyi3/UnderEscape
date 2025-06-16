@@ -43,6 +43,8 @@ void GameMainScene::Update(void)
     {
         Stage::GetInstance().ScrollStage();
     }*/
+    if(vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::E))
+    Character::GetInstance().ChangeTentacle();
 
     Character::GetInstance().Update();
 

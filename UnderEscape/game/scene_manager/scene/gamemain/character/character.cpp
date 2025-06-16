@@ -16,6 +16,14 @@ const float Character::walk_speed	= 1.0f;		//自機の通常移動速度
 const float Character::dash_speed	= 1.5f;		//自機のダッシュ時の移動速度
 const float Character::sneak_speed	= 0.5f;		//自機の歩行時の移動速度
 
+
+const int Character::tentacle_CT = 300;
+const int Character::tentacle_move_time = 20;
+
+Character::Character()
+	:TentacleCTTimer(0)
+{}
+
 Character& Character::GetInstance(void)
 {
 	static Character	instance;
@@ -43,6 +51,13 @@ void Character::Initialize(vivid::Vector2 rPos)
 
 void Character::Update(void)
 {
+	if(TentacleCTTimer>0)
+	TentacleCTTimer--;
+	if (chara_skill_state==SKILL_STATE::TENTACLE)
+	{
+		TentacleUpdate();
+	}
+	else
 	Control();
 	CheckWindow();
 	UpdateAnimation();
@@ -405,5 +420,33 @@ void Character::UpdateAnimation(void)
 			c_anime_frame = 0;
 		}
 		c_anime_timer = 0;
+	}
+}
+
+void Character::ChangeTentacle()
+{
+	if (chara_skill_state != SKILL_STATE::TENTACLE&& TentacleCTTimer<=0)
+	{
+		TentacleCTTimer = tentacle_CT;
+		chara_skill_state = SKILL_STATE::TENTACLE;
+		vivid::Point mpos = vivid::mouse::GetCursorPos();
+		vivid::Vector2 mopos;
+		c_TentaclePos.x = mpos.x;
+		c_TentaclePos.y = mpos.y;
+		TentacleCount = 0;
+		cPosLog = cPos;
+		m_LandingFlag = false;
+		chara_state = CHARA_STATE::JUMP;
+	}
+}
+
+void Character::TentacleUpdate()
+{
+	TentacleCount++;
+	cPos.x -= (cPosLog.x - c_TentaclePos.x) / tentacle_move_time;
+	cPos.y -= (cPosLog.y - c_TentaclePos.y) / tentacle_move_time;
+	if (TentacleCount >= tentacle_move_time ||chara_state!=CHARA_STATE::JUMP|| m_LandingFlag)
+	{
+		chara_skill_state = SKILL_STATE::DEFAULT;
 	}
 }
