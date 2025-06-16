@@ -12,7 +12,7 @@ int		Character::down_gauge_count = 0;
 
 const float Character::ch_width		= 72.0f;	//自機の幅
 const float Character::ch_height	= 180.0f;	//自機の高さ
-const float Character::walk_speed	= 1.0f;		//自機の通常移動速度
+const float Character::walk_speed	= 0.8f;		//自機の通常移動速度
 const float Character::dash_speed	= 1.5f;		//自機のダッシュ時の移動速度
 const float Character::sneak_speed	= 0.5f;		//自機の歩行時の移動速度
 
@@ -45,7 +45,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	c_rotate	= 0.0f;
 	c_anime_frame = 0;			//各モーション画像切り替え枚数
 	c_anime_timer = 0;
-	c_change_anime_timer = 10;
+	c_change_anime_timer = 15;
 	c_change_anime_frame = 0;
 }
 
