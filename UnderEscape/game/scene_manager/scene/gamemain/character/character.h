@@ -78,14 +78,15 @@ private:
 	int	c_anime_frame;								//アニメーションの更新
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
-	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像
+	int c_change_anime_frame;						//各モーションの枚数
+	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像宣言
 	{	"data\\自機\\前待機スプレッド.png",			//待機
 		"data\\自機\\前歩きスプレッド.png",			//歩行
 		"data\\自機\\前歩きスプレッド.png",			//ダッシュ
 		"data\\自機\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
-		"data\\自機\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
+		"data\\自機\\前しゃがみ歩きスプレッドa.png",	//しゃがみ歩き
 		"data\\自機\\主人公現時点立ち絵.png" };		//ジャンプ
-	vivid::Rect		c_rect;								//画像の描画範囲
+	vivid::Rect		c_rect;							//画像の描画範囲
 	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
 	float			c_rotate;						//自機の回転角度
@@ -111,7 +112,7 @@ private:
 	const int one_gauge_frame = 60;		//発見ゲージ1個分あたりの増加にかかるフレーム数
 	static int gauge_count_frame;		//発見ゲージが溜まっている間のフレーム数カウンタ
 	const int downer_frame = 180;		//発見ゲージが1減るまでにかかるフレーム数
-	static int down_gauge_count;				//ゲージ減少のカウンタ
+	static int down_gauge_count;		//ゲージ減少のカウンタ
 
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
