@@ -140,6 +140,7 @@ private:
 	vivid::Vector2 cPosLog;
 	vivid::Vector2 c_TentaclePos;
 	SKILL_STATE chara_skill_state;		//自機のスキル使用状態
+
 	//インスタンスの生成
 	Character(void);
 	~Character(void) = default;
