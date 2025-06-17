@@ -5,7 +5,7 @@
 #include "stage/stage.h"
 #include "gameobject/gameobject.h"
 
-Gameobject gameobject;
+//Gameobject gameobject;
 
 GameMainScene::GameMainScene(void)
     : change_pos ((vivid::WINDOW_WIDTH / 5.0f * 2.0f), 0.0f)
@@ -19,7 +19,7 @@ void GameMainScene::Initialize(void)
     EnemyManager::GetInstance().Initialize();
     EnemyManager::GetInstance().GenerateEnemy({ 300.0f, 700.0f }, 300.0f, 500.0f, 1, 700);
     EnemyManager::GetInstance().GenerateEnemy({ 1000.0f, 700.0f }, 1000.0f, 1200.0f, 1, 700);
-    gameobject.Initialize(Stage::GetInstance().GetRoundHeight());
+    Gameobject::GetInstance().Initialize(Stage::GetInstance().GetRoundHeight());
 }
 
 void GameMainScene::Update(void)
@@ -56,8 +56,8 @@ void GameMainScene::Update(void)
 
    
 
-    gameobject.Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(gameobject.getItemPos(), gameobject.GetItemCenter(),
-                gameobject.GetItemWidth(), gameobject.GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(), 
+    Gameobject::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(Gameobject::GetInstance().getItemPos(), Gameobject::GetInstance().GetItemCenter(),
+        Gameobject::GetInstance().GetItemWidth(), Gameobject::GetInstance().GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
                 Character::GetInstance().CheckThrow(), Stage::GetInstance().GetRoundHeight(), Character::GetInstance().checkPut());
 
 }
@@ -67,7 +67,7 @@ void GameMainScene::Draw(void)
     EnemyManager::GetInstance().Draw();
     Stage::GetInstance().Draw();
     Character::GetInstance().Draw();
-    gameobject.Draw();
+    Gameobject::GetInstance().Draw();
 }
 
 void GameMainScene::Finalize(void)
@@ -75,5 +75,5 @@ void GameMainScene::Finalize(void)
     Character::GetInstance().Finalize();
     EnemyManager::GetInstance().Finalize();
     Stage::GetInstance().Finalize();
-    gameobject.Finalize();
+    Gameobject::GetInstance().Finalize();
 }
