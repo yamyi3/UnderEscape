@@ -11,9 +11,9 @@
  */
 
 #include "vivid.h"
-#include "../scene_manager/scene/gamemain/gamemain.h"
+#include "..\scene_manager\scene_manager.h"
 
-GameMainScene gamemain;
+
 
 /*!
  *  @brief      描画関数
@@ -21,8 +21,10 @@ GameMainScene gamemain;
 void
 Display(void)
 {
-    gamemain.Update();
-    gamemain.Draw();
+    //ゲームの更新
+    SceneManager::GetInstance().Update();
+    //ゲームの描画
+    SceneManager::GetInstance().Draw();
 }
 
 /*!
@@ -45,7 +47,8 @@ WinMain( _In_ HINSTANCE hInst, _In_opt_ HINSTANCE hPrevInst, _In_ LPSTR lpCmdLin
     // vividライブラリ初期化
     vivid::Initialize( hInst );
 
-    gamemain.Initialize();
+    //ゲームの初期化
+    SceneManager::GetInstance().Initialize();
 
     // 更新/描画関数登録
     vivid::DisplayFunction( Display );
@@ -53,7 +56,8 @@ WinMain( _In_ HINSTANCE hInst, _In_opt_ HINSTANCE hPrevInst, _In_ LPSTR lpCmdLin
     // ゲームループ
     vivid::MainLoop( );
 
-    gamemain.Finalize();
+    //ゲームの解放
+    SceneManager::GetInstance().Finalize();
 
     // vividライブラリ解放
     vivid::Finalize( );
