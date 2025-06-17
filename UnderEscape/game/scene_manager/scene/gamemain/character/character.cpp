@@ -367,8 +367,7 @@ void Character::UpperGauge(void)
 		}
 		if (gauge >= max_gauge)
 		{
-			//èIÇÌÇË
-			vivid::DrawText(40, "Ç®ÇÌÇËÇæÇÊÅ[", vivid::Vector2(800.0f, 500.0f));
+			cAlive = false;
 		}
 	}
 }
@@ -437,6 +436,14 @@ void Character::ChangeTentacle()
 		cPosLog = cPos;
 		m_LandingFlag = false;
 		chara_state = CHARA_STATE::JUMP;
+		if (cPos.x < c_TentaclePos.x)
+		{
+			c_scale.x = 1.0f;
+		}
+		if (cPos.x > c_TentaclePos.x)
+		{
+			c_scale.x = -1.0f;
+		}
 	}
 }
 
