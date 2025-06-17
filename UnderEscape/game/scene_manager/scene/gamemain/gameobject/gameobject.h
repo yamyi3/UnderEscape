@@ -13,8 +13,7 @@ enum class ITEM_STATE
 class Gameobject
 {
 public:
-	Gameobject(void);
-	~Gameobject(void) = default;
+	static Gameobject& GetInstance(void);
 
 	//初期化
 	void Initialize(float);
@@ -61,16 +60,20 @@ private:
 	vivid::Vector2 iPos;				//アイテムオブジェクトの座標
 	vivid::Vector2 iCenter;				//アイテムオブジェクトの中心点
 	bool catchFlg;						//取得の判断フラグ
-	bool breakFlg;						//アイテムオブジェクトの破壊の判断フラグ
+	bool breakFlg=false;						//アイテムオブジェクトの破壊の判断フラグ
 	bool itemFlg;						//着地の判定
-	const float item_height = 32.0f;	//アイテムオブジェクトの高さ
-	const float item_width = 32.0f;		//アイテムオブジェクトの幅
-	const float throw_speed = 8.0f;		//アイテムオブジェクトの投げる速度
-	float item_fall;					//アイテムオブジェクトの落下速度
+	static const float item_height ;	//アイテムオブジェクトの高さ
+	static const float item_width ;		//アイテムオブジェクトの幅
+	static const float throw_speed ;		//アイテムオブジェクトの投げる速度
+	float item_fall=1.0f;					//アイテムオブジェクトの落下速度
 	unsigned int iColor;				//アイテムオブジェクトの色
 
-	float Ga = 1.0;						//重力加速度
-	float V = 0.0;						//上昇する初速
+	float Ga =	1.0f;						//重力加速度
+	float V  =	0.0f;						//上昇する初速
 
 	ITEM_STATE item_state = ITEM_STATE::PLACE;	//アイテムオブジェクトの状態(初期状態はPLACE(設置))
+	Gameobject(void) = default;
+	~Gameobject(void) = default;
+	Gameobject(const Gameobject& rhs) = delete;
+	Gameobject& operator=(const Gameobject& rhs) = delete;
 };

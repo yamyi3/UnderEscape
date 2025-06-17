@@ -1,10 +1,16 @@
 #include "gameobject.h"
 
-Gameobject::Gameobject(void)
-	: breakFlg(false)
-	, item_fall(1.0f)
+const float Gameobject::item_height = 32.0f;
+const float Gameobject::item_width = 32.0f;
+const float Gameobject::throw_speed = 8.0f;
+
+Gameobject& Gameobject::GetInstance(void)
 {
+	static Gameobject instance;
+
+	return instance;
 }
+
 
 void Gameobject::Initialize(float rHeight)
 {
