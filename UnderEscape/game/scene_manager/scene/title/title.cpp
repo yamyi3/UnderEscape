@@ -93,7 +93,7 @@ void TitleScene::Title_Draw()
 }
 void TitleScene::Team_Draw()
 {
-    vivid::DrawTexture("data\\ade.png", start_pos2, team_color);
+    vivid::DrawTexture("data\\abe.png", start_pos2, team_color);
 }
 //çXêV
 void TitleScene::Update()
