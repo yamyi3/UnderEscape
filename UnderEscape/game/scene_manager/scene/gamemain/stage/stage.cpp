@@ -32,11 +32,15 @@ void Stage::Initialize(void)
 	}
 	wall_pos.y = round_pos[0].y - wall_height;
 	wall_pos.x = 400;
+
+	WallManager::GetInstance().GenerateWall(wall_pos,wall_height,wall_width,wall_color);
 	sc_speed = walk_speed;
 }
 
 void Stage::Update(void)
 {
+	WallManager::GetInstance().Update();
+	WallManager::GetInstance().Input_scroll(round_pos[0].x);
 }
 
 void Stage::Draw(void)
@@ -45,7 +49,7 @@ void Stage::Draw(void)
 	{
 		vivid::DrawTexture("data\\round_box.png", round_pos[i]);
 	}
-	vivid::DrawTexture("data\\ŽÕ•Á.png", wall_pos, wall_color);
+	WallManager::GetInstance().Draw();
 }
 
 void Stage::Finalize(void)
