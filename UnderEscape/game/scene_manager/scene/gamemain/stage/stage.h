@@ -1,6 +1,6 @@
 #pragma once
 #include "vivid.h"
-
+#include "wallmanager/wallmanager.h"
 class Stage
 {
 public:
@@ -26,6 +26,8 @@ public:
 	{
 		return vivid::Vector2((Stage::max_round * Stage::round_width), 0.0f);
 	}
+
+	bool CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width) { WallManager::GetInstance().CheckHitPlayer(center_pos, height, width); }
 	//áŠQ•¨À•W‚Ìæ“¾
 	vivid::Vector2 GetWallpos(void)
 	{

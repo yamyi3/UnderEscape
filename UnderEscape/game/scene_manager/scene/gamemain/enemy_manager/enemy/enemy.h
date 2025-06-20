@@ -52,7 +52,7 @@ private:
 
 
 	static const int e_width_size;					//エネミーの横のドット数
-	static const int e_height_size;                 //エネミーの縦;;;;のドット数
+	static const int e_height_size;                 //エネミーの縦のドット数
 
 	static const int mark_width_size;		//!の横のドット数
 	static const int mark_height_size;		//!の縦のドット数
