@@ -155,9 +155,9 @@ void Enemy::Draw(void)
 {
 	eScale.x = abs(eScale.x) * eVector;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	vivid::DrawTexture("data\\“GŽ‹ŠE.png", { ePos.x - e_visibility_width_size / 2,ePos.y - e_visibility_height_size / 2 }, 0x6fffffff);
-#endif // DEBUG
+//#endif // DEBUG
 
 
 

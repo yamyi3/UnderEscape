@@ -12,9 +12,9 @@ int		Character::down_gauge_count = 0;
 
 const float Character::ch_width		= 72.0f;	//自機の幅
 const float Character::ch_height	= 180.0f;	//自機の高さ
-const float Character::walk_speed	= 0.8f;		//自機の通常移動速度
-const float Character::dash_speed	= 1.5f;		//自機のダッシュ時の移動速度
-const float Character::sneak_speed	= 0.5f;		//自機の歩行時の移動速度
+const float Character::walk_speed	= 0.6f;		//自機の通常移動速度
+const float Character::dash_speed	= 1.2f;		//自機のダッシュ時の移動速度
+const float Character::sneak_speed	= 0.3f;		//自機の歩行時の移動速度
 
 
 const int Character::tentacle_CT = 300;
