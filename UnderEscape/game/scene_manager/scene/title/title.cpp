@@ -94,12 +94,12 @@ void TitleScene::Team_Update()
 void TitleScene::Title_Draw()
 {
     //vivid::DrawTexture("data\\自機\\背景イメージ.png", back_pos, title_color);
-    vivid::DrawTexture("data\\自機\\タイトルロゴ.png", title_pos, title_color,title_rect,title_anchor,title_scale);
+    vivid::DrawTexture("data\\タイトルロゴ.png", title_pos, title_color,title_rect,title_anchor,title_scale);
     vivid::DrawText(40, "START[ENTER]", start_pos1, title_color);
 }
 void TitleScene::Team_Draw()
 {
-    vivid::DrawTexture("data\\ade.png", team_pos, team_color);
+    vivid::DrawTexture("data\\abe.png", team_pos, team_color);
 }
 //更新
 void TitleScene::Update()

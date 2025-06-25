@@ -54,6 +54,8 @@ public:
 	void DownerGauge(void);
 	//アニメーションの更新
 	void UpdateAnimation(void);
+	//自機の移動速度ごとの状態の判別
+	void CheckMoveState(void);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -78,13 +80,14 @@ private:
 	int	c_anime_frame;								//アニメーションの更新
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
+	int	c_change_anime_frame;						//各アニメーションの枚数
 	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像
 	{	"data\\自機\\前待機スプレッド.png",			//待機
 		"data\\自機\\前歩きスプレッド.png",			//歩行
-		"data\\自機\\前歩きスプレッド.png",			//ダッシュ
+		"data\\自機\\前走りスプレッド.png",			//ダッシュ
 		"data\\自機\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
 		"data\\自機\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
-		"data\\自機\\主人公現時点立ち絵.png" };		//ジャンプ
+		"data\\自機\\前ジャンプスプレッド.png" };		//ジャンプ
 	vivid::Rect		c_rect;								//画像の描画範囲
 	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
