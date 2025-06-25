@@ -9,6 +9,7 @@
 
 GameMainScene::GameMainScene(void)
     : change_pos ((vivid::WINDOW_WIDTH / 5.0f * 2.0f), 0.0f)
+    ,pause_menu(false)
 {
 }
 
@@ -24,7 +25,8 @@ void GameMainScene::Initialize(void)
 
 void GameMainScene::Update(void)
 {
-    if (vivid::mouse::Trigger(vivid::mouse::BUTTON_ID::LEFT))
+    Pause();
+    if (pause_menu==false&&vivid::mouse::Trigger(vivid::mouse::BUTTON_ID::LEFT))
     {
         vivid::Point mpos = vivid::mouse::GetCursorPos();
         vivid::Vector2 mopos;
@@ -32,6 +34,8 @@ void GameMainScene::Update(void)
         mopos.y = mpos.y;
         EnemyManager::GetInstance().sound_sensor(mopos, 300);
     }
+    if(pause_menu==false)
+    { 
     EnemyManager::GetInstance().Update();
 
     /*if ((Stage::GetInstance().GetStartpos().x + change_pos.x) < Character::GetInstance().GetCharapos().x 
@@ -59,7 +63,7 @@ void GameMainScene::Update(void)
     Gameobject::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(Gameobject::GetInstance().getItemPos(), Gameobject::GetInstance().GetItemCenter(),
         Gameobject::GetInstance().GetItemWidth(), Gameobject::GetInstance().GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
                 Character::GetInstance().CheckThrow(), Stage::GetInstance().GetRoundHeight(), Character::GetInstance().checkPut());
-
+    }
 }
 
 void GameMainScene::Draw(void)
@@ -76,4 +80,14 @@ void GameMainScene::Finalize(void)
     EnemyManager::GetInstance().Finalize();
     Stage::GetInstance().Finalize();
     Gameobject::GetInstance().Finalize();
+}
+void GameMainScene::Pause()
+{
+    //[P]‚ð‰Ÿ‚·‚ÆŽ~‚Ü‚èÄ“x‰Ÿ‚·‚Æ“®‚­
+    if (pause_menu == false && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::P))
+    {
+        pause_menu = true;
+    }
+    else if(pause_menu == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::P))
+        pause_menu = false;
 }

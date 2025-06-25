@@ -13,7 +13,6 @@ void  GameOver::Update()
 {
 	if (GetCursor() == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::RETURN))
 	{
-
 		picture = GameOverScene::Title;
 		GameOver::Scene();
 	}
@@ -27,9 +26,9 @@ void  GameOver::Update()
 void  GameOver::Draw()
 {
 	cursor_move();
-	vivid::DrawTexture("data\\ゲームオーバー.jpg", pos3, color);
-	vivid::DrawTexture("data\\やりなおす1.webp", pos1, color);
-	vivid::DrawTexture("data\\タイトルにもどる.webp", pos2, color);
+	vivid::DrawTexture("data\\ゲームオーバー.jpg", result_pos, defult_color);		//ロゴ
+	vivid::DrawTexture("data\\やりなおす1.webp", left_pos, defult_color);			//左の選択
+	vivid::DrawTexture("data\\タイトルにもどる.webp", right_pos, defult_color);		//右の選択
 
 }
 
