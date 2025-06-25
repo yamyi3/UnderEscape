@@ -66,8 +66,8 @@ void GameMainScene::Update(void)
 
 void GameMainScene::Draw(void)
 {
-    EnemyManager::GetInstance().Draw();
     Stage::GetInstance().Draw();
+    EnemyManager::GetInstance().Draw();
     Character::GetInstance().Draw();
     Gameobject::GetInstance().Draw();
 }

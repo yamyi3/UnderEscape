@@ -88,7 +88,7 @@ void TitleScene::Team_Update()
 void TitleScene::Title_Draw()
 {
     //vivid::DrawTexture("data\\自機\\背景イメージ.png", back_pos, title_color);
-    vivid::DrawTexture("data\\自機\\タイトルロゴ.png", start_pos2, title_color);
+    vivid::DrawTexture("data\\タイトルロゴ.png", start_pos2, title_color);
     vivid::DrawText(40, "START[ENTER]", start_pos1, title_color);
 }
 void TitleScene::Team_Draw()
