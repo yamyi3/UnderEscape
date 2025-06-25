@@ -2,19 +2,25 @@
 #include"vivid.h"
 #include"../../scene_manager.h" 
 //コンストラクタ
+
+const int               TitleScene::hold_time      = 100;
+const int               TitleScene::color_max_time = 60;
+const unsigned          TitleScene::back_color     = 0xffffffff;
+const vivid::Vector2    TitleScene::back_pos       = { 0.0f,0.0f };
+const vivid::Vector2    TitleScene::start_pos1     = { 400.0f,700.0f };
+const vivid::Vector2    TitleScene::title_pos      = { 444.0f,100.0f };
+const vivid::Vector2    TitleScene::team_pos       = { 928.0f,508.0f };
+const vivid::Vector2    TitleScene::title_anchor   = { 2184.5f,757.5f };
+const vivid::Vector2    TitleScene::title_scale    = { 0.25f,0.25f };
+const vivid::Rect       TitleScene::title_rect     = { 0,0,4369,1495 };
+
+
+
 TitleScene::TitleScene()
 :team_time      (0)                 //チームロゴの透明、不透明になるまでのカウント
 ,title_time     (0)                 //タイトルロゴの透明、不透明になるまでのカウント
-,hold_time      (100)               //チームロゴの表示時間
-,color_max_time (60)                //ロゴ完全に透明、不透明になるまでの時間
 ,title_color    (0x00000000)        //タイトルロゴの色の管理
 ,team_color     (0x00000000)        //チームロゴの色の管理
-,back_color     (0xffffffff)        //背景の色（固定）
-,back_pos       { 0.0f,0.0f }       //背景の位置（原点）
-,start_pos1     { 400.0f,700.0f }   //START[ENTER]の位置
-,start_pos2     { 28.0f,100.0f }    //START[ENTER]の位置
-,title_pos      { 28.0f,100.0f }    //タイトルロゴの位置
-,team_pos       { 550.0f,0.0f }     //チームロゴの位置
 ,title_sw       (false)             //タイトルロゴの透明、不透明の切り替え
 ,team_sw        (false)             //チームロゴの透明、不透明の切り替え
 {
@@ -38,7 +44,7 @@ void TitleScene::Title_Update()
 
     //フェードアウト
     //ENTERを押すと60フレームでタイトルロゴが完全に透明になる
-    if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::RETURN))
+    if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::RETURN)&& title_sw == false)
     {
         title_sw = true;
         title_time = 0;
@@ -88,12 +94,12 @@ void TitleScene::Team_Update()
 void TitleScene::Title_Draw()
 {
     //vivid::DrawTexture("data\\自機\\背景イメージ.png", back_pos, title_color);
-    vivid::DrawTexture("data\\タイトルロゴ.png", start_pos2, title_color);
+    vivid::DrawTexture("data\\自機\\タイトルロゴ.png", title_pos, title_color,title_rect,title_anchor,title_scale);
     vivid::DrawText(40, "START[ENTER]", start_pos1, title_color);
 }
 void TitleScene::Team_Draw()
 {
-    vivid::DrawTexture("data\\abe.png", start_pos2, team_color);
+    vivid::DrawTexture("data\\ade.png", team_pos, team_color);
 }
 //更新
 void TitleScene::Update()

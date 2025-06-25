@@ -8,25 +8,21 @@ public:
 	Enemy(void);
 	~Enemy(void) = default;
 
-	//初期化
-	void Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground);
-	void Initialize(vivid::Vector2 pos, float L, float R, float vector);
-	void Initialize(vivid::Vector2 pos, float L, float R);
-	void Initialize(vivid::Vector2 pos);
+	void Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground);//初期化
+	void Initialize(vivid::Vector2 pos, float L, float R, float vector);//初期化
+	void Initialize(vivid::Vector2 pos, float L, float R);//初期化
+	void Initialize(vivid::Vector2 pos);//初期化
 	void Initialize(void);
-	//更新
 	void Update(void);
-	//描画
 	void Draw(void);
-
 	void Finalize(void);
-	//エネミーのポジションを出力
+
 	vivid::Vector2 GetEnemyPos(void);
-	//視界の半径を出力
+
 	float GetCircleRadius(void);
-	//視界の中心を出力
+
 	vivid::Vector2	GetCircleCenterPos(void);
-	//プレイヤーとの当たり判定をチェック
+
 	bool CheckHitPlayer(const vivid::Vector2& center_c_pos, int c_height, int c_width);
 
 	bool IsActive(void)const { return m_ActiveFlag; }
@@ -47,12 +43,11 @@ public:
 	);
 
 private:
-	static const int e_visibility_width_size;		//視界の横の大きさ
-	static const int e_visibility_height_size;		//視界の縦の大きさ
-
+	static const int e_visibility_width_size;
+	static const int e_visibility_height_size;
 
 	static const int e_width_size;					//エネミーの横のドット数
-	static const int e_height_size;                 //エネミーの縦のドット数
+	static const int e_height_size;                 //エネミーの縦;;;;のドット数
 
 	static const int mark_width_size;		//!の横のドット数
 	static const int mark_height_size;		//!の縦のドット数
@@ -66,7 +61,6 @@ private:
 	static const float enemy_jump_height;			//ジャンプの高さ
 	static const float enemy_jump_upspeed;			//ジャンプの上昇スピード
 	static const float enemy_jump_downspeed;		//落下スピード(上昇スピードの何％か)
-	static const int enemy_jump_power;				//ジャンプする際に参照する値(基本180)
 
 	static const float		eCircleRadius;
 
@@ -95,7 +89,7 @@ private:
 
 	bool m_ActiveFlag;	//アクティブフラグ
 
-	vivid::Vector2	eCircleCenterPos;				//エネミーの視界の中心座標
+	vivid::Vector2	eCircleCenterPos;
 
 	eSTATUS eStatus;				//エネミーの状態保存用
 };

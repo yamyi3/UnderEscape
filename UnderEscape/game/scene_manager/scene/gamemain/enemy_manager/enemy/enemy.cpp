@@ -155,9 +155,9 @@ void Enemy::Draw(void)
 {
 	eScale.x = abs(eScale.x) * eVector;
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	vivid::DrawTexture("data\\“GŽ‹ŠE.png", { ePos.x - e_visibility_width_size / 2,ePos.y - e_visibility_height_size / 2 }, 0x6fffffff);
-//#endif // DEBUG
+#endif // DEBUG
 
 
 
@@ -262,8 +262,8 @@ void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 bool Enemy::e_wool_jump()
 {
 	//‰¼’u‚«‚ÅFƒWƒƒƒ“ƒv
-	/*if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
-		return 1;*/
+	if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
+		return 1;
 
 	return 0;
 }

@@ -12,17 +12,9 @@ int		Character::down_gauge_count = 0;
 
 const float Character::ch_width		= 72.0f;	//自機の幅
 const float Character::ch_height	= 180.0f;	//自機の高さ
-const float Character::walk_speed	= 0.6f;		//自機の通常移動速度
-const float Character::dash_speed	= 1.2f;		//自機のダッシュ時の移動速度
-const float Character::sneak_speed	= 0.3f;		//自機の歩行時の移動速度
-
-
-const int Character::tentacle_CT = 300;
-const int Character::tentacle_move_time = 20;
-
-Character::Character()
-	:TentacleCTTimer(0)
-{}
+const float Character::walk_speed	= 1.0f;		//自機の通常移動速度
+const float Character::dash_speed	= 1.5f;		//自機のダッシュ時の移動速度
+const float Character::sneak_speed	= 0.5f;		//自機の歩行時の移動速度
 
 Character& Character::GetInstance(void)
 {
@@ -43,24 +35,12 @@ void Character::Initialize(vivid::Vector2 rPos)
 	c_anchor	= {ch_width / 2,ch_height / 2 };
 	c_scale		= {  1.0f,1.0f };
 	c_rotate	= 0.0f;
-	c_anime_frame = 0;			//各モーション画像切り替え枚数
-	c_anime_timer = 0;
-	c_change_anime_timer = 15;
-	c_change_anime_frame = 0;
 }
 
 void Character::Update(void)
 {
-	if(TentacleCTTimer>0)
-	TentacleCTTimer--;
-	if (chara_skill_state==SKILL_STATE::TENTACLE)
-	{
-		TentacleUpdate();
-	}
-	else
 	Control();
 	CheckWindow();
-	UpdateAnimation();
 }
 
 void Character::Draw(void)
@@ -76,13 +56,15 @@ void Character::Draw(void)
 	gauge_rect.left = 0;
 	gauge_rect.right = 20 * gauge;
 
+	c_anime_frame = 1;
+
 	c_rect.top = 0;
 	c_rect.bottom = ch_height;
-	c_rect.left = ch_width * (c_anime_frame % c_change_anime_frame);
+	c_rect.left = ch_width*c_anime_frame-1;
 	c_rect.right = c_rect.left + ch_width;
 
 	//vivid::DrawTexture("data\\仮置き人間\\minihuman透過1.png", cPos, color, c_rect);
-	vivid::DrawTexture(c_image[(int)chara_state], cPos, color, c_rect, c_anchor, c_scale);
+	vivid::DrawTexture("data\\自機\\前歩行.png", cPos, color, c_rect,c_anchor,c_scale);
 	vivid::DrawTexture("data\\gauge.png", gPos, 0xffffffff, g_rect);
 	vivid::DrawTexture("data\\gauge.png", gPos, 0xff00ffff, gauge_rect);
 }
@@ -125,68 +107,36 @@ void Character::Control(void)
 
 	//デフォルトはwalk_speedにする
 	ch_speed = walk_speed;
-	if (m_LandingFlag)
-		chara_state = CHARA_STATE::WAIT;
-
-	//一定値を超えたら速度を0にして慣性の移動を止める
-	if (abs(m_Velocity.x) < cut_speed && m_LandingFlag)
-	{
-		m_Velocity.x = 0.0f;
-		chara_state = CHARA_STATE::WAIT;
-	}
-
-	//左SHIFTを押している間はdash_speedになる
+	chara_state = CHARA_STATE::WALK;
+	//左SHIFTを押している間はrun_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
 	{
 		ch_speed = dash_speed;
-		if (m_LandingFlag)
-			chara_state = CHARA_STATE::WAIT;
+		chara_state = CHARA_STATE::RUN;
 	}
-	//左CTRLを押している間はsneak_speedになる
+	//左CTRLを押している間はwalk_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
 	{
 		ch_speed = sneak_speed;
-		if (m_LandingFlag)
-			chara_state = CHARA_STATE::SNEAKWAIT;
 	}
 	//Aを押している間は左移動
 	if (keyboard::Button(keyboard::KEY_ID::A))
 	{
 		accelerator.x = -ch_speed;
-		c_scale.x = -1.0f;
-		if (m_LandingFlag)
-			chara_state = CHARA_STATE::WALK;
-		//走り入力をしている状態だったら走りモーションになる
-		if (ch_speed == dash_speed && m_LandingFlag)
-		{
-			chara_state = CHARA_STATE::RUN;
-		}
-		//しゃがみ入力をしている状態だったらしゃがみ歩きモーションになる
-		if (ch_speed == sneak_speed && m_LandingFlag)
-		{
-			chara_state = CHARA_STATE::SNEAKWALK;
-		}
 	}
-
 	//Dを押している間は右移動
 	if (keyboard::Button(keyboard::KEY_ID::D))
 	{
 		accelerator.x = ch_speed;
-		c_scale.x = 1.0f;
-		if (m_LandingFlag)
-			chara_state = CHARA_STATE::WALK;
-		//走り入力をしている状態だったら走りモーションになる
-		if (ch_speed == dash_speed && m_LandingFlag)
-		{
-			chara_state = CHARA_STATE::RUN;
-		}
-		//しゃがみ入力をしている状態だったらしゃがみ歩きモーションになる
-		if (ch_speed == sneak_speed && m_LandingFlag)
-		{
-			chara_state = CHARA_STATE::SNEAKWALK;
-		}
 	}
 
+	if (cCatch)
+	{
+		if (keyboard::Trigger(keyboard::KEY_ID::C))
+		{
+
+		}
+	}
 	
 	//ジャンプの処理
 	//SPACEを押すとジャンプ動作になる
@@ -199,7 +149,7 @@ void Character::Control(void)
 	}
 
 	//落下処理
-	if (m_LandingFlag == false)	
+	if (m_LandingFlag == false)
 	{
 		accelerator.y += fall_speed;
 	}
@@ -209,6 +159,16 @@ void Character::Control(void)
 
 	//移動に慣性をつける
 	m_Velocity.x *= m_friction;
+
+	//一定値を超えたら速度を0にして慣性の移動を止める
+	if (abs(m_Velocity.x) < cut_speed)
+	{
+		m_Velocity.x = 0.0f;
+		if (m_LandingFlag)
+		{
+			chara_state = CHARA_STATE::WAIT;
+		}
+	}
 }
 
 //地面との当たり判定
@@ -383,7 +343,8 @@ void Character::UpperGauge(void)
 		}
 		if (gauge >= max_gauge)
 		{
-			cAlive = false;
+			//終わり
+			vivid::DrawText(40, "おわりだよー", vivid::Vector2(800.0f, 500.0f));
 		}
 	}
 }
@@ -403,73 +364,5 @@ void Character::DownerGauge(void)
 
 void Character::UpdateAnimation(void)
 {
-	switch (chara_state)
-	{
-	case CHARA_STATE::WAIT:
-		c_change_anime_frame = 12;
-		break;
-	case CHARA_STATE::WALK:
-		c_change_anime_frame = 18;
-		break;
-	case CHARA_STATE::RUN:
-		c_change_anime_frame = 9;
-		break;
-	case CHARA_STATE::SNEAKWAIT:
-		c_change_anime_frame = 12;
-		break;
-	case CHARA_STATE::SNEAKWALK:
-		c_change_anime_frame = 15;
-		break;
-	case CHARA_STATE::JUMP:
-		c_change_anime_frame = 8;
-		break;
-	}
 
-	c_anime_timer++;
-
-	if (c_anime_timer >= c_change_anime_timer)
-	{
-		c_anime_frame++;
-		if (c_anime_frame == c_change_anime_frame)
-		{
-			c_anime_frame = 0;
-		}
-		c_anime_timer = 0;
-	}
-}
-
-void Character::ChangeTentacle()
-{
-	if (chara_skill_state != SKILL_STATE::TENTACLE&& TentacleCTTimer<=0)
-	{
-		TentacleCTTimer = tentacle_CT;
-		chara_skill_state = SKILL_STATE::TENTACLE;
-		vivid::Point mpos = vivid::mouse::GetCursorPos();
-		vivid::Vector2 mopos;
-		c_TentaclePos.x = mpos.x;
-		c_TentaclePos.y = mpos.y;
-		TentacleCount = 0;
-		cPosLog = cPos;
-		m_LandingFlag = false;
-		chara_state = CHARA_STATE::JUMP;
-		if (cPos.x < c_TentaclePos.x)
-		{
-			c_scale.x = 1.0f;
-		}
-		if (cPos.x > c_TentaclePos.x)
-		{
-			c_scale.x = -1.0f;
-		}
-	}
-}
-
-void Character::TentacleUpdate()
-{
-	TentacleCount++;
-	cPos.x -= (cPosLog.x - c_TentaclePos.x) / tentacle_move_time;
-	cPos.y -= (cPosLog.y - c_TentaclePos.y) / tentacle_move_time;
-	if (TentacleCount >= tentacle_move_time ||chara_state!=CHARA_STATE::JUMP|| m_LandingFlag)
-	{
-		chara_skill_state = SKILL_STATE::DEFAULT;
-	}
 }

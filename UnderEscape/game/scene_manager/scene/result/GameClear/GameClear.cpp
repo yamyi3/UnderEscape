@@ -24,9 +24,9 @@ void GameClear::Update()
 void GameClear::Draw()
 {
 	cursor_move();
-	vivid::DrawTexture("data\\ステージクリア.webp", pos3, color);
-	vivid::DrawTexture("data\\次のステージへ.webp", pos1, color);
-	vivid::DrawTexture("data\\タイトルにもどる.webp", pos2, color);
+	vivid::DrawTexture("data\\ステージクリア.webp",result_pos, defult_color);	//ロゴ
+	vivid::DrawTexture("data\\次のステージへ.webp", left_pos, defult_color);	//左の選択
+	vivid::DrawTexture("data\\タイトルにもどる.webp",right_pos, defult_color);	//右の選択
 }
 
 void GameClear::Finalize()

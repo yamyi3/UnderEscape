@@ -1,6 +1,6 @@
 #pragma once
 #include "vivid.h"
-#include "wallmanager/wallmanager.h"
+
 class Stage
 {
 public:
@@ -26,8 +26,6 @@ public:
 	{
 		return vivid::Vector2((Stage::max_round * Stage::round_width), 0.0f);
 	}
-
-	bool CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width) { WallManager::GetInstance().CheckHitPlayer(center_pos, height, width); }
 	//障害物座標の取得
 	vivid::Vector2 GetWallpos(void)
 	{
@@ -46,7 +44,7 @@ public:
 	//地面の高さの取得
 	float GetRoundHeight(void)
 	{
-		return ground_line;
+		return round_pos->y;
 	}
 
 private:
@@ -75,13 +73,11 @@ private:
 	//スクロールの速度
 	float	sc_speed;
 	//自機の通常速度
-	static const float	walk_speed;
+	static const float	run_speed;
 	//自機のダッシュ速度
 	static const float	dash_speed;
 	//自機の歩行速度
-	static const float	sneak_speed;
-	//地面の高さ
-	static const float	ground_line;
+	static const float	walk_speed;
 
 	//シングルトンパターンの設定
 	Stage(void) = default;

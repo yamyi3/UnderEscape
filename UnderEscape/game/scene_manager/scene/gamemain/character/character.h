@@ -14,14 +14,6 @@ enum class CHARA_STATE
 	MAX,
 };
 
-enum class SKILL_STATE
-{
-	DEFAULT,
-	TENTACLE,
-
-	MAX
-};
-
 //自機クラス
 class Character
 {
@@ -63,11 +55,6 @@ public:
 	//アニメーションの更新
 	void UpdateAnimation(void);
 
-
-	void ChangeTentacle();
-	void TentacleUpdate();
-
-
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
 	//自機の幅の取得
@@ -91,15 +78,14 @@ private:
 	int	c_anime_frame;								//アニメーションの更新
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
-	int c_change_anime_frame;						//各モーションの枚数
-	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像宣言
+	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像
 	{	"data\\自機\\前待機スプレッド.png",			//待機
 		"data\\自機\\前歩きスプレッド.png",			//歩行
-		"data\\自機\\前走りスプレッド.png",			//ダッシュ
+		"data\\自機\\前歩きスプレッド.png",			//ダッシュ
 		"data\\自機\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
-		"data\\自機\\前しゃがみ歩きスプレッドa.png",//しゃがみ歩き
-		"data\\自機\\前ジャンプスプレッド.png" };	//ジャンプ
-	vivid::Rect		c_rect;							//画像の描画範囲
+		"data\\自機\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
+		"data\\自機\\主人公現時点立ち絵.png" };		//ジャンプ
+	vivid::Rect		c_rect;								//画像の描画範囲
 	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
 	float			c_rotate;						//自機の回転角度
@@ -113,8 +99,8 @@ private:
 	static const float walk_speed;		//自機の歩行時の移動速度
 	static const float dash_speed;		//自機のダッシュ時の移動速度
 	static const float sneak_speed;		//自機のしゃがみ時の移動速度
-	const float jump_speed = -15.0f;	//自機のジャンプの速度
-	const float fall_speed = 0.5f;		//自機の落下速度(重力)
+	const float jump_speed = -20.0f;	//自機のジャンプの速度
+	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
 	const float cut_speed = 0.1f;		//自機の移動を0にする基準
 
@@ -125,7 +111,7 @@ private:
 	const int one_gauge_frame = 60;		//発見ゲージ1個分あたりの増加にかかるフレーム数
 	static int gauge_count_frame;		//発見ゲージが溜まっている間のフレーム数カウンタ
 	const int downer_frame = 180;		//発見ゲージが1減るまでにかかるフレーム数
-	static int down_gauge_count;		//ゲージ減少のカウンタ
+	static int down_gauge_count;				//ゲージ減少のカウンタ
 
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
@@ -133,16 +119,8 @@ private:
 
 	CHARA_STATE chara_state;			//自機の状態
 
-	int TentacleCount;
-	int TentacleCTTimer;
-	static const int tentacle_CT;
-	static const int tentacle_move_time;
-	vivid::Vector2 cPosLog;
-	vivid::Vector2 c_TentaclePos;
-	SKILL_STATE chara_skill_state;		//自機のスキル使用状態
-
 	//インスタンスの生成
-	Character(void);
+	Character(void) = default;
 	~Character(void) = default;
 	Character(const Character& rhs) = default;
 	Character& operator = (const Character& rhs) = default;

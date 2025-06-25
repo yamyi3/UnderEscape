@@ -3,39 +3,38 @@
 #include"../../scene_manager.h" 
 #include"../gamemain/gamemain.h"
 ResultScene::ResultScene()
+:defult_color	(0xffffffff)
+,left_right		(false)
+,cursor_pos		(180.0f,776.0f)
+,left_pos		(200.0f,800.0f)
+,right_pos		(1370.0f,800.0f)
+,result_pos		(180.0f,776.0f)
 {
-	pos1 = { 200.0f,800.0f };
-	pos2 = { 1370.0f,800.0f };
-	pos3 = { 270.0f,0.0f };
-	Cpos = { 180.0f,776.0f };
-	color = 0xffffffff;
-	Right = false;
 }
 
 void ResultScene::Initialize()
 {
-
 }
 
 void ResultScene::cursor_move()
 {
-	vivid::DrawTexture("data\\カーソル.jpg", Cpos, color);
+	vivid::DrawTexture("data\\カーソル.jpg", cursor_pos, defult_color);
 	if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::RIGHT))
 	{
-		Right = true;
-		Cpos.x = 1350.0f;
+		left_right = true;
+		cursor_pos.x = 1350.0f;
 	};
 	if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::LEFT))
 	{
-		Right = false;
-		Cpos.x = 180.0f;
+		left_right = false;
+		cursor_pos.x = 180.0f;
 	};
 
 }
 
 bool ResultScene::GetCursor()
 {
-	return Right;
+	return left_right;
 }
 
 

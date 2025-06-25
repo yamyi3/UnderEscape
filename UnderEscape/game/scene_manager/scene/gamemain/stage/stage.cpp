@@ -4,11 +4,10 @@
 const float Stage::wall_width = 200.0f;
 const float Stage::wall_height = 200.0f;
 unsigned int Stage::wall_color = 0xff000000;
-const float	Stage::ground_line = (vivid::WINDOW_HEIGHT - 300.0f);
 
-const float	Stage::walk_speed = Character::GetInstance().GetWalk();
+const float	Stage::run_speed = Character::GetInstance().GetRun();
 const float	Stage::dash_speed = Character::GetInstance().GetDash();
-const float	Stage::sneak_speed = Character::GetInstance().GetSneak();
+const float	Stage::walk_speed = Character::GetInstance().GetWalk();
 
 const float Stage::round_width = vivid::WINDOW_WIDTH;
 
@@ -33,15 +32,11 @@ void Stage::Initialize(void)
 	}
 	wall_pos.y = round_pos[0].y - wall_height;
 	wall_pos.x = 400;
-
-	WallManager::GetInstance().GenerateWall(wall_pos,wall_height,wall_width,wall_color);
-	sc_speed = walk_speed;
+	sc_speed = run_speed;
 }
 
 void Stage::Update(void)
 {
-	WallManager::GetInstance().Update();
-	WallManager::GetInstance().Input_scroll(round_pos[0].x);
 }
 
 void Stage::Draw(void)
@@ -50,7 +45,7 @@ void Stage::Draw(void)
 	{
 		vivid::DrawTexture("data\\round_box.png", round_pos[i]);
 	}
-	WallManager::GetInstance().Draw();
+	vivid::DrawTexture("data\\遮蔽.png", wall_pos, wall_color);
 }
 
 void Stage::Finalize(void)
@@ -63,7 +58,7 @@ void Stage::ScrollStage(void)
 	namespace keyboard = vivid::keyboard;
 
 	//通常時はスクロール速度が通常速度になる
-	sc_speed = walk_speed;
+	sc_speed = run_speed;
 	//左SHIFTを押している間はスクロール速度がダッシュ速度になる
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
 	{
@@ -72,7 +67,7 @@ void Stage::ScrollStage(void)
 	//左CTRLを押している間はスクロール速度が歩行速度になる
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
 	{
-		sc_speed = sneak_speed;
+		sc_speed = walk_speed;
 	}
 
 	//左方向へのスクロール処理
