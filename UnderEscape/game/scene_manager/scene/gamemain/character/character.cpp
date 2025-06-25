@@ -125,10 +125,11 @@ void Character::Control(void)
 
 	//デフォルトはwalk_speedにする
 	ch_speed = walk_speed;
-	chara_state = CHARA_STATE::WAIT;
+	if (m_LandingFlag)
+		chara_state = CHARA_STATE::WAIT;
 
 	//一定値を超えたら速度を0にして慣性の移動を止める
-	if (abs(m_Velocity.x) < cut_speed)
+	if (abs(m_Velocity.x) < cut_speed && m_LandingFlag)
 	{
 		m_Velocity.x = 0.0f;
 		chara_state = CHARA_STATE::WAIT;
@@ -138,34 +139,49 @@ void Character::Control(void)
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
 	{
 		ch_speed = dash_speed;
-		chara_state = CHARA_STATE::RUN;
+		if (m_LandingFlag)
+			chara_state = CHARA_STATE::WAIT;
 	}
 	//左CTRLを押している間はsneak_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
 	{
 		ch_speed = sneak_speed;
-		chara_state = CHARA_STATE::SNEAKWAIT;
+		if (m_LandingFlag)
+			chara_state = CHARA_STATE::SNEAKWAIT;
 	}
 	//Aを押している間は左移動
 	if (keyboard::Button(keyboard::KEY_ID::A))
 	{
 		accelerator.x = -ch_speed;
 		c_scale.x = -1.0f;
-		chara_state = CHARA_STATE::WALK;
+		if (m_LandingFlag)
+			chara_state = CHARA_STATE::WALK;
+		//走り入力をしている状態だったら走りモーションになる
+		if (ch_speed == dash_speed && m_LandingFlag)
+		{
+			chara_state = CHARA_STATE::RUN;
+		}
 		//しゃがみ入力をしている状態だったらしゃがみ歩きモーションになる
-		if (ch_speed == sneak_speed)
+		if (ch_speed == sneak_speed && m_LandingFlag)
 		{
 			chara_state = CHARA_STATE::SNEAKWALK;
 		}
 	}
+
 	//Dを押している間は右移動
 	if (keyboard::Button(keyboard::KEY_ID::D))
 	{
 		accelerator.x = ch_speed;
 		c_scale.x = 1.0f;
-		chara_state = CHARA_STATE::WALK;
+		if (m_LandingFlag)
+			chara_state = CHARA_STATE::WALK;
+		//走り入力をしている状態だったら走りモーションになる
+		if (ch_speed == dash_speed && m_LandingFlag)
+		{
+			chara_state = CHARA_STATE::RUN;
+		}
 		//しゃがみ入力をしている状態だったらしゃがみ歩きモーションになる
-		if (ch_speed == sneak_speed)
+		if (ch_speed == sneak_speed && m_LandingFlag)
 		{
 			chara_state = CHARA_STATE::SNEAKWALK;
 		}
@@ -183,7 +199,7 @@ void Character::Control(void)
 	}
 
 	//落下処理
-	if (m_LandingFlag == false)
+	if (m_LandingFlag == false)	
 	{
 		accelerator.y += fall_speed;
 	}
@@ -396,7 +412,7 @@ void Character::UpdateAnimation(void)
 		c_change_anime_frame = 18;
 		break;
 	case CHARA_STATE::RUN:
-		c_change_anime_frame = 18;
+		c_change_anime_frame = 9;
 		break;
 	case CHARA_STATE::SNEAKWAIT:
 		c_change_anime_frame = 12;
@@ -405,7 +421,7 @@ void Character::UpdateAnimation(void)
 		c_change_anime_frame = 15;
 		break;
 	case CHARA_STATE::JUMP:
-		c_change_anime_frame = 1;
+		c_change_anime_frame = 8;
 		break;
 	}
 

@@ -46,7 +46,7 @@ public:
 	//地面の高さの取得
 	float GetRoundHeight(void)
 	{
-		return round_pos->y;
+		return ground_line;
 	}
 
 private:
@@ -80,6 +80,8 @@ private:
 	static const float	dash_speed;
 	//自機の歩行速度
 	static const float	sneak_speed;
+	//地面の高さ
+	static const float	ground_line;
 
 	//シングルトンパターンの設定
 	Stage(void) = default;

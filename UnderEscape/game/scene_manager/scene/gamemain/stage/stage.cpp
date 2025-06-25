@@ -4,6 +4,7 @@
 const float Stage::wall_width = 200.0f;
 const float Stage::wall_height = 200.0f;
 unsigned int Stage::wall_color = 0xff000000;
+const float	Stage::ground_line = (vivid::WINDOW_HEIGHT - 300.0f);
 
 const float	Stage::walk_speed = Character::GetInstance().GetWalk();
 const float	Stage::dash_speed = Character::GetInstance().GetDash();
