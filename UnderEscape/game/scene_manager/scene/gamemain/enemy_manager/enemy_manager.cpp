@@ -114,6 +114,8 @@ void EnemyManager::GenerateEnemy()
 
 bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width)
 {
+	bool HitPlayerFlg = false;
+
 	ENEMY_LIST::iterator it = m_Enemy.begin();
 	ENEMY_LIST::iterator end = m_Enemy.end();
 
@@ -122,11 +124,13 @@ bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, 
 		Enemy* enemy = (*it);
 
 		if ((*it)->CheckHitPlayer(center_pos, height, width))
-			return true;
+			HitPlayerFlg = true;
+			(*it)->input_player_pos(center_pos);
+		}
 
 		++it;
 	}
-	return false;
+	return HitPlayerFlg;
 }
 
 void EnemyManager::sound_sensor(vivid::Vector2 sound_source, float sound_size)
