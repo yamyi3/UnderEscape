@@ -49,6 +49,10 @@ public:
 		return round_pos->y;
 	}
 
+	void GenerateObject(int x, int y, int Object_ID);
+
+	void GenerateEnemy(int x, int y, int Object_ID);
+
 private:
 	//地面の座標
 	vivid::Vector2 round_pos[3];
@@ -87,4 +91,29 @@ private:
 	Stage(const Stage& rhs) = default;
 	Stage& operator = (const Stage& rhs) = default;
 
+
+
+
+
+
+	static const int g_map_chip_size;
+	static const int g_map_chip_count_width=40;
+	static const int g_map_chip_count_height=11;
+	// マップチップ番号を列挙型で定義 
+	enum class MAP_CHIP_ID
+	{
+		EMPTY,
+		GROUND,
+		BLOCK,
+		WALL,
+		ENEMY_AREA,
+		R_ENEMY,
+		L_ENEMY,
+		START,
+		GOAL,
+	};
+
+	// 配置データを入れておくための二次元配列(整数) 
+	MAP_CHIP_ID g_Map[g_map_chip_count_height][g_map_chip_count_width] = { MAP_CHIP_ID::EMPTY };
+	bool g_map_flg[g_map_chip_count_height][g_map_chip_count_width] = { true };
 };
