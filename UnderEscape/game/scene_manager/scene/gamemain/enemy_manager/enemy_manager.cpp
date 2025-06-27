@@ -124,6 +124,7 @@ bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, 
 		Enemy* enemy = (*it);
 
 		if ((*it)->CheckHitPlayer(center_pos, height, width))
+		{
 			HitPlayerFlg = true;
 			(*it)->input_player_pos(center_pos);
 		}
