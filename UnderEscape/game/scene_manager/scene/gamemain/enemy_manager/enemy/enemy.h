@@ -28,6 +28,7 @@ public:
 	bool IsActive(void)const { return m_ActiveFlag; }
 	void Destroy(void) { m_ActiveFlag = false; }
 
+	void input_player_pos(vivid::Vector2 p_pos) { ChasePos = p_pos; }
 	void sound_sensor(vivid::Vector2 sound_source, float sound_size);	//‰¹‚Ì”»’è
 	bool e_wool_jump();					//•Ç‚É“–‚½‚Á‚½‚çƒWƒƒƒ“ƒv‚·‚é”»’è
 
