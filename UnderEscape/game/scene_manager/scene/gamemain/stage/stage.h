@@ -114,4 +114,5 @@ private:
 	// 配置データを入れておくための二次元配列(整数) 
 	MAP_CHIP_ID g_Map[g_map_chip_count_height][g_map_chip_count_width] = { MAP_CHIP_ID::EMPTY };
 	bool g_map_flg[g_map_chip_count_height][g_map_chip_count_width] = { true };
+	bool g_map_terrain[g_map_chip_count_height][g_map_chip_count_width] = { false };
 };

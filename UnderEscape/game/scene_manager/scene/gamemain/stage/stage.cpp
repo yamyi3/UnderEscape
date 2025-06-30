@@ -130,6 +130,10 @@ void Stage::Draw(void)
 		vivid::DrawTexture("data\\round_box.png", round_pos[i]);
 	}
 	vivid::DrawTexture("data\\ŽÕ•Á.png", wall_pos, wall_color);
+
+	WallManager::GetInstance().Draw();
+	GroundManager::GetInstance().Draw();
+	BlockManager::GetInstance().Draw();
 }
 
 void Stage::Finalize(void)
@@ -188,26 +192,34 @@ void Stage::GenerateObject(int x, int y, int Object_ID)
 	for (bool loop_flg = true; loop_flg;)
 	{
 		bool y_flg = false; bool x_flg = false;
-		for (int j = x; j <= x+n; j++)
-			if (g_Map[y - i - 1][j] != Ob_ID)
+		for (int j = x; j <= x + n; j++)
+			if (g_Map[y - i - 1][j] != Ob_ID && g_map_flg[y - i - 1][j] == false)
 				y_flg = true;
 
 		if (y_flg == false)
 		{
 			i++;
 			for (int j = x; j <= x + n; j++)
+			{
+				if ((Ob_ID==MAP_CHIP_ID::GROUND||Ob_ID==MAP_CHIP_ID::BLOCK))
+					g_map_terrain[y - i][j] = true;
 				g_map_flg[y - i][j] = false;
+			}
 		}
 
 		for (int j = x; j <= x + n; j++)
-			if (g_Map[y - i][x + n + 1] != Ob_ID)
+			if (g_Map[y - i][x + n + 1] != Ob_ID&& g_map_flg[j][x + n] == false)
 				x_flg = true;
 
 		if (x_flg == false)
 		{
 			n++;
-			for (int j = x; j <= x + n; j++)
-				g_map_flg[y - i][x + n] = false;
+			for (int j = y; j <= y-i; j++)
+			{
+				if (Ob_ID == MAP_CHIP_ID::GROUND || Ob_ID == MAP_CHIP_ID::BLOCK)
+					g_map_terrain[j][x + n] = true;
+				g_map_flg[j][x + n] = false;
+			}
 		}
 
 		if (y_flg && x_flg)
