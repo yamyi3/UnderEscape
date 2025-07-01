@@ -10,11 +10,19 @@ int		Character::gauge = 0;
 int		Character::gauge_count_frame = 0;
 int		Character::down_gauge_count = 0;
 
-const float Character::ch_width		= 72.0f;	//自機の幅
-const float Character::ch_height	= 180.0f;	//自機の高さ
-const float Character::walk_speed	= 0.6f;		//自機の通常移動速度
-const float Character::dash_speed	= 1.2f;		//自機のダッシュ時の移動速度
-const float Character::sneak_speed	= 0.3f;		//自機の歩行時の移動速度
+const float Character::ch_width		 = 72.0f;	//自機の幅
+const float Character::ch_height	 = 180.0f;	//自機の高さ
+const float Character::walk_speed	 = 0.6f;		//自機の通常移動速度
+const float Character::dash_speed	 = 1.2f;		//自機のダッシュ時の移動速度
+const float Character::sneak_speed	 = 0.3f;		//自機の歩行時の移動速度
+const float Character::fatigue_speed = 0.15f;//自機の疲労時の移動速度
+
+const int	Character::c_max_stamina		= 100;			//自機のスタミナの最大値
+int			Character::c_stamina_gauge		= 5;			//自機のスタミナのゲージ
+float		Character::c_stamina_count		= 0;			//スタミナの減少速度を図るカウンタ
+float		Character::c_stamina_recovery	= 0;			//スタミナ回復までのカウンタ
+bool		Character::c_stamina_dash		= false;		//ダッシュ可能か判別するフラグ
+bool		Character::c_stamina_fatigue	= false;		//自機が疲労状態か判別するフラグ
 
 Character& Character::GetInstance(void)
 {
@@ -420,5 +428,25 @@ void Character::CheckMoveState(void)
 		{
 			chara_state = CHARA_STATE::SNEAKWALK;
 		}
+	}
+}
+
+void Character::DashStamina(void)
+{
+	if (c_stamina_gauge > 0)
+	{
+		if (vivid::GetDeltaTime() == 1)
+		{
+			c_stamina_gauge--;
+		}
+	}
+}
+
+void Character::RecoveryStamina(void)
+{
+	namespace keyboard = vivid::keyboard;
+	if ((keyboard::Released(keyboard::KEY_ID::LSHIFT)) && (vivid::GetDeltaTime() == 1))
+	{
+		c_stamina_gauge++;
 	}
 }

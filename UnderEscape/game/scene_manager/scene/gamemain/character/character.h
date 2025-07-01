@@ -56,6 +56,10 @@ public:
 	void UpdateAnimation(void);
 	//自機の移動速度ごとの状態の判別
 	void CheckMoveState(void);
+	//ダッシュ中のスタミナの処理
+	void DashStamina(void);
+	//スタミナの回復処理
+	void RecoveryStamina(void);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -87,8 +91,8 @@ private:
 		"data\\自機\\前走りスプレッド.png",			//ダッシュ
 		"data\\自機\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
 		"data\\自機\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
-		"data\\自機\\前ジャンプスプレッド.png" };		//ジャンプ
-	vivid::Rect		c_rect;								//画像の描画範囲
+		"data\\自機\\前ジャンプスプレッド.png" };	//ジャンプ
+	vivid::Rect		c_rect;							//画像の描画範囲
 	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
 	float			c_rotate;						//自機の回転角度
@@ -102,6 +106,7 @@ private:
 	static const float walk_speed;		//自機の歩行時の移動速度
 	static const float dash_speed;		//自機のダッシュ時の移動速度
 	static const float sneak_speed;		//自機のしゃがみ時の移動速度
+	static const float fatigue_speed;	//自機の疲労時の移動速度(スタミナが0の時の移動速度)
 	const float jump_speed = -20.0f;	//自機のジャンプの速度
 	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
@@ -114,7 +119,14 @@ private:
 	const int one_gauge_frame = 60;		//発見ゲージ1個分あたりの増加にかかるフレーム数
 	static int gauge_count_frame;		//発見ゲージが溜まっている間のフレーム数カウンタ
 	const int downer_frame = 180;		//発見ゲージが1減るまでにかかるフレーム数
-	static int down_gauge_count;				//ゲージ減少のカウンタ
+	static int down_gauge_count;		//ゲージ減少のカウンタ
+
+	static const int	c_max_stamina;		//自機のスタミナの最大値
+	static int			c_stamina_gauge;	//自機のスタミナのゲージ
+	static float		c_stamina_count;	//スタミナの減少速度を図るカウンタ
+	static float		c_stamina_recovery;	//スタミナ回復開始までのカウンタ
+	static bool			c_stamina_dash;		//ダッシュ可能か判別するフラグ
+	static bool			c_stamina_fatigue;	//自機が疲労状態か判別するフラグ
 
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
