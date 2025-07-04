@@ -89,7 +89,7 @@ private:
 	Stage(const Stage& rhs) = default;
 	Stage& operator = (const Stage& rhs) = default;
 
-
+	bool cflg = 0;
 
 
 
