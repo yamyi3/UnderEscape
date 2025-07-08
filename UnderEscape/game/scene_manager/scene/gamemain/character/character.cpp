@@ -302,6 +302,7 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool 
 
 #ifdef _DEBUG
 		color = 0xff0000ff;
+		cShielding = true;
 #endif // DEBUG
 	}
 	//障害物の外で敵の視界に入った時
@@ -310,6 +311,8 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool 
 		UpperGauge();
 #ifdef _DEBUG
 		color = 0xffff0000;
+		cShielding = false;
+
 #endif // DEBUG
 	}
 	//デフォルトの状態
@@ -318,6 +321,8 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool 
 		DownerGauge();
 #ifdef _DEBUG
 		color = 0xffffffff;
+		cShielding = false;
+
 #endif // DEBUG
 	}
 }

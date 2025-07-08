@@ -112,7 +112,7 @@ void EnemyManager::GenerateEnemy()
 	m_Enemy.push_back(enemy);
 }
 
-bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width)
+bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width,bool shielding)
 {
 	bool HitPlayerFlg = false;
 
@@ -127,6 +127,7 @@ bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, 
 		{
 			HitPlayerFlg = true;
 			(*it)->input_player_pos(center_pos);
+			(*it)->player_check(shielding);
 		}
 
 		++it;

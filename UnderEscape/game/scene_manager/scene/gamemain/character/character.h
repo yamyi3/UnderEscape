@@ -75,7 +75,8 @@ public:
 	float GetWalk(void) { return walk_speed; }
 	//ダッシュ速度の取得
 	float GetDash(void) { return dash_speed; }
-
+	//遮蔽フラグの取得
+	bool GetShilding(void) { return cShielding; }	//シールド状態の取得
 private:
 	vivid::Vector2 cPos;				//自機の座標
 	vivid::Vector2 m_Velocity;			//慣性を含む速度計算
@@ -131,7 +132,7 @@ private:
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
 	static bool cAlive;					//生存フラグ
-
+	bool cShielding;					//遮蔽に入っているか判定するフラグ
 	CHARA_STATE chara_state;			//自機の状態
 
 	//インスタンスの生成
