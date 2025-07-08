@@ -1,7 +1,7 @@
 #include "wall.h"
 const std::string Wall::wall_picture_name = "data\\ŽÕ•Á.png";
-const int Wall::wall_picture_width_size = 200;
-const int Wall::wall_picture_height_size = 200;
+const int Wall::wall_picture_width_size = 100;
+const int Wall::wall_picture_height_size = 100;
 
 Wall::Wall()
 {
