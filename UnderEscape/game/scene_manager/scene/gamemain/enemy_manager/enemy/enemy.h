@@ -42,6 +42,7 @@ public:
 		, float upspeed			//登りスピード
 		, float downspeed		//下りスピード(登りスピードの何％かなので100推奨)
 	);
+	void player_check(bool shielding);	//敵の索敵範囲内に自キャラがいると追いかけられる
 
 private:
 	static const int e_visibility_width_size;

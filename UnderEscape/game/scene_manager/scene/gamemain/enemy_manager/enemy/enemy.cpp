@@ -117,11 +117,11 @@ void Enemy::Update(void)
 			ePos.x -= eChaseSpeed;
 			eVector = -1;
 		}
-		if (abs(ChasePos.x - ePos.x) < Source_End_Range)
+		/*if (abs(ChasePos.x - ePos.x) < Source_End_Range)
 		{
 			Vigilance_Timer = 0;
 			eStatus = eSTATUS::Vigilance;
-		}
+		}*/
 		break;
 	case eSTATUS::Vigilance:
 		if (++Vigilance_Timer >= Vigilance_time)
@@ -295,4 +295,18 @@ vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 6
 		jpflg = 1;
 	}
 	return pos;
+}
+
+void Enemy::player_check(bool shielding)
+{
+	if(shielding==true)
+	{
+		Vigilance_Timer = 0;
+		eStatus = eSTATUS::Wandering;
+	}
+	else if (eStatus == eSTATUS::Wandering && shielding == false)
+	{
+		eStatus = eSTATUS::Surprised;
+	}
+	
 }

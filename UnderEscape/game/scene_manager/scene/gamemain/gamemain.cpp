@@ -56,7 +56,7 @@ void GameMainScene::Update(void)
     //Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),
     //    Stage::GetInstance().GetWallHeight(), Enemy::GetCircleCenterPos(), enemy.GetCircleRadius());
     Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),Stage::GetInstance().GetWallHeight(),
-        EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth()));
+        EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
 
    
 
