@@ -1,7 +1,7 @@
 #include "block.h"
 const std::string Block::block_picture_name = "data\\ŽÕ•Á.png";
-const int Block::block_picture_width_size = 200;
-const int Block::block_picture_height_size = 200;
+const int Block::block_picture_width_size = 100;
+const int Block::block_picture_height_size = 100;
 
 Block::Block()
 {

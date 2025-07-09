@@ -1,7 +1,7 @@
 #include "ground.h"
 const std::string Ground::ground_picture_name = "data\\ŽÕ•Á.png";
-const int Ground::ground_picture_width_size = 200;
-const int Ground::ground_picture_height_size = 200;
+const int Ground::ground_picture_width_size = 100;
+const int Ground::ground_picture_height_size = 100;
 
 Ground::Ground()
 {
