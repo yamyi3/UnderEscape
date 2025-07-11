@@ -17,11 +17,14 @@ const float Character::dash_speed	 = 1.2f;		//自機のダッシュ時の移動速度
 const float Character::sneak_speed	 = 0.3f;		//自機の歩行時の移動速度
 const float Character::fatigue_speed = 0.15f;//自機の疲労時の移動速度
 
-const int	Character::c_max_stamina		= 100;			//自機のスタミナの最大値
+const int	Character::stamina_width		= 76;			//スタミナ現在の1つあたりの幅
+const int	Character::stamina_height		= 16;			//スタミナゲージの高さ
+const int	Character::c_max_stamina		= 5;			//自機のスタミナの最大値
 int			Character::c_stamina_gauge		= 5;			//自機のスタミナのゲージ
-float		Character::c_stamina_count		= 0;			//スタミナの減少速度を図るカウンタ
-float		Character::c_stamina_recovery	= 0;			//スタミナ回復までのカウンタ
-bool		Character::c_stamina_dash		= false;		//ダッシュ可能か判別するフラグ
+int			Character::c_stamina_count		= 0;			//スタミナの減少速度を図るカウンタ
+int			Character::c_limit_recovery		= 0;			//疲労状態のスタミナ回復までのカウンタ
+int			Character::c_stamina_recovery	= 0;			//スタミナ回復のカウンタ
+bool		Character::c_stamina_dash		= true;			//ダッシュ可能か判別するフラグ
 bool		Character::c_stamina_fatigue	= false;		//自機が疲労状態か判別するフラグ
 
 Character& Character::GetInstance(void)
@@ -48,17 +51,28 @@ void Character::Initialize(vivid::Vector2 rPos)
 	c_anime_timer = 0;
 	c_change_anime_timer = 10;
 	c_change_anime_frame = 0;
+
+	stamina_anchor = { ((float)stamina_width / 2.0f), ((float)stamina_height / 2.0f) };
+	stamina_scale = { 1.0f, 1.0f };
+
 }
 
 void Character::Update(void)
 {
+	//自機の操作
 	Control();
+	//画面端の判定
 	CheckWindow();
+
+	//アニメーションの更新
 	UpdateAnimation();
 }
 
 void Character::Draw(void)
 {
+	stamina_pos.x = (float)(((cPos.x + (ch_width / 2.0f))- (stamina_width / 2.0f)));
+	stamina_pos.y = (float)(cPos.y - 20);
+
 	vivid::Rect g_rect;
 	g_rect.top = 0;
 	g_rect.bottom = 30;
@@ -70,15 +84,31 @@ void Character::Draw(void)
 	gauge_rect.left = 0;
 	gauge_rect.right = 20 * gauge;
 
+	//->自機のrect更新
 	c_rect.top = 0;
 	c_rect.bottom = ch_height;
 	c_rect.left = ch_width * (c_anime_frame % c_change_anime_frame);
 	c_rect.right = c_rect.left + ch_width;
+	//<-自機のrect更新
+	
+	//->スタミナのrect更新
+	stamina_rect.top = 0;
+	stamina_rect.bottom = stamina_height;
+	if (c_stamina_dash == true)
+	{
+		stamina_rect.left = stamina_width * (5 - c_stamina_gauge);
+	}
+	if (c_stamina_dash == false)
+	{
+		stamina_rect.left = stamina_width * c_stamina_gauge;
+	}
+	stamina_rect.right = stamina_rect.left + stamina_width;
+	//<-スタミナのrect更新
 
-	//vivid::DrawTexture("data\\仮置き人間\\minihuman透過1.png", cPos, color, c_rect);
 	vivid::DrawTexture(c_image[(int)chara_state], cPos, color, c_rect, c_anchor, c_scale);
 	vivid::DrawTexture("data\\gauge.png", gPos, 0xffffffff, g_rect);
 	vivid::DrawTexture("data\\gauge.png", gPos, 0xff00ffff, gauge_rect);
+	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 }
 
 void Character::Finalize(void)
@@ -117,6 +147,7 @@ void Character::Control(void)
 
 	vivid::Vector2 accelerator = {};
 
+	//デフォルトはwalk_speedにする
 	ch_speed = walk_speed;
 
 	//一定値を超えたら速度を0にして慣性の移動を止める
@@ -132,7 +163,7 @@ void Character::Control(void)
 	if (m_LandingFlag)
 		chara_state = CHARA_STATE::WAIT;
 
-	//左SHIFTを押している間はrun_speedになる
+	//左SHIFTを押している間はdash_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
 	{
 		ch_speed = dash_speed;
@@ -140,12 +171,24 @@ void Character::Control(void)
 			chara_state = CHARA_STATE::WAIT;
 	}
 
-	//左CTRLを押している間はwalk_speedになる
+	//左CTRLを押している間はsneak_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
 	{
 		ch_speed = sneak_speed;
 		if (m_LandingFlag)
 			chara_state = CHARA_STATE::SNEAKWAIT;
+	}
+
+	//スタミナが0ではなく走っていない時はスタミナが回復する
+	if (ch_speed != dash_speed && c_stamina_dash)
+	{
+		RecoveryStamina();
+	}
+
+	//スタミナゲージが0の時はfatigue_speedになる
+	if (!c_stamina_dash)
+	{
+		LimitStamina();
 	}
 
 	//Aを押している間は左移動
@@ -385,6 +428,7 @@ void Character::DownerGauge(void)
 
 void Character::UpdateAnimation(void)
 {
+	//状態ごとにアニメーションの最大枚数の設定
 	switch (chara_state)
 	{
 	case CHARA_STATE::WAIT:
@@ -407,6 +451,7 @@ void Character::UpdateAnimation(void)
 		break;
 	}
 
+	//->アニメーションの更新
 	c_anime_timer++;
 
 	if (c_anime_timer >= c_change_anime_timer)
@@ -418,6 +463,7 @@ void Character::UpdateAnimation(void)
 		}
 		c_anime_timer = 0;
 	}
+	//<-アニメーションの更新
 }
 
 void Character::CheckMoveState(void)
@@ -428,6 +474,10 @@ void Character::CheckMoveState(void)
 		if (ch_speed == dash_speed)
 		{
 			chara_state = CHARA_STATE::RUN;
+			if (c_stamina_dash)
+			{
+				DashStamina();
+			}
 		}
 		if (ch_speed == sneak_speed)
 		{
@@ -438,20 +488,55 @@ void Character::CheckMoveState(void)
 
 void Character::DashStamina(void)
 {
+	//スタミナゲージに残量がある時の処理
 	if (c_stamina_gauge > 0)
 	{
-		if (vivid::GetDeltaTime() == 1)
+	//スタミナ消費のカウンタを進める
+		c_stamina_count++;
+	//カウンタが基準値に達したらスタミナゲージ減らす
+		if (c_stamina_count >= 120)
 		{
 			c_stamina_gauge--;
+			c_stamina_count = 0;
 		}
 	}
+	//スタミナが0になった後の処理
+	else
+	{
+		c_stamina_dash = false;
+	}
+	//スタミナ回復開始のカウンタのリセット
+	c_stamina_recovery = 0;
 }
 
 void Character::RecoveryStamina(void)
 {
-	namespace keyboard = vivid::keyboard;
-	if ((keyboard::Released(keyboard::KEY_ID::LSHIFT)) && (vivid::GetDeltaTime() == 1))
+	c_stamina_recovery++;
+	if (c_stamina_gauge < c_max_stamina)
 	{
-		c_stamina_gauge++;
+		if (c_stamina_recovery >= 120)
+		{
+			c_stamina_gauge++;
+			c_stamina_count = 0;
+			c_stamina_recovery = 0;
+		}
+	}
+}
+
+void Character::LimitStamina(void)
+{
+	ch_speed = fatigue_speed;
+	c_limit_recovery++;
+	if (c_limit_recovery >= 180)
+	{
+		if (c_stamina_gauge < c_max_stamina)
+		{
+			c_stamina_gauge++;
+			c_limit_recovery = 0;
+		}
+		if (c_stamina_gauge == c_max_stamina)
+		{
+			c_stamina_dash = true;
+		}
 	}
 }

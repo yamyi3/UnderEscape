@@ -60,6 +60,8 @@ public:
 	void DashStamina(void);
 	//スタミナの回復処理
 	void RecoveryStamina(void);
+	//スタミナが0になった後の処理
+	void LimitStamina(void);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -78,10 +80,14 @@ public:
 	//遮蔽フラグの取得
 	bool GetShilding(void) { return cShielding; }	//シールド状態の取得
 private:
-	vivid::Vector2 cPos;				//自機の座標
 	vivid::Vector2 m_Velocity;			//慣性を含む速度計算
 
 	//->描画関係
+	//->自機関係
+	vivid::Vector2 cPos;							//自機の座標
+	static const float ch_width;					//自機の幅
+	static const float ch_height;					//自機の高さ
+	static unsigned int color;						//自機の色
 	int	c_anime_frame;								//アニメーションの更新
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
@@ -97,12 +103,23 @@ private:
 	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
 	float			c_rotate;						//自機の回転角度
+	//<-自機関係
+	//->スタミナ関係
+	vivid::Vector2	stamina_pos;					//スタミナの描画座標
+	std::string c_dash_image[2] =		
+		//スタミナの画像
+	{	"data\\自機\\限界スタミナ.png",				//走れない状態のスタミナ
+		"data\\自機\\通常スタミナ.png" };			//通常時のスタミナ
+
+	static const int stamina_width;					//スタミナゲージの幅(1つあたり)
+	static const int stamina_height;				//スタミナゲージの高さ
+	vivid::Rect		stamina_rect;					//画像の描画範囲
+	vivid::Vector2	stamina_anchor;					//スタミナの拡大基準点
+	vivid::Vector2	stamina_scale;					//スタミナのスケール
+	//<-スタミナ関係
 	//<-描画関係
 
-	static const float ch_width;		//自機の幅
-	static const float ch_height;		//自機の高さ
-	static unsigned int color;			//自機の色
-
+	//->自機の速度関係
 	static float ch_speed;				//自機の移動速度(代入用の変数)
 	static const float walk_speed;		//自機の歩行時の移動速度
 	static const float dash_speed;		//自機のダッシュ時の移動速度
@@ -112,6 +129,7 @@ private:
 	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
 	const float cut_speed = 0.1f;		//自機の移動を0にする基準
+	//<-自機の速度関係
 
 	vivid::Rect gauge_rect;				//ゲージ画像の表示幅
 	vivid::Vector2 gPos;				//ゲージの表示座標
@@ -122,12 +140,15 @@ private:
 	const int downer_frame = 180;		//発見ゲージが1減るまでにかかるフレーム数
 	static int down_gauge_count;		//ゲージ減少のカウンタ
 
+	//->スタミナ関係
 	static const int	c_max_stamina;		//自機のスタミナの最大値
 	static int			c_stamina_gauge;	//自機のスタミナのゲージ
-	static float		c_stamina_count;	//スタミナの減少速度を図るカウンタ
-	static float		c_stamina_recovery;	//スタミナ回復開始までのカウンタ
+	static int			c_stamina_count;	//スタミナの減少速度を図るカウンタ
+	static int			c_limit_recovery;	//疲労状態のスタミナ回復開始までのカウンタ
 	static bool			c_stamina_dash;		//ダッシュ可能か判別するフラグ
 	static bool			c_stamina_fatigue;	//自機が疲労状態か判別するフラグ
+	static int			c_stamina_recovery;	//スタミナの回復カウンタ
+	//<-スタミナ関係
 
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
