@@ -63,7 +63,8 @@ void Character::Update(void)
 	Control();
 	//画面端の判定
 	CheckWindow();
-
+	//ステージとの当たり判定
+	StageHit();
 	//アニメーションの更新
 	UpdateAnimation();
 }
@@ -113,6 +114,27 @@ void Character::Draw(void)
 
 void Character::Finalize(void)
 {
+}
+
+void Character::StageHit()
+{
+	//左
+	if (cPos.x < Stage::GetInstance().GetLWall(cPos, ch_width, ch_height))
+	{
+		cPos.x = Stage::GetInstance().GetLWall(cPos, ch_width, ch_height);
+	}
+	//右
+	if (cPos.x + ch_width > Stage::GetInstance().GetRWall(cPos, ch_width, ch_height))
+	{
+		cPos.x = Stage::GetInstance().GetRWall(cPos, ch_width, ch_height) - ch_width;
+	}
+	//天井
+	if (cPos.y < Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height))
+	{
+		cPos.y = Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height);
+	}
+	//地面
+	RoundHit(Stage::GetInstance().GetRoundHeight(cPos, ch_width, ch_height));
 }
 
 //画面端の当たり判定
