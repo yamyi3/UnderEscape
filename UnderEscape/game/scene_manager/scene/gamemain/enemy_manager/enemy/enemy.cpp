@@ -31,6 +31,7 @@ Enemy::Enemy(void)
 	, gravity(100)
 	, eGround(600.0f)
 	, eVector(1)
+	, Sight_Check_Timer(10)
 	, Vigilance_Timer(0)
 	, Surprised_Timer(0)
 	, eStatus(eSTATUS::Wandering)
@@ -80,6 +81,7 @@ void Enemy::Initialize(void)
 
 void Enemy::Update(void)
 {
+	Sight_Check_Timer++;
 	switch (eStatus)
 	{
 	case eSTATUS::Stop:
@@ -109,19 +111,28 @@ void Enemy::Update(void)
 	case eSTATUS::Chase:
 		if (ChasePos.x > ePos.x)
 		{
-			ePos.x += eChaseSpeed;
-			eVector = 1;
+			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
+			{
+				ePos.x += eChaseSpeed;
+				eVector = 1;
+			}
 		}
 		else
 		{
-			ePos.x -= eChaseSpeed;
-			eVector = -1;
+			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
+			{
+				ePos.x -= eChaseSpeed;
+				eVector = -1;
+			}
 		}
-		/*if (abs(ChasePos.x - ePos.x) < Source_End_Range)
+		if (abs(ChasePos.x - ePos.x) < Source_End_Range)
 		{
-			Vigilance_Timer = 0;
-			eStatus = eSTATUS::Vigilance;
-		}*/
+			if (Sight_Check_Timer >= 10)
+			{
+				Vigilance_Timer = 0;
+				eStatus = eSTATUS::Vigilance;
+			}
+		}
 		break;
 	case eSTATUS::Vigilance:
 		if (++Vigilance_Timer >= Vigilance_time)
@@ -230,6 +241,15 @@ bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width
 	//ã‹L‚Ì”»’è‚©‚ç“–‚½‚Á‚Ä‚¢‚é‚©(‹ŠE‚É“ü‚Á‚Ä‚¢‚é‚©)‚ğ”»’f‚·‚é
 	if (result_h || result_v || result_lu || result_ru || result_ld || result_rd)
 	{
+		Sight_Check_Timer = 0;
+		eChaseStatus = eCHASE_STATUS::Hearing;
+		if (eStatus == eSTATUS::Wandering || eStatus == eSTATUS::Vigilance)
+		{
+			eStatus = eSTATUS::Surprised;
+			Surprised_Timer = 0;
+		}
+
+		ChasePos = cPos;
 		return true;
 	}
 	//“–‚½‚Á‚Ä‚¢‚È‚¢ê‡‚Ífalse‚ğ•Ô‚·

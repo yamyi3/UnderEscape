@@ -7,3 +7,8 @@ enum class eSTATUS									//エネミーの状態の種類
 	Vigilance,	//警戒
 	Surprised,	//驚く
 };
+enum class eCHASE_STATUS	//エネミーが追いかけている情報の判別用
+{
+	Hearing,	//聴覚
+	Sight,		//視覚
+};
