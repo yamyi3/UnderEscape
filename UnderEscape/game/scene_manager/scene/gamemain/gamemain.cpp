@@ -38,23 +38,11 @@ void GameMainScene::Update(void)
     { 
     EnemyManager::GetInstance().Update();
 
-    /*if ((Stage::GetInstance().GetStartpos().x + change_pos.x) < Character::GetInstance().GetCharapos().x 
-        || (Stage::GetInstance().GetGoalpos().x + change_pos.x) > Character::GetInstance().GetCharapos().x)
-    {
-        Character::GetInstance().Control();
-    }
-    else
-    {
-        Stage::GetInstance().ScrollStage();
-    }*/
-
     Character::GetInstance().Update();
 
     Stage::GetInstance().Update();
     Character::GetInstance().Update();
     Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight());
-    //Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),
-    //    Stage::GetInstance().GetWallHeight(), Enemy::GetCircleCenterPos(), enemy.GetCircleRadius());
     Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),Stage::GetInstance().GetWallHeight(),
         EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
 
