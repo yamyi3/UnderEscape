@@ -38,6 +38,8 @@ public:
 	//解放
 	void Finalize(void);
 
+	//ステージとの当たり判定処理
+	void StageHit();
 	//画面端から出ないようにする処理
 	void CheckWindow(void);
 	//自機の操作処理
