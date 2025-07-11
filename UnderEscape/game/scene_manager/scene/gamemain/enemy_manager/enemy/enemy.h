@@ -85,6 +85,7 @@ private:
 	float eGround;								//地面の高さ
 	int eVector;									//エネミーの向いてる向き用
 	vivid::Vector2 ChasePos;							//追跡目標地点;
+	int Sight_Check_Timer;
 	int Vigilance_Timer;							//追跡目標地点到達後の待機時間用
 	int Surprised_Timer;							//追跡開始前の停止時間用
 
@@ -94,4 +95,5 @@ private:
 	vivid::Vector2	eCircleCenterPos;
 
 	eSTATUS eStatus;				//エネミーの状態保存用
+	eCHASE_STATUS eChaseStatus;		//エネミーの追跡情報の判別用
 };
