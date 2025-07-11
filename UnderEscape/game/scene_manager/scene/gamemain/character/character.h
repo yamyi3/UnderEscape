@@ -14,6 +14,15 @@ enum class CHARA_STATE
 	MAX,
 };
 
+enum class CHARA_SKILL
+{
+	NORMAL,
+	ANIMALLEG,
+	INVISIBlLE,
+
+	MAX,
+};
+
 //Ž©‹@ƒNƒ‰ƒX
 class Character
 {
