@@ -201,34 +201,33 @@ void Stage::ScrollStage(void)
 float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
 {
 	int Lx = pos.x / g_map_chip_size;
-	int Rx = (pos.x+width) / g_map_chip_size;
+	int Rx = (pos.x + width - 1) / g_map_chip_size;
 	int Y = (pos.y + height) / g_map_chip_size;
-	int RoundY = 0;
-	for (int i = Y; g_map_terrain[i][Lx]==false; i++)
+	int RoundY = g_map_chip_count_height;
+	for (int i = Y; g_map_terrain[i - 1][Lx] == false; i++)
 		RoundY = i;
-	if (Lx!=Rx)
+	if (Lx != Rx)
 	{
-		int Ry;
-		for (int i = Y; g_map_terrain[i][Rx] == false; i++)
+		int Ry = g_map_chip_count_height;
+		for (int i = Y + 1; g_map_terrain[i - 1][Rx] == false; i++)
 			Ry = i;
 		if (RoundY > Ry)
 			RoundY = Ry;
 	}
-	
 	return RoundY * g_map_chip_size;
 }
 
 float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
 {
-	int TopY = pos.y / g_map_chip_size;
+	int TopY = (pos.y + 1) / g_map_chip_size;
 	int MiddleY = (pos.y + height / 2) / g_map_chip_size;
-	int BotomY = (pos.y + height) / g_map_chip_size;
-	int TopX = 0;int BotomX = 0;
+	int BotomY = (pos.y + height - 1) / g_map_chip_size;
+	int TopX = g_map_chip_count_width; int BotomX = g_map_chip_count_width;
 	int X = (pos.x + width) / g_map_chip_size;
 	int WallX = 0;
-	for (int i = X; g_map_terrain[TopY][i] == false; i++)
+	for (int i = X; g_map_terrain[TopY][i - 1] == false; i++)
 		TopX = i;
-	for (int i = X; g_map_terrain[BotomY][i] == false; i++)
+	for (int i = X; g_map_terrain[BotomY][i - 1] == false; i++)
 		BotomX = i;
 	if (TopX < BotomX)
 		WallX = TopX;
@@ -236,27 +235,27 @@ float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
 		WallX = BotomX;
 	if (MiddleY != TopY && MiddleY != BotomY)
 	{
-		int MiddleX = 0;
-		for (int i = X; g_map_terrain[MiddleY][i] == false; i++)
+		int MiddleX = g_map_chip_count_width;
+		for (int i = X + 1; g_map_terrain[MiddleY][i - 1] == false; i++)
 			MiddleX = i;
 		if (MiddleX < WallX)
 			WallX = MiddleX;
 	}
 
-	return WallX * g_map_chip_size;
+	return WallX * g_map_chip_size - 1;
 }
 
 float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
 {
-	int TopY = pos.y / g_map_chip_size;
+	int TopY = (pos.y + 1) / g_map_chip_size;
 	int MiddleY = (pos.y + height / 2) / g_map_chip_size;
-	int BotomY = (pos.y + height) / g_map_chip_size;
+	int BotomY = (pos.y + height - 1) / g_map_chip_size;
 	int TopX = 0; int BotomX = 0;
 	int X = (pos.x) / g_map_chip_size;
 	int WallX = 0;
-	for (int i = X; g_map_terrain[TopY][i] == false; i--)
+	for (int i = X; g_map_terrain[TopY][i + 1] == false; i--)
 		TopX = i;
-	for (int i = X; g_map_terrain[BotomY][i] == false; i--)
+	for (int i = X; g_map_terrain[BotomY][i + 1] == false; i--)
 		BotomX = i;
 	if (TopX > BotomX)
 		WallX = TopX;
@@ -265,33 +264,33 @@ float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
 	if (MiddleY != TopY && MiddleY != BotomY)
 	{
 		int MiddleX = 0;
-		for (int i = X; g_map_terrain[MiddleY][i] == false; i--)
+		for (int i = X - 1; g_map_terrain[MiddleY][i + 1] == false; i--)
 			MiddleX = i;
 		if (MiddleX > WallX)
 			WallX = MiddleX;
 	}
 
-	return (WallX+1) * g_map_chip_size;
+	return (WallX + 1) * g_map_chip_size;
 }
 
 float Stage::GetCeiling(vivid::Vector2 pos, float width, float height)
 {
 	int Lx = pos.x / g_map_chip_size;
-	int Rx = pos.x + width / g_map_chip_size;
+	int Rx = (pos.x + width - 1) / g_map_chip_size;
 	int Y = pos.y / g_map_chip_size;
 	int CeilingY = 0;
-	for (int i = Y; g_map_terrain[i][Lx] == false; i--)
+	for (int i = Y; g_map_terrain[i + 1][Lx] == false; i--)
 		CeilingY = i;
 	if (Lx != Rx)
 	{
-		int Ry;
-		for (int i = Y; g_map_terrain[i][Rx] == false; i--)
+		int Ry = 0;
+		for (int i = Y; g_map_terrain[i + 1][Rx] == false; i--)
 			Ry = i;
 		if (CeilingY > Ry)
 			CeilingY = Ry;
 	}
 
-	return (CeilingY-1) * g_map_chip_size;
+	return (CeilingY + 1) * g_map_chip_size;
 }
 
 void Stage::GenerateObject(int x, int y, int Object_ID)
