@@ -309,7 +309,7 @@ bool Stage::CheckHitWallPlayer(const vivid::Vector2& pos, int height, int width)
 	int MiddleY = (pos.y + height) / g_map_chip_size;
 	int BotomY = (pos.y + height) / g_map_chip_size;
 
-	if (g_map_wall[Lx][TopY] && g_map_wall[Lx][MiddleY] && g_map_wall[Lx][BotomY] && g_map_wall[Rx][TopY] && g_map_wall[Rx][MiddleY] && g_map_wall[Rx][BotomY])
+	if (g_map_wall[TopY][Lx] && g_map_wall[MiddleY][Lx] && g_map_wall[BotomY][Lx] && g_map_wall[TopY][Rx] && g_map_wall[MiddleY][Rx] && g_map_wall[BotomY][Rx])
 		return true;
 
 	return false;
