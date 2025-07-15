@@ -51,6 +51,8 @@ public:
 	float GetLWall(vivid::Vector2 pos, float width, float height);
 	float GetCeiling(vivid::Vector2 pos, float width, float height);
 
+	bool CheckHitWallPlayer(const vivid::Vector2& pos, int height, int width);
+
 	void GenerateObject(int x, int y, int Object_ID);
 
 	void GenerateEnemy(int x, int y, int Object_ID);
@@ -115,8 +117,13 @@ private:
 		GOAL,
 	};
 
-	// 配置データを入れておくための二次元配列(整数) 
-	MAP_CHIP_ID g_Map[g_map_chip_count_height][g_map_chip_count_width] = { MAP_CHIP_ID::EMPTY };
+	//配置データを入れておくための二次元配列(整数) 
+	MAP_CHIP_ID g_Map[g_map_chip_count_height][g_map_chip_count_width];
 	bool g_map_flg[g_map_chip_count_height][g_map_chip_count_width];
 	bool g_map_terrain[g_map_chip_count_height][g_map_chip_count_width];
+	bool g_map_wall[g_map_chip_count_height][g_map_chip_count_width];
+	//MAP_CHIP_ID *g_Map;
+	//bool *g_map_flg;
+	//bool *g_map_terrain;
+	//bool *g_map_wall;
 };

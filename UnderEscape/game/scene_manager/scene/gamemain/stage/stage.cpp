@@ -21,7 +21,7 @@ vivid::Vector2 Stage::goal_pos = { Stage::round_width * 3 , vivid::WINDOW_HEIGHT
 
 const int Stage::g_map_chip_size = 100;
 //const int Stage::g_map_chip_count_width = 40;
-//const int Stage::g_map_chip_count_height = 11;
+//const int Stage::g_map_chip_count_height = 13;
 
 Stage& Stage::GetInstance(void)
 {
@@ -31,11 +31,19 @@ Stage& Stage::GetInstance(void)
 
 void Stage::Initialize(void)
 {
+	//g_Map = new MAP_CHIP_ID[g_map_chip_count_height];
+	//for (int i = 0; i < g_map_chip_count_height; i++)
+	//{
+	//	g_Map = new MAP_CHIP_ID[g_map_chip_count_width];
+	//}
+
+
 	for (int y = 0; y < g_map_chip_count_height; y++)
 		for (int x = 0; x < g_map_chip_count_width; x++)
 		{
 			g_map_flg[y][x] = true;
 			g_map_terrain[y][x] = false;
+			g_map_wall[y][x] = false;
 			g_Map[y][x] = MAP_CHIP_ID::EMPTY;
 		}
 
@@ -293,6 +301,20 @@ float Stage::GetCeiling(vivid::Vector2 pos, float width, float height)
 	return (CeilingY + 1) * g_map_chip_size;
 }
 
+bool Stage::CheckHitWallPlayer(const vivid::Vector2& pos, int height, int width)
+{
+	int Lx = pos.x / g_map_chip_size;
+	int Rx = (pos.x + width) / g_map_chip_size;
+	int TopY = pos.y / g_map_chip_size;
+	int MiddleY = (pos.y + height) / g_map_chip_size;
+	int BotomY = (pos.y + height) / g_map_chip_size;
+
+	if (g_map_wall[Lx][TopY] && g_map_wall[Lx][MiddleY] && g_map_wall[Lx][BotomY] && g_map_wall[Rx][TopY] && g_map_wall[Rx][MiddleY] && g_map_wall[Rx][BotomY])
+		return true;
+
+	return false;
+}
+
 void Stage::GenerateObject(int x, int y, int Object_ID)
 {
 	MAP_CHIP_ID Ob_ID = (MAP_CHIP_ID)Object_ID;
@@ -346,13 +368,16 @@ void Stage::GenerateObject(int x, int y, int Object_ID)
 	case Stage::MAP_CHIP_ID::GROUND:
 		GroundManager::GetInstance().GenerateGround(ob_pos, y_size, x_size);
 		g_map_terrain[y][x] = true;
+		g_map_wall[y][x] = true;
 		break;
 	case Stage::MAP_CHIP_ID::BLOCK:
 		BlockManager::GetInstance().GenerateBlock(ob_pos, y_size, x_size);
 		g_map_terrain[y][x] = true;
+		g_map_wall[y][x] = true;
 		break;
 	case Stage::MAP_CHIP_ID::WALL:
 		WallManager::GetInstance().GenerateWall(ob_pos, y_size, x_size,0xff555555);
+		g_map_wall[y][x] = true;
 		break;
 	default:
 		break;
