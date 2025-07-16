@@ -93,7 +93,19 @@ public:
 	float GetDash(void) { return dash_speed; }
 	//遮蔽フラグの取得
 	bool GetShilding(void) { return cShielding; }	//シールド状態の取得
+
+	//スクロール変数更新用
+	void Scroll_Update();
+	//スクロールの値を返す変数
+	vivid::Vector2 GetScroll() { return Scroll; }
+
 private:
+
+	//スクロール用の変数
+	vivid::Vector2 Scroll;
+	static const float scroll_width_space;
+	static const float scroll_height_space;
+
 	vivid::Vector2 m_Velocity;			//慣性を含む速度計算
 
 	//->描画関係
@@ -185,4 +197,6 @@ private:
 	~Character(void) = default;
 	Character(const Character& rhs) = default;
 	Character& operator = (const Character& rhs) = default;
+
+
 };
