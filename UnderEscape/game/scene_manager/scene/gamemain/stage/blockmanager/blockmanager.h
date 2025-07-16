@@ -23,11 +23,11 @@ public:
 	void GenerateBlock(vivid::Vector2 pos1, vivid::Vector2 pos2);
 	void GenerateBlock(vivid::Vector2 pos, float V, float H, int color);
 	void GenerateBlock(vivid::Vector2 pos1, vivid::Vector2 pos2, int color);
-	void Input_scroll(float s) { scroll = s; }
+	void Input_scroll(vivid::Vector2 s) { scroll = s; }
 private:
 	using BLOCK_LIST = std::list<Block*>;
 	BLOCK_LIST m_Block;
-	float scroll;
+	vivid::Vector2 scroll;
 
 	BlockManager();
 	~BlockManager() = default;

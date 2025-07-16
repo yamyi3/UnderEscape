@@ -240,7 +240,7 @@ void Character::Control(void)
 	}
 
 	//—‰ºˆ—
-	if (m_LandingFlag == false)
+	if (m_LandingFlag == false||1)
 	{
 		accelerator.y += fall_speed;
 	}
