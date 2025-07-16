@@ -16,7 +16,6 @@ enum class CHARA_STATE
 
 enum class CHARA_SKILL
 {
-	NORMAL,
 	ANIMALLEG,
 	INVISIBlLE,
 
@@ -73,6 +72,10 @@ public:
 	void RecoveryStamina(void);
 	//スタミナが0になった後の処理
 	void LimitStamina(void);
+	//スキルの発動処理
+	void SkillMove(void);
+	//発動可能スキルの切り替え処理
+	void ChangeSkill(void);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -161,11 +164,21 @@ private:
 	static int			c_stamina_recovery;	//スタミナの回復カウンタ
 	//<-スタミナ関係
 
+	//->スキル関係
+	static const int	activation_time;	//スキルの発動後の効果時間
+	bool				skill_active_flag;	//スキルのアクティブフラグ
+	int					active_count;		//スキル発動中のカウンタ
+
+	/*各アクティブフラグは使用スキルの選択に使う(スキルはボタンでの切り替え式にする)*/
+
+	//<-スキル関係
+
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
 	static bool cAlive;					//生存フラグ
 	bool cShielding;					//遮蔽に入っているか判定するフラグ
 	CHARA_STATE chara_state;			//自機の状態
+	CHARA_SKILL chara_skill;			//スキルの使用状態
 
 	//インスタンスの生成
 	Character(void) = default;
