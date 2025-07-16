@@ -38,7 +38,7 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
-	//scroll = Character::GetInstance().GetScroll();
+	scroll = Character::GetInstance().GetScroll();
 	ENEMY_LIST::iterator it = m_Enemy.begin();
 	ENEMY_LIST::iterator end = m_Enemy.end();
 

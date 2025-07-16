@@ -147,9 +147,9 @@ void Stage::Draw(void)
 	}
 	vivid::DrawTexture("data\\ŽÕ•Á.png", wall_pos, wall_color);
 
-	//WallManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
-	//GroundManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
-	//BlockManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
+	WallManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
+	GroundManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
+	BlockManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
 
 	WallManager::GetInstance().Draw();
 	GroundManager::GetInstance().Draw();

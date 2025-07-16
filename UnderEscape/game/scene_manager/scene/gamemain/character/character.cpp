@@ -28,6 +28,9 @@ int			Character::c_stamina_recovery	= 0;		//スタミナ回復のカウンタ
 bool		Character::c_stamina_dash		= true;		//ダッシュ可能か判別するフラグ
 bool		Character::c_stamina_fatigue	= false;	//自機が疲労状態か判別するフラグ
 
+const float Character::scroll_width_space = 850;
+const float Character::scroll_height_space = 300;
+
 Character& Character::GetInstance(void)
 {
 	static Character	instance;
@@ -74,6 +77,8 @@ void Character::Update(void)
 	UpdateAnimation();
 	//スキル発動後の処理
 	SkillMove();
+	//スクロールの更新
+	Scroll_Update();
 }
 
 void Character::Draw(void)
@@ -113,10 +118,10 @@ void Character::Draw(void)
 	stamina_rect.right = stamina_rect.left + stamina_width;
 	//<-スタミナのrect更新
 
-	vivid::DrawTexture(c_image[(int)chara_state], cPos, color, c_rect, c_anchor, c_scale);
-	vivid::DrawTexture("data\\gauge.png", gPos, 0xffffffff, g_rect);
-	vivid::DrawTexture("data\\gauge.png", gPos, 0xff00ffff, gauge_rect);
-	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
+	vivid::DrawTexture(c_image[(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
+	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xffffffff, g_rect);
+	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xff00ffff, gauge_rect);
+	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 
 #ifdef _DEBUG
 
@@ -164,24 +169,24 @@ void Character::StageHit()
 void Character::CheckWindow(void)
 {
 	//画面の左端
-	if (cPos.x < 0.0f)
+	if (cPos.x < 0.0f + Scroll.x)
 	{
-		cPos.x = 0.0f;
+		cPos.x = 0.0f + Scroll.x;
 	}
 	//画面の右端
-	if (cPos.x + ch_width > vivid::WINDOW_WIDTH)
+	if (cPos.x + ch_width > vivid::WINDOW_WIDTH + Scroll.x)
 	{
-		cPos.x = vivid::WINDOW_WIDTH - ch_width;
+		cPos.x = vivid::WINDOW_WIDTH - ch_width + Scroll.x;
 	}
 	//画面の天井
-	if (cPos.y < 0.0f)
+	if (cPos.y < 0.0f + Scroll.y)
 	{
-		cPos.y = 0.0f;
+		cPos.y = 0.0f + Scroll.y;
 	}
 	//画面の底辺
-	if (cPos.y + ch_height > vivid::WINDOW_HEIGHT)
+	if (cPos.y + ch_height > vivid::WINDOW_HEIGHT + Scroll.y)
 	{
-		cPos.y = vivid::WINDOW_HEIGHT - ch_height;
+		cPos.y = vivid::WINDOW_HEIGHT - ch_height + Scroll.y;
 	}
 }
 
@@ -310,6 +315,7 @@ void Character::RoundHit(float rHeight)
 //壁の裏に自機がすべて隠れていたら色を変える
 bool Character::CheckWallHit(vivid::Vector2 wPos, float wWidth, float wHeight)
 {
+	return Stage::GetInstance().CheckHitWallPlayer(cPos, ch_height, ch_width);
 	if ((wPos.x <= cPos.x) && (wPos.x + wWidth >= cPos.x + ch_width) && (wPos.y <= cPos.y) && (wPos.y + wHeight >= cPos.y + ch_height))
 	{
 		return true;
@@ -660,4 +666,26 @@ void Character::ChangeSkill(void)
 		chara_skill = CHARA_SKILL::ANIMALLEG;
 		break;
 	}
+}
+
+void Character::Scroll_Update()
+{
+	if (cPos.x > Scroll.x + vivid::WINDOW_WIDTH - scroll_width_space)
+		Scroll.x = cPos.x - vivid::WINDOW_WIDTH + scroll_width_space;
+	if (Scroll.x > Stage::GetInstance().GetStageWidthSize() - vivid::WINDOW_WIDTH)
+		Scroll.x = Stage::GetInstance().GetStageWidthSize() - vivid::WINDOW_WIDTH;
+	if (cPos.x < Scroll.x + scroll_width_space)
+		Scroll.x = cPos.x - scroll_width_space;
+	if (Scroll.x < 0)
+		Scroll.x = 0;
+
+	if (cPos.y > Scroll.y + vivid::WINDOW_HEIGHT - scroll_height_space)
+		Scroll.y = cPos.y - vivid::WINDOW_HEIGHT + scroll_height_space;
+	if (Scroll.y > Stage::GetInstance().GetStageHeightSize() - vivid::WINDOW_HEIGHT)
+		Scroll.y = Stage::GetInstance().GetStageHeightSize() - vivid::WINDOW_HEIGHT;
+	if (cPos.y < Scroll.y + scroll_height_space)
+		Scroll.y = cPos.y - scroll_height_space;
+	if (Scroll.y < 0)
+		Scroll.y = 0;
+
 }

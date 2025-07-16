@@ -57,6 +57,8 @@ public:
 
 	void GenerateEnemy(int x, int y, int Object_ID);
 
+	int GetStageWidthSize() { return g_map_chip_count_width * g_map_chip_size; }
+	int GetStageHeightSize() { return g_map_chip_count_height * g_map_chip_size; }
 private:
 	//ínñ ÇÃç¿ïW
 	vivid::Vector2 round_pos[3];
