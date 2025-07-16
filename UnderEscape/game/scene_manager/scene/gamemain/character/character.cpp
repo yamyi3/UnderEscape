@@ -270,14 +270,12 @@ void Character::Control(void)
 			ChangeSkill();
 		}
 	}
-	
+
 	//ジャンプの処理
 	//SPACEを押すとジャンプ動作になる
 	if (keyboard::Trigger(keyboard::KEY_ID::SPACE) && m_LandingFlag)
 	{
 		accelerator.y += jump_speed;
-		//接地フラグをfalseにして空中ジャンプを出来ないようにする
-		m_LandingFlag = false;
 		chara_state = CHARA_STATE::JUMP;
 	}
 
@@ -297,6 +295,10 @@ void Character::Control(void)
 //地面との当たり判定
 void Character::RoundHit(float rHeight)
 {
+	if (cPos.y + ch_height < rHeight)
+	{
+		m_LandingFlag = false;
+	}
 		if (cPos.y + ch_height > rHeight && cPos.y < rHeight) {
 			cPos.y = rHeight - ch_height;
 			m_Velocity.y = 0.0f;
