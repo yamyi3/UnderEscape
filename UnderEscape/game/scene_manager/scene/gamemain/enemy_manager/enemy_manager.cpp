@@ -1,4 +1,5 @@
 #include "enemy_manager.h"
+#include "..\character\character.h"
 
 EnemyManager& EnemyManager::GetInstance()
 {
@@ -9,6 +10,7 @@ EnemyManager& EnemyManager::GetInstance()
 
 void EnemyManager::Initialize()
 {
+	scroll = { 0.0f,0.0f };
 }
 
 void EnemyManager::Update()
@@ -36,12 +38,13 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
+	//scroll = Character::GetInstance().GetScroll();
 	ENEMY_LIST::iterator it = m_Enemy.begin();
 	ENEMY_LIST::iterator end = m_Enemy.end();
 
 	while (it != end)
 	{
-		(*it)->Draw();
+		(*it)->Draw(scroll);
 
 		++it;
 	}

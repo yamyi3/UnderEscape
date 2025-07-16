@@ -23,11 +23,11 @@ public:
 	void GenerateWall(vivid::Vector2 pos1, vivid::Vector2 pos2);
 	void GenerateWall(vivid::Vector2 pos, float V, float H, int color);
 	void GenerateWall(vivid::Vector2 pos1, vivid::Vector2 pos2, int color);
-	void Input_scroll(float s) { scroll = s; }
+	void Input_scroll(vivid::Vector2 s) { scroll = s; }
 private:
 	using WALL_LIST = std::list<Wall*>;
 	WALL_LIST m_Wall;
-	float scroll;
+	vivid::Vector2 scroll;
 
 	WallManager();
 	~WallManager() = default;

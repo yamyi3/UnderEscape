@@ -147,6 +147,10 @@ void Stage::Draw(void)
 	}
 	vivid::DrawTexture("data\\ŽÕ•Á.png", wall_pos, wall_color);
 
+	//WallManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
+	//GroundManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
+	//BlockManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
+
 	WallManager::GetInstance().Draw();
 	GroundManager::GetInstance().Draw();
 	BlockManager::GetInstance().Draw();
@@ -216,8 +220,8 @@ float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
 		RoundY = i;
 	if (Lx != Rx)
 	{
-		int Ry = g_map_chip_count_height;
-		for (int i = Y + 1; g_map_terrain[i - 1][Rx] == false; i++)
+		int Ry = RoundY;
+		for (int i = Y; g_map_terrain[i - 1][Rx] == false; i++)
 			Ry = i;
 		if (RoundY > Ry)
 			RoundY = Ry;
@@ -229,7 +233,7 @@ float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
 {
 	int TopY = (pos.y + 1) / g_map_chip_size;
 	int MiddleY = (pos.y + height / 2) / g_map_chip_size;
-	int BotomY = (pos.y + height - 1) / g_map_chip_size;
+	int BotomY = (pos.y + height - 5) / g_map_chip_size;
 	int TopX = g_map_chip_count_width; int BotomX = g_map_chip_count_width;
 	int X = (pos.x + width) / g_map_chip_size;
 	int WallX = 0;
@@ -257,7 +261,7 @@ float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
 {
 	int TopY = (pos.y + 1) / g_map_chip_size;
 	int MiddleY = (pos.y + height / 2) / g_map_chip_size;
-	int BotomY = (pos.y + height - 1) / g_map_chip_size;
+	int BotomY = (pos.y + height - 5) / g_map_chip_size;
 	int TopX = 0; int BotomX = 0;
 	int X = (pos.x) / g_map_chip_size;
 	int WallX = 0;
