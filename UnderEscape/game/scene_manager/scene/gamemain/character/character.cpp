@@ -164,6 +164,31 @@ void Character::StageHit()
 	//地面
 	RoundHit(Stage::GetInstance().GetRoundHeight(cPos, ch_width, ch_height));
 }
+void Character::HStageHit()
+{
+	//左
+	if (cPos.x < Stage::GetInstance().GetLWall(cPos, ch_width, ch_height))
+	{
+		cPos.x = Stage::GetInstance().GetLWall(cPos, ch_width, ch_height);
+	}
+	//右
+	if (cPos.x + ch_width > Stage::GetInstance().GetRWall(cPos, ch_width, ch_height))
+	{
+		cPos.x = Stage::GetInstance().GetRWall(cPos, ch_width, ch_height) - ch_width;
+	}
+}
+
+void Character::VStageHit()
+{
+	//地面
+	RoundHit(Stage::GetInstance().GetRoundHeight(cPos, ch_width, ch_height));
+	//天井
+	if (cPos.y < Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height))
+	{
+		cPos.y = Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height);
+		m_Velocity.y = 0;
+	}
+}
 
 //画面端の当たり判定
 void Character::CheckWindow(void)
@@ -291,7 +316,13 @@ void Character::Control(void)
 	}
 
 	m_Velocity += accelerator;
-	cPos += m_Velocity;
+	cPos.x += m_Velocity.x;
+	HStageHit();
+	cPos.y += m_Velocity.y;
+	VStageHit();
+
+	//画面端の判定
+	CheckWindow();
 
 	//移動に慣性をつける
 	m_Velocity.x *= m_friction;

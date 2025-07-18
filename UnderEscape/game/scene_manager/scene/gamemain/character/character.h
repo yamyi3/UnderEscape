@@ -39,6 +39,8 @@ public:
 
 	//ステージとの当たり判定処理
 	void StageHit();
+	void HStageHit();
+	void VStageHit();
 	//画面端から出ないようにする処理
 	void CheckWindow(void);
 	//自機の操作処理
