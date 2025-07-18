@@ -19,14 +19,10 @@ public:
     void Team_Update();                 //チームロゴのフェード
 private:
     static const vivid::Vector2 back_pos;           //背景の位置（原点）
-    static const vivid::Vector2 start_pos1;         //START[ENTER]の位置
-    static const vivid::Vector2 start_pos2;         //START[ENTER]の位置
+    static const vivid::Vector2 start_pos;         //START[ENTER]の位置
     static const vivid::Vector2 title_pos;          //タイトルロゴの位置
     static const vivid::Vector2 team_pos;           //チームロゴの位置
-    static const vivid::Vector2 title_anchor;       //タイトルロゴの中心
-    static const vivid::Vector2 title_scale;        //タイトルロゴの拡大率
-    static const vivid::Rect title_rect;            //タイトルロゴの中心
-
+    
     int                     team_time;              //チームロゴの透明、不透明になるまでのカウント
     int                     title_time;             //タイトルロゴの透明、不透明になるまでのカウント
     static const int        hold_time;              //チームロゴの表示時間

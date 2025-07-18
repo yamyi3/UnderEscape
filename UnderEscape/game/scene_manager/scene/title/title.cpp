@@ -7,12 +7,9 @@ const int               TitleScene::hold_time      = 100;
 const int               TitleScene::color_max_time = 60;
 const unsigned          TitleScene::back_color     = 0xffffffff;
 const vivid::Vector2    TitleScene::back_pos       = { 0.0f,0.0f };
-const vivid::Vector2    TitleScene::start_pos1     = { 400.0f,700.0f };
-const vivid::Vector2    TitleScene::title_pos      = { 444.0f,100.0f };
+const vivid::Vector2    TitleScene::start_pos      = { 400.0f,700.0f };
+const vivid::Vector2    TitleScene::title_pos      = { 240.0f,207.0f };
 const vivid::Vector2    TitleScene::team_pos       = { 928.0f,508.0f };
-const vivid::Vector2    TitleScene::title_anchor   = { 2184.5f,757.5f };
-const vivid::Vector2    TitleScene::title_scale    = { 0.25f,0.25f };
-const vivid::Rect       TitleScene::title_rect     = { 0,0,4369,1495 };
 
 
 
@@ -93,9 +90,8 @@ void TitleScene::Team_Update()
 }
 void TitleScene::Title_Draw()
 {
-    //vivid::DrawTexture("data\\自機\\背景イメージ.png", back_pos, title_color);
-    vivid::DrawTexture("data\\タイトルロゴ.png", title_pos, title_color,title_rect,title_anchor,title_scale);
-    vivid::DrawText(40, "START[ENTER]", start_pos1, title_color);
+    vivid::DrawTexture("data\\title.png", title_pos, title_color);
+    vivid::DrawText(40, "Please[ENTER]", start_pos, title_color);
 }
 void TitleScene::Team_Draw()
 {
