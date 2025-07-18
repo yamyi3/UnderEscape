@@ -3,7 +3,7 @@
 #include "character/character.h"
 #include "enemy_manager/enemy_manager.h"
 #include "stage/stage.h"
-#include "gameobject/gameobject.h"
+#include"item_manager/item_manager.h"
 
 //Gameobject gameobject;
 
@@ -20,7 +20,10 @@ void GameMainScene::Initialize(void)
     EnemyManager::GetInstance().Initialize();
     EnemyManager::GetInstance().GenerateEnemy({ 300.0f, 700.0f }, 300.0f, 500.0f, 1, 700);
     EnemyManager::GetInstance().GenerateEnemy({ 1000.0f, 700.0f }, 1000.0f, 1200.0f, 1, 700);
-    Gameobject::GetInstance().Initialize(Stage::GetInstance().GetRoundHeight());
+    
+    
+    ItemManager::GetInstance().Initialize();
+    ItemManager::GetInstance().CreateItem(vivid::Vector2{ Stage::GetInstance().GetWallWidth(),Stage::GetInstance().GetRoundHeight() }, ItemID::SOUND_ITEM);
 }
 
 void GameMainScene::Update(void)
@@ -48,9 +51,11 @@ void GameMainScene::Update(void)
 
    
 
-    Gameobject::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().CheckObtainItem(Gameobject::GetInstance().getItemPos(), Gameobject::GetInstance().GetItemCenter(),
-        Gameobject::GetInstance().GetItemWidth(), Gameobject::GetInstance().GetItemHeight()), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
-                Character::GetInstance().CheckThrow(), Stage::GetInstance().GetRoundHeight(), Character::GetInstance().checkPut());
+    
+
+    ItemManager::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
+       Stage::GetInstance().GetRoundHeight());
+    
     }
 }
 
@@ -59,7 +64,8 @@ void GameMainScene::Draw(void)
     EnemyManager::GetInstance().Draw();
     Stage::GetInstance().Draw();
     Character::GetInstance().Draw();
-    Gameobject::GetInstance().Draw();
+    
+    ItemManager::GetInstance().Draw();
 }
 
 void GameMainScene::Finalize(void)
@@ -67,11 +73,12 @@ void GameMainScene::Finalize(void)
     Character::GetInstance().Finalize();
     EnemyManager::GetInstance().Finalize();
     Stage::GetInstance().Finalize();
-    Gameobject::GetInstance().Finalize();
+    
+    ItemManager::GetInstance().Finalize();
 }
 void GameMainScene::Pause()
 {
-    //[P]‚ğ‰Ÿ‚·‚Æ~‚Ü‚èÄ“x‰Ÿ‚·‚Æ“®‚­
+    //[P]ã‚’æŠ¼ã™ã¨æ­¢ã¾ã‚Šå†åº¦æŠ¼ã™ã¨å‹•ã
     if (pause_menu == false && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::P))
     {
         pause_menu = true;
