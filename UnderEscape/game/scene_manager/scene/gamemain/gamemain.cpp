@@ -37,10 +37,6 @@ void GameMainScene::Update(void)
     if(pause_menu==false)
     { 
     EnemyManager::GetInstance().Update();
-
-    Character::GetInstance().Update();
-
-    Stage::GetInstance().Update();
     Character::GetInstance().Update();
     Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight());
     Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),Stage::GetInstance().GetWallHeight(),

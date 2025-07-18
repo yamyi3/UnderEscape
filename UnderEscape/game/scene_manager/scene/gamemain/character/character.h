@@ -17,7 +17,7 @@ enum class CHARA_STATE
 enum class CHARA_SKILL
 {
 	ANIMALLEG,
-	INVISIBlLE,
+	INVISIBLE,
 
 	MAX,
 };
