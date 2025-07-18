@@ -133,6 +133,8 @@ void Character::Draw(void)
 		vivid::DrawText(40, "あしつよいよー", vivid::Vector2(0.0f, 100.0f), 0xff00ffff);
 	if (chara_skill == CHARA_SKILL::INVISIBLE)
 		vivid::DrawText(40, "めにみえないよー", vivid::Vector2(0.0f, 150.0f), 0xff00ffff);
+	vivid::DrawText(40,"キャラ速度：" +  std::to_string(ch_speed), vivid::Vector2(0.0f, 200.0f), 0xff00ffff);
+	vivid::DrawText(40, "キャラの色；" + std::to_string(color), vivid::Vector2(0.0f, 250.0f), 0xff00ffff);
 #endif
 }
 
@@ -237,6 +239,22 @@ void Character::Control(void)
 		LimitStamina();
 	}
 
+	//Qキーを押すとスキルが発動する
+	if (keyboard::Trigger(keyboard::KEY_ID::Q))
+	{
+		//重複しないようにするためにフラグを通す
+		if (skill_active_flag == false)
+		{
+			skill_active_flag = true;
+		}
+	}
+
+	//Eキーを押すとスキルが切り替わる
+	if (keyboard::Trigger(keyboard::KEY_ID::E))
+	{
+		ChangeSkill();
+	}
+
 	//Aを押している間は左移動
 	if (keyboard::Button(keyboard::KEY_ID::A))
 	{
@@ -251,22 +269,6 @@ void Character::Control(void)
 		accelerator.x = ch_speed;
 		c_scale.x = 1.0f;
 		CheckMoveState();
-	}
-
-	//Qキーを押すとスキルが発動する
-	if (keyboard::Trigger(keyboard::KEY_ID::Q))
-	{
-		//重複しないようにするためにフラグを通す
-		if (skill_active_flag == false)
-		{
-			skill_active_flag = true;
-		}
-	}
-
-	//Eキーを押すとスキルが切り替わる
-	if (keyboard::Trigger(keyboard::KEY_ID::E))
-	{
-			ChangeSkill();
 	}
 
 	//ジャンプの処理
@@ -622,10 +624,10 @@ void Character::SkillMove(void)
 			switch (chara_skill)
 			{
 			case CHARA_SKILL::ANIMALLEG:
-				ch_speed *= 2.0f;
+				ch_speed *= 4.0f;
 				break;
 			case CHARA_SKILL::INVISIBLE:
-				color = 0x00000000;
+				color = 0x44ffffff;
 				break;
 			}
 		}
@@ -635,7 +637,7 @@ void Character::SkillMove(void)
 			switch (chara_skill)
 			{
 			case CHARA_SKILL::ANIMALLEG:
-				ch_speed /= 2.0f;
+				ch_speed /= 4.0f;
 				break;
 			case CHARA_SKILL::INVISIBLE:
 				color = 0xffffffff;
@@ -652,15 +654,18 @@ void Character::SkillMove(void)
 //スキルの切り替え処理
 void Character::ChangeSkill(void)
 {
-	switch (chara_skill)
+	if (skill_active_flag == false)
 	{
-	case CHARA_SKILL::INVISIBLE:
-		chara_skill = CHARA_SKILL::ANIMALLEG;
-		break;
+		switch (chara_skill)
+		{
+		case CHARA_SKILL::INVISIBLE:
+			chara_skill = CHARA_SKILL::ANIMALLEG;
+			break;
 
-	case CHARA_SKILL::ANIMALLEG:
-		chara_skill = CHARA_SKILL::INVISIBLE;
-		break;
+		case CHARA_SKILL::ANIMALLEG:
+			chara_skill = CHARA_SKILL::INVISIBLE;
+			break;
+		}
 	}
 }
 
