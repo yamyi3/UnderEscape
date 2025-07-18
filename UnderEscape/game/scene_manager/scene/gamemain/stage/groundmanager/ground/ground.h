@@ -13,7 +13,7 @@ public:
 	//更新
 	void Update(void);
 	//描画
-	void Draw(float scroll);
+	void Draw(vivid::Vector2 scroll);
 	// 開放
 	void Finalize();
 	//プレイヤーとの当たり判定をチェック

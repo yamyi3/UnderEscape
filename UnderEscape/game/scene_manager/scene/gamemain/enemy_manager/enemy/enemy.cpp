@@ -1,4 +1,5 @@
 #include "enemy.h"
+#include "..\..\stage\stage.h"
 
 const int Enemy::e_visibility_width_size = 400;
 const int Enemy::e_visibility_height_size = 400;
@@ -15,7 +16,7 @@ const int Enemy::Source_End_Range = 4;				//警戒座標とのｘ軸の差がこの数値より短
 const int Enemy::Vigilance_time = 150;				//追跡目標地点到達後の待機フレーム数
 
 const int Enemy::Surprised_time = 30;				//追跡開始前の停止フレーム数
-const float Enemy::enemy_jump_height = 150.0f;		//ジャンプの高さ
+const float Enemy::enemy_jump_height = 250.0f;		//ジャンプの高さ
 const float Enemy::enemy_jump_upspeed = 3.0f;		//ジャンプの上昇スピード
 const float Enemy::enemy_jump_downspeed = 100.0f;	//落下スピード(上昇スピードの何％か)
 
@@ -31,10 +32,13 @@ Enemy::Enemy(void)
 	, gravity(100)
 	, eGround(600.0f)
 	, eVector(1)
+	, Sight_Check_Timer(10)
 	, Vigilance_Timer(0)
 	, Surprised_Timer(0)
 	, eStatus(eSTATUS::Wandering)
 	, m_ActiveFlag(true)
+	, WallTouchFlg(false)
+	, WallTouchPosX(0.0f)
 {
 }
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground)
@@ -50,8 +54,8 @@ void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float
 	{
 		ePos = pos;
 		eGround = ground;
-		Rwool = R;
-		Lwool = L;
+		Rwall = R;
+		Lwall = L;
 		eVector = vector;
 		gravity = 100;
 		jpflg = 0;
@@ -80,6 +84,7 @@ void Enemy::Initialize(void)
 
 void Enemy::Update(void)
 {
+	Sight_Check_Timer++;
 	switch (eStatus)
 	{
 	case eSTATUS::Stop:
@@ -88,20 +93,20 @@ void Enemy::Update(void)
 		if (eVector == 1)
 		{
 			ePos.x += eSpeed;
-			if (ePos.x >= Rwool)
+			if (ePos.x >= Rwall)
 			{
 				eVector *= -1;
-				if (Lwool == Rwool)
+				if (Lwall == Rwall)
 					eStatus = eSTATUS::Stop;
 			}
 		}
 		else
 		{
 			ePos.x -= eSpeed;
-			if (ePos.x <= Lwool)
+			if (ePos.x <= Lwall)
 			{
 				eVector *= -1;
-				if (Lwool == Rwool)
+				if (Lwall == Rwall)
 					eStatus = eSTATUS::Stop;
 			}
 		}
@@ -109,24 +114,33 @@ void Enemy::Update(void)
 	case eSTATUS::Chase:
 		if (ChasePos.x > ePos.x)
 		{
-			ePos.x += eChaseSpeed;
-			eVector = 1;
+			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
+			{
+				ePos.x += eChaseSpeed;
+				eVector = 1;
+			}
 		}
 		else
 		{
-			ePos.x -= eChaseSpeed;
-			eVector = -1;
+			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
+			{
+				ePos.x -= eChaseSpeed;
+				eVector = -1;
+			}
 		}
-		/*if (abs(ChasePos.x - ePos.x) < Source_End_Range)
+		if (abs(ChasePos.x - ePos.x) < Source_End_Range)
 		{
-			Vigilance_Timer = 0;
-			eStatus = eSTATUS::Vigilance;
-		}*/
+			if (Sight_Check_Timer >= 10)
+			{
+				Vigilance_Timer = 0;
+				eStatus = eSTATUS::Vigilance;
+			}
+		}
 		break;
 	case eSTATUS::Vigilance:
 		if (++Vigilance_Timer >= Vigilance_time)
 		{
-			if (Lwool == Rwool)
+			if (Lwall == Rwall)
 				eStatus = eSTATUS::Stop;
 			else
 				eStatus = eSTATUS::Wandering;
@@ -141,42 +155,73 @@ void Enemy::Update(void)
 	default:
 		break;
 	}
+
+
+	//左
+	if (ePos.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size))
+	{
+		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size);
+		if (jpflg && eVector == -1)
+		{
+			WallTouchPosX = ePos.x;
+			WallTouchFlg = true;
+		}
+	}
+	//右
+	if (ePos.x + e_width_size > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size))
+	{
+		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size;
+		if (jpflg && eVector == 1)
+		{
+			WallTouchPosX = ePos.x;
+			WallTouchFlg = true;
+		}
+	}
+	//天井
+	if (ePos.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
+	{
+		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size);
+	}
+	//地面
+	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size);
+
 	if (e_wool_jump())
 	{
 		jump();
 	}
+
 	ePos = Gravity(ePos, eGround, e_height_size, eAnchor, enemy_jump_height, enemy_jump_upspeed, enemy_jump_downspeed);
 
 	eCircleCenterPos.x = ePos.x - e_width_size / 2/* + eCircleRadius*/;
 	eCircleCenterPos.y = ePos.y - e_height_size / 2/* + eCircleRadius*/;
 }
 
-void Enemy::Draw(void)
+void Enemy::Draw(vivid::Vector2 scroll)
 {
 	eScale.x = abs(eScale.x) * eVector;
 
 #ifdef _DEBUG
-	vivid::DrawTexture("data\\敵視界.png", { ePos.x - e_visibility_width_size / 2,ePos.y - e_visibility_height_size / 2 }, 0x6fffffff);
+	vivid::DrawTexture("data\\敵視界.png", { ePos.x - e_visibility_width_size / 2 - scroll.x,ePos.y - e_visibility_height_size / 2 - scroll.y }, 0x6fffffff);
 #endif // DEBUG
 
 
 
 	vivid::Rect eRect = { 0,0,e_height_size,e_width_size };						//エネミーの画像範囲
 
-	vivid::DrawTexture("data\\abe.png", { ePos.x - (e_width_size / 2),ePos.y - (e_height_size / 2) }, 0xffffffff, eRect, eAnchor, eScale);
+	vivid::DrawTexture("data\\abe.png", { ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y }, 0xffffffff, eRect, eAnchor, eScale);
 	if (eStatus == eSTATUS::Surprised)
 	{
 		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//!の画像範囲
 		markPos = { ePos.x - (mark_width_size / 2),(ePos.y - eAnchor.y - mark_height_size - (eScale.y * e_height_size / 10)) };
 		markScale = { abs(eScale.x) ,abs(eScale.y) };
-		vivid::DrawTexture("data\\exclamation_mark.png", { markPos.x,markPos.y }, 0xffffffff, markRect, markAnchor, markScale);
+		vivid::DrawTexture("data\\exclamation_mark.png", markPos - scroll, 0xffffffff, markRect, markAnchor, markScale);
 	}
 	if (eStatus == eSTATUS::Vigilance)
 	{
 		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//?の画像範囲
 		markPos = { ePos.x - (mark_width_size / 2),(ePos.y - eAnchor.y - mark_height_size - (eScale.y * e_height_size / 10)) };
 		markScale = { abs(eScale.x) ,abs(eScale.y) };
-		vivid::DrawTexture("data\\question_mark.png", { markPos.x,markPos.y }, 0xffffffff, markRect, markAnchor, markScale);
+		vivid::DrawTexture("data\\question_mark.png", markPos - scroll, 0xffffffff, markRect, markAnchor, markScale);
 	}
 
 }
@@ -230,6 +275,15 @@ bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width
 	//上記の判定から当たっているか(視界に入っているか)を判断する
 	if (result_h || result_v || result_lu || result_ru || result_ld || result_rd)
 	{
+		Sight_Check_Timer = 0;
+		eChaseStatus = eCHASE_STATUS::Hearing;
+		if (eStatus == eSTATUS::Wandering || eStatus == eSTATUS::Vigilance)
+		{
+			eStatus = eSTATUS::Surprised;
+			Surprised_Timer = 0;
+		}
+
+		ChasePos = cPos;
 		return true;
 	}
 	//当たっていない場合はfalseを返す
@@ -261,9 +315,11 @@ void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 //壁に当たったらジャンプする判定
 bool Enemy::e_wool_jump()
 {
-	//仮置きでFジャンプ
-	if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
+	if (WallTouchFlg)
+	{
+		WallTouchFlg = false;
 		return 1;
+	}
 
 	return 0;
 }
@@ -293,6 +349,12 @@ vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 6
 	{
 		pos.y = yuka - (CharacterVSize - anchor.y);
 		jpflg = 1;
+		if (WallTouchFlg)
+		{
+			if (abs( ePos.x - WallTouchPosX) < 3)
+				eVector *= -1;
+			WallTouchFlg = false;
+		}
 	}
 	return pos;
 }

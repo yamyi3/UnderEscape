@@ -28,6 +28,7 @@ public:
 
 
 private:
+	vivid::Vector2 scroll;
 	using ENEMY_LIST = std::list<Enemy*>;
 	ENEMY_LIST m_Enemy;
 	EnemyManager() = default;

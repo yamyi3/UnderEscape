@@ -12,17 +12,24 @@ int		Character::down_gauge_count = 0;
 
 const float Character::ch_width		 = 72.0f;	//自機の幅
 const float Character::ch_height	 = 180.0f;	//自機の高さ
-const float Character::walk_speed	 = 0.6f;		//自機の通常移動速度
-const float Character::dash_speed	 = 1.2f;		//自機のダッシュ時の移動速度
-const float Character::sneak_speed	 = 0.3f;		//自機の歩行時の移動速度
-const float Character::fatigue_speed = 0.15f;//自機の疲労時の移動速度
+const float Character::walk_speed	 = 0.6f;	//自機の通常移動速度
+const float Character::dash_speed	 = 1.2f;	//自機のダッシュ時の移動速度
+const float Character::sneak_speed	 = 0.3f;	//自機の歩行時の移動速度
+const float Character::fatigue_speed = 0.15f;	//自機の疲労時の移動速度
 
-const int	Character::c_max_stamina		= 100;			//自機のスタミナの最大値
-int			Character::c_stamina_gauge		= 5;			//自機のスタミナのゲージ
-float		Character::c_stamina_count		= 0;			//スタミナの減少速度を図るカウンタ
-float		Character::c_stamina_recovery	= 0;			//スタミナ回復までのカウンタ
-bool		Character::c_stamina_dash		= false;		//ダッシュ可能か判別するフラグ
-bool		Character::c_stamina_fatigue	= false;		//自機が疲労状態か判別するフラグ
+const int	Character::activation_time		= 600;		//スキルの効果時間(60フレーム換算5秒)
+const int	Character::stamina_width		= 76;		//スタミナ現在の1つあたりの幅
+const int	Character::stamina_height		= 16;		//スタミナゲージの高さ
+const int	Character::c_max_stamina		= 5;		//自機のスタミナの最大値
+int			Character::c_stamina_gauge		= 5;		//自機のスタミナのゲージ
+int			Character::c_stamina_count		= 0;		//スタミナの減少速度を図るカウンタ
+int			Character::c_limit_recovery		= 0;		//疲労状態のスタミナ回復までのカウンタ
+int			Character::c_stamina_recovery	= 0;		//スタミナ回復のカウンタ
+bool		Character::c_stamina_dash		= true;		//ダッシュ可能か判別するフラグ
+bool		Character::c_stamina_fatigue	= false;	//自機が疲労状態か判別するフラグ
+
+const float Character::scroll_width_space = 850;
+const float Character::scroll_height_space = 300;
 
 Character& Character::GetInstance(void)
 {
@@ -30,6 +37,7 @@ Character& Character::GetInstance(void)
 	return instance;
 }
 
+//初期化
 void Character::Initialize(vivid::Vector2 rPos)
 {
 	cPos = {100.0f, rPos.y - ch_height};
@@ -39,6 +47,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	gauge_rect.left = 0;
 	gauge_rect.right = 20 * gauge;
 	chara_state = CHARA_STATE::WAIT;
+	chara_skill = CHARA_SKILL::ANIMALLEG;
 
 	c_anchor	= {ch_width / 2,ch_height / 2 };
 	c_scale		= {  1.0f,1.0f };
@@ -46,19 +55,37 @@ void Character::Initialize(vivid::Vector2 rPos)
 
 	c_anime_frame = 0;
 	c_anime_timer = 0;
-	c_change_anime_timer = 10;
+	c_change_anime_timer = 15;
 	c_change_anime_frame = 0;
+
+	stamina_anchor = { ((float)stamina_width / 2.0f), ((float)stamina_height / 2.0f) };
+	stamina_scale = { 1.0f, 1.0f };
+
+	skill_active_flag = false;
+	active_count = 0;
 }
 
 void Character::Update(void)
 {
+	//自機の操作
 	Control();
+	//画面端の判定
 	CheckWindow();
+	//ステージとの当たり判定
+	StageHit();
+	//アニメーションの更新
 	UpdateAnimation();
+	//スキル発動後の処理
+	SkillMove();
+	//スクロールの更新
+	Scroll_Update();
 }
 
 void Character::Draw(void)
 {
+	stamina_pos.x = (float)(((cPos.x + (ch_width / 2.0f))- (stamina_width / 2.0f)));
+	stamina_pos.y = (float)(cPos.y - 20);
+
 	vivid::Rect g_rect;
 	g_rect.top = 0;
 	g_rect.bottom = 30;
@@ -70,43 +97,96 @@ void Character::Draw(void)
 	gauge_rect.left = 0;
 	gauge_rect.right = 20 * gauge;
 
+	//->自機のrect更新
 	c_rect.top = 0;
 	c_rect.bottom = ch_height;
 	c_rect.left = ch_width * (c_anime_frame % c_change_anime_frame);
 	c_rect.right = c_rect.left + ch_width;
+	//<-自機のrect更新
+	
+	//->スタミナのrect更新
+	stamina_rect.top = 0;
+	stamina_rect.bottom = stamina_height;
+	if (c_stamina_dash == true)
+	{
+		stamina_rect.left = stamina_width * (5 - c_stamina_gauge);
+	}
+	if (c_stamina_dash == false)
+	{
+		stamina_rect.left = stamina_width * c_stamina_gauge;
+	}
+	stamina_rect.right = stamina_rect.left + stamina_width;
+	//<-スタミナのrect更新
 
-	//vivid::DrawTexture("data\\仮置き人間\\minihuman透過1.png", cPos, color, c_rect);
-	vivid::DrawTexture(c_image[(int)chara_state], cPos, color, c_rect, c_anchor, c_scale);
-	vivid::DrawTexture("data\\gauge.png", gPos, 0xffffffff, g_rect);
-	vivid::DrawTexture("data\\gauge.png", gPos, 0xff00ffff, gauge_rect);
+	vivid::DrawTexture(c_image[(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
+	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xffffffff, g_rect);
+	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xff00ffff, gauge_rect);
+	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
+
+#ifdef _DEBUG
+
+	if (skill_active_flag == false)
+		vivid::DrawText(40, "すきるつかってないよー", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
+	if (skill_active_flag)
+		vivid::DrawText(40, "すきるつかうよー", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
+	switch (chara_skill)
+	{
+	case CHARA_SKILL::ANIMALLEG:
+		vivid::DrawText(40, "あしつよいよー", vivid::Vector2(0.0f, 100.0f), 0xff00ffff);
+		break;
+	case CHARA_SKILL::INVISIBlLE:
+		vivid::DrawText(40, "めにみえないよー", vivid::Vector2(0.0f, 150.0f), 0xff00ffff);
+	}
+#endif
 }
 
 void Character::Finalize(void)
 {
 }
 
+void Character::StageHit()
+{
+	//左
+	if (cPos.x < Stage::GetInstance().GetLWall(cPos, ch_width, ch_height))
+	{
+		cPos.x = Stage::GetInstance().GetLWall(cPos, ch_width, ch_height);
+	}
+	//右
+	if (cPos.x + ch_width > Stage::GetInstance().GetRWall(cPos, ch_width, ch_height))
+	{
+		cPos.x = Stage::GetInstance().GetRWall(cPos, ch_width, ch_height) - ch_width;
+	}
+	//天井
+	if (cPos.y < Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height))
+	{
+		cPos.y = Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height);
+	}
+	//地面
+	RoundHit(Stage::GetInstance().GetRoundHeight(cPos, ch_width, ch_height));
+}
+
 //画面端の当たり判定
 void Character::CheckWindow(void)
 {
 	//画面の左端
-	if (cPos.x < 0.0f)
+	if (cPos.x < 0.0f + Scroll.x)
 	{
-		cPos.x = 0.0f;
+		cPos.x = 0.0f + Scroll.x;
 	}
 	//画面の右端
-	if (cPos.x + ch_width > vivid::WINDOW_WIDTH)
+	if (cPos.x + ch_width > vivid::WINDOW_WIDTH + Scroll.x)
 	{
-		cPos.x = vivid::WINDOW_WIDTH - ch_width;
+		cPos.x = vivid::WINDOW_WIDTH - ch_width + Scroll.x;
 	}
 	//画面の天井
-	if (cPos.y < 0.0f)
+	if (cPos.y < 0.0f + Scroll.y)
 	{
-		cPos.y = 0.0f;
+		cPos.y = 0.0f + Scroll.y;
 	}
 	//画面の底辺
-	if (cPos.y + ch_height > vivid::WINDOW_HEIGHT)
+	if (cPos.y + ch_height > vivid::WINDOW_HEIGHT + Scroll.y)
 	{
-		cPos.y = vivid::WINDOW_HEIGHT - ch_height;
+		cPos.y = vivid::WINDOW_HEIGHT - ch_height + Scroll.y;
 	}
 }
 
@@ -117,6 +197,7 @@ void Character::Control(void)
 
 	vivid::Vector2 accelerator = {};
 
+	//デフォルトはwalk_speedにする
 	ch_speed = walk_speed;
 
 	//一定値を超えたら速度を0にして慣性の移動を止める
@@ -132,7 +213,7 @@ void Character::Control(void)
 	if (m_LandingFlag)
 		chara_state = CHARA_STATE::WAIT;
 
-	//左SHIFTを押している間はrun_speedになる
+	//左SHIFTを押している間はdash_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
 	{
 		ch_speed = dash_speed;
@@ -140,12 +221,24 @@ void Character::Control(void)
 			chara_state = CHARA_STATE::WAIT;
 	}
 
-	//左CTRLを押している間はwalk_speedになる
+	//左CTRLを押している間はsneak_speedになる
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
 	{
 		ch_speed = sneak_speed;
 		if (m_LandingFlag)
 			chara_state = CHARA_STATE::SNEAKWAIT;
+	}
+
+	//スタミナが0ではなく走っていない時はスタミナが回復する
+	if (ch_speed != dash_speed && c_stamina_dash)
+	{
+		RecoveryStamina();
+	}
+
+	//スタミナゲージが0の時はfatigue_speedになる
+	if (!c_stamina_dash)
+	{
+		LimitStamina();
 	}
 
 	//Aを押している間は左移動
@@ -163,19 +256,36 @@ void Character::Control(void)
 		c_scale.x = 1.0f;
 		CheckMoveState();
 	}
-	
+
+	//Qキーを押すとスキルが発動する
+	if (keyboard::Trigger(keyboard::KEY_ID::Q))
+	{
+		//重複しないようにするためにフラグを通す
+		if (skill_active_flag == false)
+		{
+			skill_active_flag = true;
+		}
+	}
+
+	//Eキーを押すとスキルが切り替わる
+	if (keyboard::Trigger(keyboard::KEY_ID::E))
+	{
+		if (skill_active_flag == false)
+		{
+			ChangeSkill();
+		}
+	}
+
 	//ジャンプの処理
 	//SPACEを押すとジャンプ動作になる
 	if (keyboard::Trigger(keyboard::KEY_ID::SPACE) && m_LandingFlag)
 	{
 		accelerator.y += jump_speed;
-		//接地フラグをfalseにして空中ジャンプを出来ないようにする
-		m_LandingFlag = false;
 		chara_state = CHARA_STATE::JUMP;
 	}
 
 	//落下処理
-	if (m_LandingFlag == false)
+	if (m_LandingFlag == false||1)
 	{
 		accelerator.y += fall_speed;
 	}
@@ -190,6 +300,10 @@ void Character::Control(void)
 //地面との当たり判定
 void Character::RoundHit(float rHeight)
 {
+	if (cPos.y + ch_height < rHeight)
+	{
+		m_LandingFlag = false;
+	}
 		if (cPos.y + ch_height > rHeight && cPos.y < rHeight) {
 			cPos.y = rHeight - ch_height;
 			m_Velocity.y = 0.0f;
@@ -201,6 +315,7 @@ void Character::RoundHit(float rHeight)
 //壁の裏に自機がすべて隠れていたら色を変える
 bool Character::CheckWallHit(vivid::Vector2 wPos, float wWidth, float wHeight)
 {
+	return Stage::GetInstance().CheckHitWallPlayer(cPos, ch_height, ch_width);
 	if ((wPos.x <= cPos.x) && (wPos.x + wWidth >= cPos.x + ch_width) && (wPos.y <= cPos.y) && (wPos.y + wHeight >= cPos.y + ch_height))
 	{
 		return true;
@@ -385,6 +500,7 @@ void Character::DownerGauge(void)
 
 void Character::UpdateAnimation(void)
 {
+	//状態ごとにアニメーションの最大枚数の設定
 	switch (chara_state)
 	{
 	case CHARA_STATE::WAIT:
@@ -407,6 +523,7 @@ void Character::UpdateAnimation(void)
 		break;
 	}
 
+	//->アニメーションの更新
 	c_anime_timer++;
 
 	if (c_anime_timer >= c_change_anime_timer)
@@ -418,6 +535,7 @@ void Character::UpdateAnimation(void)
 		}
 		c_anime_timer = 0;
 	}
+	//<-アニメーションの更新
 }
 
 void Character::CheckMoveState(void)
@@ -428,6 +546,10 @@ void Character::CheckMoveState(void)
 		if (ch_speed == dash_speed)
 		{
 			chara_state = CHARA_STATE::RUN;
+			if (c_stamina_dash)
+			{
+				DashStamina();
+			}
 		}
 		if (ch_speed == sneak_speed)
 		{
@@ -438,20 +560,132 @@ void Character::CheckMoveState(void)
 
 void Character::DashStamina(void)
 {
+	//スタミナゲージに残量がある時の処理
 	if (c_stamina_gauge > 0)
 	{
-		if (vivid::GetDeltaTime() == 1)
+	//スタミナ消費のカウンタを進める
+		c_stamina_count++;
+	//カウンタが基準値に達したらスタミナゲージ減らす
+		if (c_stamina_count >= 120)
 		{
 			c_stamina_gauge--;
+			c_stamina_count = 0;
 		}
 	}
+	//スタミナが0になった後の処理
+	else
+	{
+		c_stamina_dash = false;
+	}
+	//スタミナ回復開始のカウンタのリセット
+	c_stamina_recovery = 0;
 }
 
 void Character::RecoveryStamina(void)
 {
-	namespace keyboard = vivid::keyboard;
-	if ((keyboard::Released(keyboard::KEY_ID::LSHIFT)) && (vivid::GetDeltaTime() == 1))
+	c_stamina_recovery++;
+	if (c_stamina_gauge < c_max_stamina)
 	{
-		c_stamina_gauge++;
+		if (c_stamina_recovery >= 120)
+		{
+			c_stamina_gauge++;
+			c_stamina_count = 0;
+			c_stamina_recovery = 0;
+		}
 	}
+}
+
+void Character::LimitStamina(void)
+{
+	ch_speed = fatigue_speed;
+	c_limit_recovery++;
+	if (c_limit_recovery >= 180)
+	{
+		if (c_stamina_gauge < c_max_stamina)
+		{
+			c_stamina_gauge++;
+			c_limit_recovery = 0;
+		}
+		if (c_stamina_gauge == c_max_stamina)
+		{
+			c_stamina_dash = true;
+		}
+	}
+}
+
+//スキル発動後の処理
+void Character::SkillMove(void)
+{
+	//スキルのアクティブフラグがtrueの時に処理を行う
+	if (skill_active_flag)
+	{
+		active_count++;
+		if (active_count < activation_time)
+		{
+			switch (chara_skill)
+			{
+			case CHARA_SKILL::ANIMALLEG:
+				ch_speed *= 2.0f;
+				break;
+			case CHARA_SKILL::INVISIBlLE:
+				color = 0x00000000;
+				break;
+			default:
+				break;
+			}
+		}
+		//タイマーが規定値を超えたら各数値をリセットする
+		if (active_count >= activation_time)
+		{
+			switch (chara_skill)
+			{
+			case CHARA_SKILL::ANIMALLEG:
+				ch_speed /= 2.0f;
+				break;
+			case CHARA_SKILL::INVISIBlLE:
+				color = 0xffffffff;
+				break;
+			default:
+				break;
+			}
+			active_count = 0;
+			skill_active_flag = false;
+		}
+	}
+}
+
+//スキルの切り替え処理
+void Character::ChangeSkill(void)
+{
+	switch (chara_skill)
+	{
+	case CHARA_SKILL::ANIMALLEG:
+		chara_skill = CHARA_SKILL::INVISIBlLE;
+		break;
+	case CHARA_SKILL::INVISIBlLE:
+		chara_skill = CHARA_SKILL::ANIMALLEG;
+		break;
+	}
+}
+
+void Character::Scroll_Update()
+{
+	if (cPos.x > Scroll.x + vivid::WINDOW_WIDTH - scroll_width_space)
+		Scroll.x = cPos.x - vivid::WINDOW_WIDTH + scroll_width_space;
+	if (Scroll.x > Stage::GetInstance().GetStageWidthSize() - vivid::WINDOW_WIDTH)
+		Scroll.x = Stage::GetInstance().GetStageWidthSize() - vivid::WINDOW_WIDTH;
+	if (cPos.x < Scroll.x + scroll_width_space)
+		Scroll.x = cPos.x - scroll_width_space;
+	if (Scroll.x < 0)
+		Scroll.x = 0;
+
+	if (cPos.y > Scroll.y + vivid::WINDOW_HEIGHT - scroll_height_space)
+		Scroll.y = cPos.y - vivid::WINDOW_HEIGHT + scroll_height_space;
+	if (Scroll.y > Stage::GetInstance().GetStageHeightSize() - vivid::WINDOW_HEIGHT)
+		Scroll.y = Stage::GetInstance().GetStageHeightSize() - vivid::WINDOW_HEIGHT;
+	if (cPos.y < Scroll.y + scroll_height_space)
+		Scroll.y = cPos.y - scroll_height_space;
+	if (Scroll.y < 0)
+		Scroll.y = 0;
+
 }

@@ -1,7 +1,7 @@
 #include "wall.h"
 const std::string Wall::wall_picture_name = "data\\ŽÕ•Á.png";
-const int Wall::wall_picture_width_size = 200;
-const int Wall::wall_picture_height_size = 200;
+const int Wall::wall_picture_width_size = 100;
+const int Wall::wall_picture_height_size = 100;
 
 Wall::Wall()
 {
@@ -53,12 +53,12 @@ void Wall::Update(void)
 {
 }
 
-void Wall::Draw(float scroll)
+void Wall::Draw(vivid::Vector2 scroll)
 {
-	if (vivid::WINDOW_WIDTH > w_Pos.x - scroll && w_Pos.x - scroll + w_WidthSize > 0)
+	if (vivid::WINDOW_WIDTH > w_Pos.x - scroll.x && w_Pos.x - scroll.x + w_WidthSize > 0)
 	{
 		vivid::Rect rect = { 0,0,w_WidthSize,w_HeightSize };
-		vivid::DrawTexture(wall_picture_name, w_Pos, w_color, rect, { 0,0 }, w_Scale);
+		vivid::DrawTexture(wall_picture_name, w_Pos - scroll, w_color, rect, { 0,0 }, w_Scale);
 	}
 }
 

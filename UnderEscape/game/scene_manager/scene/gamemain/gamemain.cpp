@@ -41,22 +41,11 @@ void GameMainScene::Update(void)
     { 
     EnemyManager::GetInstance().Update();
 
-    /*if ((Stage::GetInstance().GetStartpos().x + change_pos.x) < Character::GetInstance().GetCharapos().x 
-        || (Stage::GetInstance().GetGoalpos().x + change_pos.x) > Character::GetInstance().GetCharapos().x)
-    {
-        Character::GetInstance().Control();
-    }
-    else
-    {
-        Stage::GetInstance().ScrollStage();
-    }*/
-
     Character::GetInstance().Update();
 
     Stage::GetInstance().Update();
     Character::GetInstance().Update();
     Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight());
-
     Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),Stage::GetInstance().GetWallHeight(),
         EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
 
@@ -89,7 +78,7 @@ void GameMainScene::Finalize(void)
 }
 void GameMainScene::Pause()
 {
-    //[P]‚ğ‰Ÿ‚·‚Æ~‚Ü‚èÄ“x‰Ÿ‚·‚Æ“®‚­
+    //[P]ã‚’æŠ¼ã™ã¨æ­¢ã¾ã‚Šå†åº¦æŠ¼ã™ã¨å‹•ã
     if (pause_menu == false && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::P))
     {
         pause_menu = true;

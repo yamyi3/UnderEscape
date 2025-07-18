@@ -14,7 +14,7 @@ public:
 	void Initialize(vivid::Vector2 pos);//初期化
 	void Initialize(void);
 	void Update(void);
-	void Draw(void);
+	void Draw(vivid::Vector2 scroll);
 	void Finalize(void);
 
 	vivid::Vector2 GetEnemyPos(void);
@@ -77,21 +77,25 @@ private:
 	vivid::Vector2 markAnchor;		//!のアンカー
 	vivid::Vector2 markScale;				//!のスケール
 
-	float Rwool;										//エネミー巡回中の右側の最大行動範囲用変数
-	float Lwool;										//エネミー巡回中の左側の最大行動範囲用変数
+	float Rwall;										//エネミー巡回中の右側の最大行動範囲用変数
+	float Lwall;										//エネミー巡回中の左側の最大行動範囲用変数
 
 	int gravity;									//ジャンプ、重力用の変数
 	bool jpflg;											//ジャンプの可否の判定用
 	float eGround;								//地面の高さ
 	int eVector;									//エネミーの向いてる向き用
 	vivid::Vector2 ChasePos;							//追跡目標地点;
+	int Sight_Check_Timer;
 	int Vigilance_Timer;							//追跡目標地点到達後の待機時間用
 	int Surprised_Timer;							//追跡開始前の停止時間用
 
+	bool WallTouchFlg;	//壁に触れたかの判定保存
+	float WallTouchPosX;	//壁に触れた時の位置
 
 	bool m_ActiveFlag;	//アクティブフラグ
 
 	vivid::Vector2	eCircleCenterPos;
 
 	eSTATUS eStatus;				//エネミーの状態保存用
+	eCHASE_STATUS eChaseStatus;		//エネミーの追跡情報の判別用
 };

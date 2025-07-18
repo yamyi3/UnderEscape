@@ -2,7 +2,7 @@
 
 
 WallManager::WallManager()
-	:scroll(0.0f)
+	:scroll(0.0f, 0.0f)
 {
 
 }

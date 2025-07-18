@@ -1,7 +1,7 @@
 #include "block.h"
 const std::string Block::block_picture_name = "data\\ŽÕ•Á.png";
-const int Block::block_picture_width_size = 200;
-const int Block::block_picture_height_size = 200;
+const int Block::block_picture_width_size = 100;
+const int Block::block_picture_height_size = 100;
 
 Block::Block()
 {
@@ -53,12 +53,12 @@ void Block::Update(void)
 {
 }
 
-void Block::Draw(float scroll)
+void Block::Draw(vivid::Vector2 scroll)
 {
-	if (vivid::WINDOW_WIDTH > w_Pos.x - scroll && w_Pos.x - scroll + w_WidthSize > 0)
+	if (vivid::WINDOW_WIDTH > w_Pos.x - scroll.x && w_Pos.x - scroll.x + w_WidthSize > 0)
 	{
 		vivid::Rect rect = { 0,0,w_WidthSize,w_HeightSize };
-		vivid::DrawTexture(block_picture_name, w_Pos, w_color, rect, { 0,0 }, w_Scale);
+		vivid::DrawTexture(block_picture_name, w_Pos - scroll, w_color, rect, { 0,0 }, w_Scale);
 	}
 }
 
