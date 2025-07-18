@@ -20,7 +20,7 @@ const float Enemy::enemy_jump_height = 250.0f;		//ジャンプの高さ
 const float Enemy::enemy_jump_upspeed = 3.0f;		//ジャンプの上昇スピード
 const float Enemy::enemy_jump_downspeed = 100.0f;	//落下スピード(上昇スピードの何％か)
 
-const int Enemy::animation_change_time = 10;
+const int Enemy::animation_change_time = 5;
 
 const float Enemy::eCircleRadius = 200.0f;
 
