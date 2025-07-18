@@ -6,6 +6,9 @@ enum class eSTATUS									//エネミーの状態の種類
 	Chase,		//追いかける
 	Vigilance,	//警戒
 	Surprised,	//驚く
+	Kill,
+
+	MAX,		//eSTATUSの最大値
 };
 enum class eCHASE_STATUS	//エネミーが追いかけている情報の判別用
 {

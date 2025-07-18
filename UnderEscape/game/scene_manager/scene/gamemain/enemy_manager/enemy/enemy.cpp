@@ -4,8 +4,8 @@
 const int Enemy::e_visibility_width_size = 400;
 const int Enemy::e_visibility_height_size = 400;
 
-const int Enemy::e_width_size = 64;						//エネミーの横のドット数
-const int Enemy::e_height_size = 64;                       //エネミーの縦;;;;のドット数
+const int Enemy::e_width_size = 128;						//エネミーの横のドット数
+const int Enemy::e_height_size = 98;                       //エネミーの縦;;;;のドット数
 
 const int Enemy::mark_width_size = 32;		//!の横のドット数
 const int Enemy::mark_height_size = 32;      //!の縦のドット数
@@ -19,6 +19,8 @@ const int Enemy::Surprised_time = 30;				//追跡開始前の停止フレーム数
 const float Enemy::enemy_jump_height = 250.0f;		//ジャンプの高さ
 const float Enemy::enemy_jump_upspeed = 3.0f;		//ジャンプの上昇スピード
 const float Enemy::enemy_jump_downspeed = 100.0f;	//落下スピード(上昇スピードの何％か)
+
+const int Enemy::animation_change_time = 10;
 
 const float Enemy::eCircleRadius = 200.0f;
 
@@ -39,6 +41,8 @@ Enemy::Enemy(void)
 	, m_ActiveFlag(true)
 	, WallTouchFlg(false)
 	, WallTouchPosX(0.0f)
+	, AnimationTimer(0)
+	, AnimationFrame(0)
 {
 }
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground)
@@ -62,6 +66,23 @@ void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float
 		eCircleCenterPos.x = ePos.x - e_width_size / 2;
 		eCircleCenterPos.y = ePos.y - e_height_size / 2;
 	}
+
+	AnimationTimer = 0;
+	AnimationFrame = 0;
+
+	enemy_picture_name[(int)eSTATUS::Stop]		= "data\\敵機\\蜘蛛型待機.png";
+	enemy_picture_name[(int)eSTATUS::Wandering] = "data\\敵機\\蜘蛛型左歩行.png";
+	enemy_picture_name[(int)eSTATUS::Chase]		= "data\\敵機\\蜘蛛型左歩行.png";
+	enemy_picture_name[(int)eSTATUS::Vigilance] = "data\\敵機\\蜘蛛型待機.png";
+	enemy_picture_name[(int)eSTATUS::Surprised] = "data\\敵機\\蜘蛛型待機.png";
+	enemy_picture_name[(int)eSTATUS::Kill]		= "data\\敵機\\蜘蛛型左歩行.png";
+
+	AnimationMaxFrame[(int)eSTATUS::Stop] = 16;
+	AnimationMaxFrame[(int)eSTATUS::Wandering] = 8;
+	AnimationMaxFrame[(int)eSTATUS::Chase] = 8;
+	AnimationMaxFrame[(int)eSTATUS::Vigilance] = 16;
+	AnimationMaxFrame[(int)eSTATUS::Surprised] = 16;
+	AnimationMaxFrame[(int)eSTATUS::Kill] = 8;
 }
 
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector)
@@ -198,6 +219,14 @@ void Enemy::Update(void)
 
 void Enemy::Draw(vivid::Vector2 scroll)
 {
+	AnimationTimer++;
+	if (AnimationTimer>=animation_change_time)
+	{
+		AnimationTimer -= animation_change_time;
+		++AnimationFrame %= AnimationMaxFrame[(int)eStatus];
+	}
+
+
 	eScale.x = abs(eScale.x) * eVector;
 
 #ifdef _DEBUG
@@ -206,9 +235,14 @@ void Enemy::Draw(vivid::Vector2 scroll)
 
 
 
-	vivid::Rect eRect = { 0,0,e_height_size,e_width_size };						//エネミーの画像範囲
+	vivid::Rect eRect;						//エネミーの画像範囲
 
-	vivid::DrawTexture("data\\abe.png", { ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y }, 0xffffffff, eRect, eAnchor, eScale);
+	eRect.top = 0;
+	eRect.bottom = e_height_size ;
+	eRect.left = (AnimationFrame % AnimationMaxFrame[(int)eStatus]) * e_width_size;
+	eRect.right = eRect.left + e_width_size;
+
+	vivid::DrawTexture(enemy_picture_name[(int)eStatus], {ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y}, 0xffffffff, eRect, eAnchor, eScale);
 	if (eStatus == eSTATUS::Surprised)
 	{
 		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//!の画像範囲

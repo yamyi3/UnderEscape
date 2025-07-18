@@ -89,10 +89,16 @@ private:
 	int Vigilance_Timer;							//追跡目標地点到達後の待機時間用
 	int Surprised_Timer;							//追跡開始前の停止時間用
 
-	bool WallTouchFlg;	//壁に触れたかの判定保存
+	bool WallTouchFlg;		//壁に触れたかの判定保存
 	float WallTouchPosX;	//壁に触れた時の位置
 
 	bool m_ActiveFlag;	//アクティブフラグ
+
+	std::string enemy_picture_name[(int)eSTATUS::MAX];	//エネミーの画像のファイル名
+	int AnimationTimer;
+	static const int animation_change_time;
+	int AnimationFrame;
+	int AnimationMaxFrame[(int)eSTATUS::MAX];
 
 	vivid::Vector2	eCircleCenterPos;
 
