@@ -168,7 +168,9 @@
     <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\gamemain.cpp" />
-    <ClCompile Include="scene_manager\scene\gamemain\gameobject\gameobject.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\item_manager\item\item.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\item_manager\item_manager.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\item_manager\item\sound_item\sound_item.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\blockmanager\blockmanager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\blockmanager\block\block.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\groundmanager\groundmanager.cpp" />
@@ -196,7 +198,10 @@
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy_status_id.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\gamemain.h" />
-    <ClInclude Include="scene_manager\scene\gamemain\gameobject\gameobject.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\item_manager\item\item.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\item_manager\item\item_id.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\item_manager\item_manager.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\item_manager\item\sound_item\sound_item.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\blockmanager\blockmanager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\blockmanager\block\block.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\groundmanager\groundmanager.h" />
