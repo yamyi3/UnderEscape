@@ -1,9 +1,6 @@
 #pragma once
 #include "vivid.h"
 #include "item_id.h"
-#include "..\..\stage\stage.h"
-#include "..\..\character\character.h"
-
 
 class Item
 {

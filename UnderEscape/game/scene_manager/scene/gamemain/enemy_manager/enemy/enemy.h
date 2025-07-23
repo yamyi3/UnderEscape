@@ -42,12 +42,6 @@ public:
 		, float upspeed			//登りスピード
 		, float downspeed		//下りスピード(登りスピードの何％かなので100推奨)
 	);
-	float Gravity		//重力
-	(
-		 float height			//ジャンプの高さ(ドット単位)
-		, float upspeed			//登りスピード
-		, float downspeed		//下りスピード(登りスピードの何％かなので100推奨)
-	);
 	void player_check(bool shielding);	//敵の索敵範囲内に自キャラがいると追いかけられる
 
 private:

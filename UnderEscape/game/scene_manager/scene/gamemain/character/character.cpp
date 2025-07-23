@@ -7,29 +7,26 @@ unsigned Character::color = 0xffffffff;
 bool	Character::m_LandingFlag = false;
 bool	Character::cCatch = false;
 bool	Character::cAlive = true;
-int		Character::gauge = 0;
-int		Character::gauge_count_frame = 0;
-int		Character::down_gauge_count = 0;
 CHARA_SKILL chara_skill = CHARA_SKILL::ANIMALLEG;
 
-const float Character::ch_width		 = 72.0f;	//è‡ªæ©Ÿã®å¹…
-const float Character::ch_height	 = 180.0f;	//è‡ªæ©Ÿã®é«˜ã•
-const float Character::walk_speed	 = 1.2f;	//è‡ªæ©Ÿã®é€šå¸¸ç§»å‹•é€Ÿåº¦
-const float Character::dash_speed	 = 2.4f;	//è‡ªæ©Ÿã®ãƒ€ãƒƒã‚·ãƒ¥æ™‚ã®ç§»å‹•é€Ÿåº¦
-const float Character::sneak_speed	 = 0.6f;	//è‡ªæ©Ÿã®æ­©è¡Œæ™‚ã®ç§»å‹•é€Ÿåº¦
-const float Character::fatigue_speed = 0.3f;	//è‡ªæ©Ÿã®ç–²åŠ´æ™‚ã®ç§»å‹•é€Ÿåº¦
+const float Character::ch_width		 = 72.0f;	//©‹@‚Ì•
+const float Character::ch_height	 = 180.0f;	//©‹@‚Ì‚‚³
+const float Character::walk_speed	 = 1.2f;	//©‹@‚Ì’ÊíˆÚ“®‘¬“x
+const float Character::dash_speed	 = 2.4f;	//©‹@‚Ìƒ_ƒbƒVƒ…‚ÌˆÚ“®‘¬“x
+const float Character::sneak_speed	 = 0.6f;	//©‹@‚Ì•às‚ÌˆÚ“®‘¬“x
+const float Character::fatigue_speed = 0.3f;	//©‹@‚Ì”æ˜J‚ÌˆÚ“®‘¬“x
 
-const int	Character::skill_cool_time		= 300;		//ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®æœ€å¤§æ•°(60ãƒ•ãƒ¬ãƒ¼ãƒ æ›ç®—5ç§’)
-const int	Character::activation_time		= 300;		//ã‚¹ã‚­ãƒ«ã®åŠ¹æœæ™‚é–“(60ãƒ•ãƒ¬ãƒ¼ãƒ æ›ç®—5ç§’)
-const int	Character::stamina_width		= 76;		//ã‚¹ã‚¿ãƒŸãƒŠç¾åœ¨ã®1ã¤ã‚ãŸã‚Šã®å¹…
-const int	Character::stamina_height		= 16;		//ã‚¹ã‚¿ãƒŸãƒŠã‚²ãƒ¼ã‚¸ã®é«˜ã•
-const int	Character::c_max_stamina		= 5;		//è‡ªæ©Ÿã®ã‚¹ã‚¿ãƒŸãƒŠã®æœ€å¤§å€¤
-int			Character::c_stamina_gauge		= 5;		//è‡ªæ©Ÿã®ã‚¹ã‚¿ãƒŸãƒŠã®ã‚²ãƒ¼ã‚¸
-int			Character::c_stamina_count		= 0;		//ã‚¹ã‚¿ãƒŸãƒŠã®æ¸›å°‘é€Ÿåº¦ã‚’å›³ã‚‹ã‚«ã‚¦ãƒ³ã‚¿
-int			Character::c_limit_recovery		= 0;		//ç–²åŠ´çŠ¶æ…‹ã®ã‚¹ã‚¿ãƒŸãƒŠå›å¾©ã¾ã§ã®ã‚«ã‚¦ãƒ³ã‚¿
-int			Character::c_stamina_recovery	= 0;		//ã‚¹ã‚¿ãƒŸãƒŠå›å¾©ã®ã‚«ã‚¦ãƒ³ã‚¿
-bool		Character::c_stamina_dash		= true;		//ãƒ€ãƒƒã‚·ãƒ¥å¯èƒ½ã‹åˆ¤åˆ¥ã™ã‚‹ãƒ•ãƒ©ã‚°
-bool		Character::c_stamina_fatigue	= false;	//è‡ªæ©ŸãŒç–²åŠ´çŠ¶æ…‹ã‹åˆ¤åˆ¥ã™ã‚‹ãƒ•ãƒ©ã‚°
+const int	Character::skill_cool_time		= 300;		//ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚ÌÅ‘å”(60ƒtƒŒ[ƒ€Š·Z5•b)
+const int	Character::activation_time		= 300;		//ƒXƒLƒ‹‚ÌŒø‰ÊŠÔ(60ƒtƒŒ[ƒ€Š·Z5•b)
+const int	Character::stamina_width		= 76;		//ƒXƒ^ƒ~ƒiŒ»İ‚Ì1‚Â‚ ‚½‚è‚Ì•
+const int	Character::stamina_height		= 16;		//ƒXƒ^ƒ~ƒiƒQ[ƒW‚Ì‚‚³
+const int	Character::c_max_stamina		= 5;		//©‹@‚ÌƒXƒ^ƒ~ƒi‚ÌÅ‘å’l
+int			Character::c_stamina_gauge		= 5;		//©‹@‚ÌƒXƒ^ƒ~ƒi‚ÌƒQ[ƒW
+int			Character::c_stamina_count		= 0;		//ƒXƒ^ƒ~ƒi‚ÌŒ¸­‘¬“x‚ğ}‚éƒJƒEƒ“ƒ^
+int			Character::c_limit_recovery		= 0;		//”æ˜Jó‘Ô‚ÌƒXƒ^ƒ~ƒi‰ñ•œ‚Ü‚Å‚ÌƒJƒEƒ“ƒ^
+int			Character::c_stamina_recovery	= 0;		//ƒXƒ^ƒ~ƒi‰ñ•œ‚ÌƒJƒEƒ“ƒ^
+bool		Character::c_stamina_dash		= true;		//ƒ_ƒbƒVƒ…‰Â”\‚©”»•Ê‚·‚éƒtƒ‰ƒO
+bool		Character::c_stamina_fatigue	= false;	//©‹@‚ª”æ˜Jó‘Ô‚©”»•Ê‚·‚éƒtƒ‰ƒO
 
 const float Character::scroll_width_space = 850;
 const float Character::scroll_height_space = 300;
@@ -40,17 +37,11 @@ Character& Character::GetInstance(void)
 	return instance;
 }
 
-//åˆæœŸåŒ–
+//‰Šú‰»
 void Character::Initialize(vivid::Vector2 rPos)
 {
-
 	accelerator = vivid::Vector2::ZERO;
-	cPos = {rPos.x, rPos.y - ch_height};
-	gPos = { 0.0f, 0.0f };
-	gauge_rect.top = 0;
-	gauge_rect.bottom = 30;
-	gauge_rect.left = 0;
-	gauge_rect.right = 20 * gauge;
+	cPos = {100.0f, rPos.y - ch_height};
 	chara_state = CHARA_STATE::WAIT;
 
 	c_anchor	= {ch_width / 2,ch_height / 2 };
@@ -73,17 +64,17 @@ void Character::Initialize(vivid::Vector2 rPos)
 
 void Character::Update(void)
 {
-	//è‡ªæ©Ÿã®æ“ä½œ
+	//©‹@‚Ì‘€ì
 	Control();
-	//ç”»é¢ç«¯ã®åˆ¤å®š
+	//‰æ–Ê’[‚Ì”»’è
 	CheckWindow();
-	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®å‡¦ç†
+	//ƒN[ƒ‹ƒ^ƒCƒ€‚Ìˆ—
 	CoolTime();
-	//ã‚¹ãƒ†ãƒ¼ã‚¸ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è
 	StageHit();
-	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ›´æ–°
+	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌXV
 	UpdateAnimation();
-	//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã®æ›´æ–°
+	//ƒXƒNƒ[ƒ‹‚ÌXV
 	Scroll_Update();
 }
 
@@ -92,25 +83,15 @@ void Character::Draw(void)
 	stamina_pos.x = (float)(((cPos.x + (ch_width / 2.0f))- (stamina_width / 2.0f)));
 	stamina_pos.y = (float)(cPos.y - 20);
 
-	vivid::Rect g_rect;
-	g_rect.top = 0;
-	g_rect.bottom = 30;
-	g_rect.left = 0;
-	g_rect.right = 200;
 
-	gauge_rect.top = 0;
-	gauge_rect.bottom = 30;
-	gauge_rect.left = 0;
-	gauge_rect.right = 20 * gauge;
-
-	//->è‡ªæ©Ÿã®rectæ›´æ–°
+	//->©‹@‚ÌrectXV
 	c_rect.top = 0;
 	c_rect.bottom = ch_height;
 	c_rect.left = ch_width * (c_anime_frame % c_change_anime_frame);
 	c_rect.right = c_rect.left + ch_width;
-	//<-è‡ªæ©Ÿã®rectæ›´æ–°
+	//<-©‹@‚ÌrectXV
 	
-	//->ã‚¹ã‚¿ãƒŸãƒŠã®rectæ›´æ–°
+	//->ƒXƒ^ƒ~ƒi‚ÌrectXV
 	stamina_rect.top = 0;
 	stamina_rect.bottom = stamina_height;
 	if (c_stamina_dash == true)
@@ -122,26 +103,24 @@ void Character::Draw(void)
 		stamina_rect.left = stamina_width * c_stamina_gauge;
 	}
 	stamina_rect.right = stamina_rect.left + stamina_width;
-	//<-ã‚¹ã‚¿ãƒŸãƒŠã®rectæ›´æ–°
+	//<-ƒXƒ^ƒ~ƒi‚ÌrectXV
 
 	vivid::DrawTexture(c_image[(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
-	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xffffffff, g_rect);
-	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xff00ffff, gauge_rect);
 	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 
 #ifdef _DEBUG
 	if (skill_active_flag == false)
-		vivid::DrawText(40, "ã™ãã‚‹ã¤ã‹ã£ã¦ãªã„ã‚ˆãƒ¼", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
+		vivid::DrawText(40, "‚·‚«‚é‚Â‚©‚Á‚Ä‚È‚¢‚æ[", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
 	if (skill_active_flag)
-		vivid::DrawText(40, "ã™ãã‚‹ã¤ã‹ã†ã‚ˆãƒ¼", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
+		vivid::DrawText(40, "‚·‚«‚é‚Â‚©‚¤‚æ[", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
 	if (chara_skill == CHARA_SKILL::ANIMALLEG)
-		vivid::DrawText(40, "ã‚ã—ã¤ã‚ˆã„ã‚ˆãƒ¼", vivid::Vector2(0.0f, 100.0f), 0xff00ffff);
+		vivid::DrawText(40, "‚ ‚µ‚Â‚æ‚¢‚æ[", vivid::Vector2(0.0f, 100.0f), 0xff00ffff);
 	if (chara_skill == CHARA_SKILL::INVISIBLE)
-		vivid::DrawText(40, "ã‚ã«ã¿ãˆãªã„ã‚ˆãƒ¼", vivid::Vector2(0.0f, 150.0f), 0xff00ffff);
+		vivid::DrawText(40, "‚ß‚É‚İ‚¦‚È‚¢‚æ[", vivid::Vector2(0.0f, 150.0f), 0xff00ffff);
 	if (skill_cool_flag)
-		vivid::DrawText(40, "ã‚¹ã‚­ãƒ«ã‚¯ãƒ¼ãƒ«ã ã‚ˆãƒ¼", vivid::Vector2(0.0f, 200.0f), 0xff00ffff);
-	vivid::DrawText(40,"ã‚­ãƒ£ãƒ©é€Ÿåº¦ï¼š" +  std::to_string(m_Velocity.x), vivid::Vector2(0.0f, 250.0f), 0xff00ffff);
-	vivid::DrawText(40, "ã‚­ãƒ£ãƒ©ã®è‰²ï¼›" + std::to_string(color), vivid::Vector2(0.0f, 300.0f), 0xff00ffff);
+		vivid::DrawText(40, "ƒXƒLƒ‹ƒN[ƒ‹‚¾‚æ[", vivid::Vector2(0.0f, 200.0f), 0xff00ffff);
+	vivid::DrawText(40,"ƒLƒƒƒ‰‘¬“xF" +  std::to_string(m_Velocity.x), vivid::Vector2(0.0f, 250.0f), 0xff00ffff);
+	vivid::DrawText(40, "ƒLƒƒƒ‰‚ÌFG" + std::to_string(color), vivid::Vector2(0.0f, 300.0f), 0xff00ffff);
 #endif
 }
 
@@ -151,32 +130,32 @@ void Character::Finalize(void)
 
 void Character::StageHit()
 {
-	//å·¦
+	//¶
 	if (cPos.x < Stage::GetInstance().GetLWall(cPos, ch_width, ch_height))
 	{
 		cPos.x = Stage::GetInstance().GetLWall(cPos, ch_width, ch_height);
 	}
-	//å³
+	//‰E
 	if (cPos.x + ch_width > Stage::GetInstance().GetRWall(cPos, ch_width, ch_height))
 	{
 		cPos.x = Stage::GetInstance().GetRWall(cPos, ch_width, ch_height) - ch_width;
 	}
-	//å¤©äº•
+	//“Vˆä
 	if (cPos.y < Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height))
 	{	
 		cPos.y = Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height);
 	}
-	//åœ°é¢
+	//’n–Ê
 	RoundHit(Stage::GetInstance().GetRoundHeight(cPos, ch_width, ch_height));
 }
 void Character::HStageHit()
 {
-	//å·¦
+	//¶
 	if (cPos.x < Stage::GetInstance().GetLWall(cPos, ch_width, ch_height))
 	{
 		cPos.x = Stage::GetInstance().GetLWall(cPos, ch_width, ch_height);
 	}
-	//å³
+	//‰E
 	if (cPos.x + ch_width > Stage::GetInstance().GetRWall(cPos, ch_width, ch_height))
 	{
 		cPos.x = Stage::GetInstance().GetRWall(cPos, ch_width, ch_height) - ch_width;
@@ -185,9 +164,9 @@ void Character::HStageHit()
 
 void Character::VStageHit()
 {
-	//åœ°é¢
+	//’n–Ê
 	RoundHit(Stage::GetInstance().GetRoundHeight(cPos, ch_width, ch_height));
-	//å¤©äº•
+	//“Vˆä
 	if (cPos.y < Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height))
 	{
 		cPos.y = Stage::GetInstance().GetCeiling(cPos, ch_width, ch_height);
@@ -195,42 +174,42 @@ void Character::VStageHit()
 	}
 }
 
-//ç”»é¢ç«¯ã®å½“ãŸã‚Šåˆ¤å®š
+//‰æ–Ê’[‚Ì“–‚½‚è”»’è
 void Character::CheckWindow(void)
 {
-	//ç”»é¢ã®å·¦ç«¯
+	//‰æ–Ê‚Ì¶’[
 	if (cPos.x < 0.0f + Scroll.x)
 	{
 		cPos.x = 0.0f + Scroll.x;
 	}
-	//ç”»é¢ã®å³ç«¯
+	//‰æ–Ê‚Ì‰E’[
 	if (cPos.x + ch_width > vivid::WINDOW_WIDTH + Scroll.x)
 	{
 		cPos.x = vivid::WINDOW_WIDTH - ch_width + Scroll.x;
 	}
-	//ç”»é¢ã®å¤©äº•
+	//‰æ–Ê‚Ì“Vˆä
 	if (cPos.y < 0.0f + Scroll.y)
 	{
 		cPos.y = 0.0f + Scroll.y;
 	}
-	//ç”»é¢ã®åº•è¾º
+	//‰æ–Ê‚Ì’ê•Ó
 	if (cPos.y + ch_height > vivid::WINDOW_HEIGHT + Scroll.y)
 	{
 		cPos.y = vivid::WINDOW_HEIGHT - ch_height + Scroll.y;
 	}
 }
 
-//è‡ªæ©Ÿã®æ“ä½œ
+//©‹@‚Ì‘€ì
 void Character::Control(void)
 {
 	namespace keyboard = vivid::keyboard;
 
 	accelerator = vivid::Vector2::ZERO;
 
-	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯walk_speedã«ã™ã‚‹
+	//ƒfƒtƒHƒ‹ƒg‚Íwalk_speed‚É‚·‚é
 	ch_speed = walk_speed;
 
-	//ä¸€å®šå€¤ã‚’è¶…ãˆãŸã‚‰é€Ÿåº¦ã‚’0ã«ã—ã¦æ…£æ€§ã®ç§»å‹•ã‚’æ­¢ã‚ã‚‹
+	//ˆê’è’l‚ğ’´‚¦‚½‚ç‘¬“x‚ğ0‚É‚µ‚ÄŠµ«‚ÌˆÚ“®‚ğ~‚ß‚é
 	if (abs(m_Velocity.x) < cut_speed)
 	{
 		m_Velocity.x = 0.0f;
@@ -243,7 +222,7 @@ void Character::Control(void)
 	if (m_LandingFlag)
 		chara_state = CHARA_STATE::WAIT;
 
-	//å·¦SHIFTã‚’æŠ¼ã—ã¦ã„ã‚‹é–“ã¯dash_speedã«ãªã‚‹
+	//¶SHIFT‚ğ‰Ÿ‚µ‚Ä‚¢‚éŠÔ‚Ídash_speed‚É‚È‚é
 	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
 	{
 		ch_speed = dash_speed;
@@ -251,7 +230,7 @@ void Character::Control(void)
 			chara_state = CHARA_STATE::WAIT;
 	}
 
-	//å·¦CTRLã‚’æŠ¼ã—ã¦ã„ã‚‹é–“ã¯sneak_speedã«ãªã‚‹
+	//¶CTRL‚ğ‰Ÿ‚µ‚Ä‚¢‚éŠÔ‚Ísneak_speed‚É‚È‚é
 	if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
 	{
 		ch_speed = sneak_speed;
@@ -259,25 +238,25 @@ void Character::Control(void)
 			chara_state = CHARA_STATE::SNEAKWAIT;
 	}
 
-	//ã‚¹ã‚¿ãƒŸãƒŠãŒ0ã§ã¯ãªãèµ°ã£ã¦ã„ãªã„æ™‚ã¯ã‚¹ã‚¿ãƒŸãƒŠãŒå›å¾©ã™ã‚‹
+	//ƒXƒ^ƒ~ƒi‚ª0‚Å‚Í‚È‚­‘–‚Á‚Ä‚¢‚È‚¢‚ÍƒXƒ^ƒ~ƒi‚ª‰ñ•œ‚·‚é
 	if (!(chara_state == CHARA_STATE::RUN) && c_stamina_dash)
 	{
 		RecoveryStamina();
 	}
 
-	//ã‚¹ã‚¿ãƒŸãƒŠã‚²ãƒ¼ã‚¸ãŒ0ã®æ™‚ã¯fatigue_speedã«ãªã‚‹
+	//ƒXƒ^ƒ~ƒiƒQ[ƒW‚ª0‚Ì‚Ífatigue_speed‚É‚È‚é
 	if (!c_stamina_dash)
 	{
 		LimitStamina();
 	}
 
-	//Eã‚­ãƒ¼ã‚’æŠ¼ã™ã¨ã‚¹ã‚­ãƒ«ãŒåˆ‡ã‚Šæ›¿ã‚ã‚‹
+	//EƒL[‚ğ‰Ÿ‚·‚ÆƒXƒLƒ‹‚ªØ‚è‘Ö‚í‚é
 	if (keyboard::Trigger(keyboard::KEY_ID::E))
 	{
 		ChangeSkill();
 	}
 
-	//Aã‚’æŠ¼ã—ã¦ã„ã‚‹é–“ã¯å·¦ç§»å‹•
+	//A‚ğ‰Ÿ‚µ‚Ä‚¢‚éŠÔ‚Í¶ˆÚ“®
 	if (keyboard::Button(keyboard::KEY_ID::A))
 	{
 		accelerator.x = -ch_speed;
@@ -285,7 +264,7 @@ void Character::Control(void)
 		CheckMoveState();
 	}
 
-	//Dã‚’æŠ¼ã—ã¦ã„ã‚‹é–“ã¯å³ç§»å‹•
+	//D‚ğ‰Ÿ‚µ‚Ä‚¢‚éŠÔ‚Í‰EˆÚ“®
 	if (keyboard::Button(keyboard::KEY_ID::D))
 	{
 		accelerator.x = ch_speed;
@@ -293,18 +272,18 @@ void Character::Control(void)
 		CheckMoveState();
 	}
 
-	//ã‚¸ãƒ£ãƒ³ãƒ—ã®å‡¦ç†
-	//SPACEã‚’æŠ¼ã™ã¨ã‚¸ãƒ£ãƒ³ãƒ—å‹•ä½œã«ãªã‚‹
+	//ƒWƒƒƒ“ƒv‚Ìˆ—
+	//SPACE‚ğ‰Ÿ‚·‚ÆƒWƒƒƒ“ƒv“®ì‚É‚È‚é
 	if (keyboard::Trigger(keyboard::KEY_ID::SPACE) && m_LandingFlag)
 	{
 		accelerator.y += jump_speed;
 		chara_state = CHARA_STATE::JUMP;
 	}
 
-	//Qã‚­ãƒ¼ã‚’æŠ¼ã™ã¨ã‚¹ã‚­ãƒ«ãŒç™ºå‹•ã™ã‚‹
+	//QƒL[‚ğ‰Ÿ‚·‚ÆƒXƒLƒ‹‚ª”­“®‚·‚é
 	if (keyboard::Trigger(keyboard::KEY_ID::Q))
 	{
-		//é‡è¤‡ã—ãªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã«ãƒ•ãƒ©ã‚°ã‚’é€šã™
+		//d•¡‚µ‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚Éƒtƒ‰ƒO‚ğ’Ê‚·
 		if (skill_active_flag == false && skill_cool_flag == false)
 		{
 			skill_active_flag = true;
@@ -313,7 +292,7 @@ void Character::Control(void)
 
 	SkillMove();
 
-	//è½ä¸‹å‡¦ç†
+	//—‰ºˆ—
 	if (m_LandingFlag == false||1)
 	{
 		accelerator.y += fall_speed;
@@ -326,14 +305,14 @@ void Character::Control(void)
 	cPos.y += m_Velocity.y;
 	VStageHit();
 
-	//ç”»é¢ç«¯ã®åˆ¤å®š
+	//‰æ–Ê’[‚Ì”»’è
 	CheckWindow();
 
-	//ç§»å‹•ã«æ…£æ€§ã‚’ã¤ã‘ã‚‹
+	//ˆÚ“®‚ÉŠµ«‚ğ‚Â‚¯‚é
 	m_Velocity.x *= m_friction;
 }
 
-//åœ°é¢ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+//’n–Ê‚Æ‚Ì“–‚½‚è”»’è
 void Character::RoundHit(float rHeight)
 {
 	if (cPos.y + ch_height < rHeight)
@@ -343,12 +322,12 @@ void Character::RoundHit(float rHeight)
 		if (cPos.y + ch_height > rHeight && cPos.y < rHeight) {
 			cPos.y = rHeight - ch_height;
 			m_Velocity.y = 0.0f;
-			//åœ°é¢ã¨å½“ãŸã£ãŸã‚‰æ¥åœ°ãƒ•ãƒ©ã‚°ã‚’trueã«ã™ã‚‹
+			//’n–Ê‚Æ“–‚½‚Á‚½‚çÚ’nƒtƒ‰ƒO‚ğtrue‚É‚·‚é
 			m_LandingFlag = true;
 		}
 }
 
-//å£ã®è£ã«è‡ªæ©ŸãŒã™ã¹ã¦éš ã‚Œã¦ã„ãŸã‚‰è‰²ã‚’å¤‰ãˆã‚‹
+//•Ç‚Ì— ‚É©‹@‚ª‚·‚×‚Ä‰B‚ê‚Ä‚¢‚½‚çF‚ğ•Ï‚¦‚é
 bool Character::CheckWallHit(vivid::Vector2 wPos, float wWidth, float wHeight)
 {
 	return Stage::GetInstance().CheckHitWallPlayer(cPos, ch_height, ch_width);
@@ -362,40 +341,40 @@ bool Character::CheckWallHit(vivid::Vector2 wPos, float wWidth, float wHeight)
 	}
 }
 
-//æ•µã®è¦–ç•Œã«å…¥ã£ãŸã‚‰trueã‚’è¿”ã™ã€è¦–ç•Œã®å¤–ã®æ™‚ã¯falseã‚’è¿”ã™
+//“G‚Ì‹ŠE‚É“ü‚Á‚½‚çtrue‚ğ•Ô‚·A‹ŠE‚ÌŠO‚Ì‚Ífalse‚ğ•Ô‚·
 bool Character::CheckEnemyHit(vivid::Vector2 ePos, float eRadius)
 {
-	//ç‚¹ã¨çŸ©å½¢ã®åˆ¤å®šãã®1(æ¨ªé•·)
+	//“_‚Æ‹éŒ`‚Ì”»’è‚»‚Ì1(‰¡’·)
 	bool result_h = ePos.x > cPos.x - eRadius
 		&& ePos.x < cPos.x + ch_width + eRadius
 		&& ePos.y > cPos.y
 		&& ePos.y < cPos.y + ch_height;
 
-	//ç‚¹ã¨çŸ©å½¢ã®åˆ¤å®šãã®2(ç¸¦é•·)
+	//“_‚Æ‹éŒ`‚Ì”»’è‚»‚Ì2(c’·)
 	bool result_v = ePos.x > cPos.x
 		&& ePos.x < cPos.x + ch_width
 		&& ePos.y > cPos.y - eRadius
 		&& ePos.y < cPos.y + ch_height + eRadius;
 
-	//ç‚¹ã¨å††ã®åˆ¤å®š	
-	//è‡ªæ©Ÿã®å·¦ä¸Š(LeftUpper)
+	//“_‚Æ‰~‚Ì”»’è	
+	//©‹@‚Ì¶ã(LeftUpper)
 	vivid::Vector2 v = ePos - cPos;
 	bool result_lu = v.Length() <= eRadius;		
-	//è‡ªæ©Ÿã®å³ä¸Š(RightUpper)
+	//©‹@‚Ì‰Eã(RightUpper)
 	v = ePos - vivid::Vector2(cPos.x + ch_width, cPos.y);
 	bool result_ru = v.Length() <= eRadius;
-	//è‡ªæ©Ÿã®å·¦ä¸‹(LeftDown)
+	//©‹@‚Ì¶‰º(LeftDown)
 	v = ePos - vivid::Vector2(cPos.x, cPos.y + ch_height);
 	bool result_ld = v.Length() <= eRadius;
-	//è‡ªæ©Ÿã®å³ä¸‹(RightDown)
+	//©‹@‚Ì‰E‰º(RightDown)
 	v = ePos - vivid::Vector2(cPos.x + ch_width, cPos.y + ch_height);
 	bool result_rd = v.Length() <= eRadius;
-	//ä¸Šè¨˜ã®åˆ¤å®šã‹ã‚‰å½“ãŸã£ã¦ã„ã‚‹ã‹(è¦–ç•Œã«å…¥ã£ã¦ã„ã‚‹ã‹)ã‚’åˆ¤æ–­ã™ã‚‹
+	//ã‹L‚Ì”»’è‚©‚ç“–‚½‚Á‚Ä‚¢‚é‚©(‹ŠE‚É“ü‚Á‚Ä‚¢‚é‚©)‚ğ”»’f‚·‚é
 	if (result_h || result_v || result_lu || result_ru || result_ld || result_rd)
 	{
 		return true;
 	}
-	//å½“ãŸã£ã¦ã„ãªã„å ´åˆã¯falseã‚’è¿”ã™
+	//“–‚½‚Á‚Ä‚¢‚È‚¢ê‡‚Ífalse‚ğ•Ô‚·
 	else
 	{
 		return false;
@@ -404,7 +383,7 @@ bool Character::CheckEnemyHit(vivid::Vector2 ePos, float eRadius)
 
 bool Character::CheckObtainItem(vivid::Vector2 iPos, vivid::Vector2 iCenter, float iWidth, float iHeight)
 {
-	//å¯¾è§’ç·šã¨ãƒ™ã‚¯ãƒˆãƒ«ã§å‡¦ç†ã‚’è¡Œã†(å˜ãƒ–ãƒ­ãƒƒã‚¯ã«ä½¿ç”¨æ¨å¥¨)
+	//‘ÎŠpü‚ÆƒxƒNƒgƒ‹‚Åˆ—‚ğs‚¤(’PƒuƒƒbƒN‚Ég—p„§)
 	float a1 = -iHeight / iWidth;
 	float a2 = iHeight / iWidth;
 	float a3 = (cPos.y - iCenter.y) / (cPos.x - iPos.x);
@@ -421,29 +400,26 @@ bool Character::CheckObtainItem(vivid::Vector2 iPos, vivid::Vector2 iCenter, flo
 	return false;
 }
 
-//å½“ãŸã£ãŸæ™‚ã«ãã‚Œãã‚Œè‰²ã‚’å¤‰ãˆã‚‹
+//“–‚½‚Á‚½‚É‚»‚ê‚¼‚êF‚ğ•Ï‚¦‚é
 void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, vivid::Vector2 ePos, float eRadius)
 {
-	//å£ã«å½“ãŸã£ãŸæ™‚(éšœå®³ç‰©ã«éš ã‚ŒãŸã¨ã)
+	//•Ç‚É“–‚½‚Á‚½(áŠQ•¨‚É‰B‚ê‚½‚Æ‚«)
 	if (CheckWallHit(wPos, wWidth, wHeight))
 	{
-		DownerGauge();
 #ifdef _DEGUB
 		color = 0xff0000ff;
 #endif // DEBUG
 	}
-	//éšœå®³ç‰©ã®å¤–ã§æ•µã®è¦–ç•Œã«å…¥ã£ãŸæ™‚
+	//áŠQ•¨‚ÌŠO‚Å“G‚Ì‹ŠE‚É“ü‚Á‚½
 	else if (CheckEnemyHit(ePos, eRadius))
 	{
-		UpperGauge();
 #ifdef _DEBUG
 		color = 0xffff0000;
 #endif // DEBUG
 	}
-	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®çŠ¶æ…‹
+	//ƒfƒtƒHƒ‹ƒg‚Ìó‘Ô
 	else
 	{
-		DownerGauge();
 #ifdef _DEBUG
 		color = 0xffffffff;
 #endif // DEBUG
@@ -452,29 +428,25 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, vivid
 
 void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool EnemyHitFlg)
 {	
-	//å£ã«å½“ãŸã£ãŸæ™‚(éšœå®³ç‰©ã«éš ã‚ŒãŸã¨ã)
+	//•Ç‚É“–‚½‚Á‚½(áŠQ•¨‚É‰B‚ê‚½‚Æ‚«)
 	if (CheckWallHit(wPos, wWidth, wHeight))
 	{
-		DownerGauge();
-
 #ifdef _DEBUG
 		color = 0xff0000ff;
 #endif // DEBUG
 		cShielding = true;
 	}
-	//éšœå®³ç‰©ã®å¤–ã§æ•µã®è¦–ç•Œã«å…¥ã£ãŸæ™‚
+	//áŠQ•¨‚ÌŠO‚Å“G‚Ì‹ŠE‚É“ü‚Á‚½
 	else if (EnemyHitFlg)
 	{
-		UpperGauge();
 #ifdef _DEBUG
 		color = 0xffff0000;
 #endif // DEBUG
 		cShielding = false;
 	}
-	//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®çŠ¶æ…‹
+	//ƒfƒtƒHƒ‹ƒg‚Ìó‘Ô
 	else
 	{
-		DownerGauge();
 #ifdef _DEBUG
 		color = 0xffffffff;
 #endif // DEBUG
@@ -506,41 +478,9 @@ bool Character::checkPut(void)
 	}
 }
 
-void Character::UpperGauge(void)
-{
-	down_gauge_count = 0;
-	gauge_count_frame++;
-	if (gauge_count_frame == one_gauge_frame)
-	{
-		if (gauge < max_gauge)
-		{
-			gauge++;
-			gauge_count_frame = 0;
-		}
-		if (gauge >= max_gauge)
-		{
-			//çµ‚ã‚ã‚Š
-			vivid::DrawText(40, "ãŠã‚ã‚Šã ã‚ˆãƒ¼", vivid::Vector2(800.0f, 500.0f));
-		}
-	}
-}
-
-void Character::DownerGauge(void)
-{
-	down_gauge_count++;
-	if (down_gauge_count >= downer_frame)
-	{
-		if (gauge > 0)
-		{
-			gauge--;
-		}
-		down_gauge_count = 0;
-	}
-}
-
 void Character::UpdateAnimation(void)
 {
-	//çŠ¶æ…‹ã”ã¨ã«ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æœ€å¤§æšæ•°ã®è¨­å®š
+	//ó‘Ô‚²‚Æ‚ÉƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÅ‘å–‡”‚Ìİ’è
 	switch (chara_state)
 	{
 	case CHARA_STATE::WAIT:
@@ -563,7 +503,7 @@ void Character::UpdateAnimation(void)
 		break;
 	}
 
-	//->ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ›´æ–°
+	//->ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌXV
 	c_anime_timer++;
 
 	if (c_anime_timer >= c_change_anime_timer)
@@ -575,7 +515,7 @@ void Character::UpdateAnimation(void)
 		}
 		c_anime_timer = 0;
 	}
-	//<-ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ›´æ–°
+	//<-ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌXV
 }
 
 void Character::CheckMoveState(void)
@@ -600,24 +540,24 @@ void Character::CheckMoveState(void)
 
 void Character::DashStamina(void)
 {
-	//ã‚¹ã‚¿ãƒŸãƒŠã‚²ãƒ¼ã‚¸ã«æ®‹é‡ãŒã‚ã‚‹æ™‚ã®å‡¦ç†
+	//ƒXƒ^ƒ~ƒiƒQ[ƒW‚Éc—Ê‚ª‚ ‚é‚Ìˆ—
 	if (c_stamina_gauge > 0)
 	{
-	//ã‚¹ã‚¿ãƒŸãƒŠæ¶ˆè²»ã®ã‚«ã‚¦ãƒ³ã‚¿ã‚’é€²ã‚ã‚‹
+	//ƒXƒ^ƒ~ƒiÁ”ï‚ÌƒJƒEƒ“ƒ^‚ği‚ß‚é
 		c_stamina_count++;
-	//ã‚«ã‚¦ãƒ³ã‚¿ãŒåŸºæº–å€¤ã«é”ã—ãŸã‚‰ã‚¹ã‚¿ãƒŸãƒŠã‚²ãƒ¼ã‚¸æ¸›ã‚‰ã™
+	//ƒJƒEƒ“ƒ^‚ªŠî€’l‚É’B‚µ‚½‚çƒXƒ^ƒ~ƒiƒQ[ƒWŒ¸‚ç‚·
 		if (c_stamina_count >= 60)
 		{
 			c_stamina_gauge--;
 			c_stamina_count = 0;
 		}
 	}
-	//ã‚¹ã‚¿ãƒŸãƒŠãŒ0ã«ãªã£ãŸå¾Œã®å‡¦ç†
+	//ƒXƒ^ƒ~ƒi‚ª0‚É‚È‚Á‚½Œã‚Ìˆ—
 	else
 	{
 		c_stamina_dash = false;
 	}
-	//ã‚¹ã‚¿ãƒŸãƒŠå›å¾©é–‹å§‹ã®ã‚«ã‚¦ãƒ³ã‚¿ã®ãƒªã‚»ãƒƒãƒˆ
+	//ƒXƒ^ƒ~ƒi‰ñ•œŠJn‚ÌƒJƒEƒ“ƒ^‚ÌƒŠƒZƒbƒg
 	c_stamina_recovery = 0;
 }
 
@@ -653,10 +593,10 @@ void Character::LimitStamina(void)
 	}
 }
 
-//ã‚¹ã‚­ãƒ«ç™ºå‹•å¾Œã®å‡¦ç†
+//ƒXƒLƒ‹”­“®Œã‚Ìˆ—
 void Character::SkillMove(void)
 {
-	//ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ•ãƒ©ã‚°ãŒtrueã®æ™‚ã«å‡¦ç†ã‚’è¡Œã†
+	//ƒXƒLƒ‹‚ÌƒAƒNƒeƒBƒuƒtƒ‰ƒO‚ªtrue‚Ì‚Éˆ—‚ğs‚¤
 	if (skill_active_flag)
 	{
 		active_count++;
@@ -672,7 +612,7 @@ void Character::SkillMove(void)
 				break;
 			}
 		}
-		//ã‚¿ã‚¤ãƒãƒ¼ãŒè¦å®šå€¤ã‚’è¶…ãˆãŸã‚‰å„æ•°å€¤ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+		//ƒ^ƒCƒ}[‚ª‹K’è’l‚ğ’´‚¦‚½‚çŠe”’l‚ğƒŠƒZƒbƒg‚·‚é
 		if (active_count >= activation_time)
 		{
 			switch (chara_skill)
@@ -693,7 +633,7 @@ void Character::SkillMove(void)
 	}
 }
 
-//ã‚¹ã‚­ãƒ«ã®åˆ‡ã‚Šæ›¿ãˆå‡¦ç†
+//ƒXƒLƒ‹‚ÌØ‚è‘Ö‚¦ˆ—
 void Character::ChangeSkill(void)
 {
 	if (skill_active_flag == false)

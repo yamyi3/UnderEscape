@@ -105,7 +105,6 @@ void Enemy::Initialize(void)
 
 void Enemy::Update(void)
 {
-	vivid::Vector2 vel = { 0.0,0.0 };
 	Sight_Check_Timer++;
 	switch (eStatus)
 	{
@@ -114,8 +113,8 @@ void Enemy::Update(void)
 	case eSTATUS::Wandering:
 		if (eVector == 1)
 		{
-			vel.x += eSpeed;
-			if (ePos.x + vel.x >= Rwall)
+			ePos.x += eSpeed;
+			if (ePos.x >= Rwall)
 			{
 				eVector *= -1;
 				if (Lwall == Rwall)
@@ -124,8 +123,8 @@ void Enemy::Update(void)
 		}
 		else
 		{
-			vel.x -= eSpeed;
-			if (ePos.x + vel.x <= Lwall)
+			ePos.x -= eSpeed;
+			if (ePos.x <= Lwall)
 			{
 				eVector *= -1;
 				if (Lwall == Rwall)
@@ -138,7 +137,7 @@ void Enemy::Update(void)
 		{
 			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
 			{
-				vel.x += eChaseSpeed;
+				ePos.x += eChaseSpeed;
 				eVector = 1;
 			}
 		}
@@ -146,11 +145,11 @@ void Enemy::Update(void)
 		{
 			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
 			{
-				vel.x -= eChaseSpeed;
+				ePos.x -= eChaseSpeed;
 				eVector = -1;
 			}
 		}
-		if (abs(ChasePos.x - (ePos.x + vel.x)) < Source_End_Range)
+		if (abs(ChasePos.x - ePos.x) < Source_End_Range)
 		{
 			if (Sight_Check_Timer >= 10)
 			{
@@ -178,22 +177,6 @@ void Enemy::Update(void)
 		break;
 	}
 
-	//地面
-	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size);
-
-	if (e_wool_jump())
-	{
-		jump();
-	}
-
-	ePos = Gravity(ePos, eGround, e_height_size, eAnchor, enemy_jump_height, enemy_jump_upspeed, enemy_jump_downspeed);
-	//天井
-	if (ePos.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
-	{
-		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size);
-	}
-
-	ePos.x += vel.x;
 
 	//左
 	if (ePos.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size))
@@ -215,10 +198,20 @@ void Enemy::Update(void)
 			WallTouchFlg = true;
 		}
 	}
+	//天井
+	if (ePos.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
+	{
+		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size);
+	}
+	//地面
+	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size);
 
+	if (e_wool_jump())
+	{
+		jump();
+	}
 
-
-
+	ePos = Gravity(ePos, eGround, e_height_size, eAnchor, enemy_jump_height, enemy_jump_upspeed, enemy_jump_downspeed);
 
 	eCircleCenterPos.x = ePos.x - e_width_size / 2/* + eCircleRadius*/;
 	eCircleCenterPos.y = ePos.y - e_height_size / 2/* + eCircleRadius*/;
@@ -398,21 +391,6 @@ vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 6
 		}
 	}
 	return pos;
-}
-
-float Enemy::Gravity(float height, float upspeed, float downspeed)
-{
-	float vel=0.0f;
-	height /= 57;
-	vel += sin(gravity * 3.14 / 100) * height * upspeed;
-	if (gravity >= 100 - (0.5 * downspeed))
-	{
-		gravity -= upspeed;
-		if (gravity <= 100 - (0.5 * downspeed))
-			gravity = 100 - (0.5 * downspeed);
-	}
-
-	return vel;
 }
 
 void Enemy::player_check(bool shielding)

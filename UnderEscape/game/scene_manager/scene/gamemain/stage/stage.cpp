@@ -186,94 +186,97 @@ void Stage::ScrollStage(void)
 
 float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
 {
-	int WidthXNum = width / g_map_chip_size+1;
+	int Lx = pos.x / g_map_chip_size;
+	int Rx = (pos.x + width - 1) / g_map_chip_size;
 	int Y = (pos.y + height) / g_map_chip_size;
 	int RoundY = g_map_chip_count_height;
-	int n = 0;
-	do{
-		float XPos = (pos.x + ((width / WidthXNum) * n));
-		if (n == 0)XPos = pos.x + 10;
-		if (n == WidthXNum)XPos = pos.x + width-10;
-		int X = XPos / g_map_chip_size;
-		int WY=RoundY;
-		for (int i = Y; g_map_terrain[i - 1][X] == false; i++)
-			WY = i;
-			if (RoundY > WY)
-				RoundY = WY;
-		n++;
-	} while (n <= WidthXNum);
+	for (int i = Y; g_map_terrain[i - 1][Lx] == false; i++)
+		RoundY = i;
+	if (Lx != Rx)
+	{
+		int Ry = RoundY;
+		for (int i = Y; g_map_terrain[i - 1][Rx] == false; i++)
+			Ry = i;
+		if (RoundY > Ry)
+			RoundY = Ry;
+	}
 	return RoundY * g_map_chip_size;
 }
 
 float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
 {
-	int HeightYNum = height / g_map_chip_size + 1;
-	int RWallX = g_map_chip_count_width;
+	int TopY = (pos.y + 20) / g_map_chip_size;
+	int MiddleY = (pos.y + height / 2) / g_map_chip_size;
+	int BotomY = (pos.y + height - 10) / g_map_chip_size;
+	int TopX = g_map_chip_count_width; int BotomX = g_map_chip_count_width;
 	int X = (pos.x + width) / g_map_chip_size;
+	int WallX = 0;
+	for (int i = X; g_map_terrain[TopY][i - 1] == false; i++)
+		TopX = i;
+	for (int i = X; g_map_terrain[BotomY][i - 1] == false; i++)
+		BotomX = i;
+	if (TopX < BotomX)
+		WallX = TopX;
+	else
+		WallX = BotomX;
+	if (MiddleY != TopY && MiddleY != BotomY)
+	{
+		int MiddleX = g_map_chip_count_width;
+		for (int i = X + 1; g_map_terrain[MiddleY][i - 1] == false; i++)
+			MiddleX = i;
+		if (MiddleX < WallX)
+			WallX = MiddleX;
+	}
 
-	int n = 0;
-	do {
-		float YPos = (pos.y + ((height / HeightYNum) * n));
-		if (n == 0)YPos = pos.y + 10;
-		if (n == HeightYNum)YPos = pos.y + height - 10;
-		int Y = YPos / g_map_chip_size;
-		int WX = RWallX;
-		for (int i = X; g_map_terrain[Y][i - 1] == false; i++)
-			WX = i;
-		if (RWallX > WX)
-			RWallX = WX;
-		n++;
-	} while (n <= HeightYNum);
-
-
-	return RWallX * g_map_chip_size - 1;
+	return WallX * g_map_chip_size - 1;
 }
 
 float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
 {
-	int HeightYNum = height / g_map_chip_size + 1;
-	int LWallX = 0;
+	int TopY = (pos.y + 20) / g_map_chip_size;
+	int MiddleY = (pos.y + height / 2) / g_map_chip_size;
+	int BotomY = (pos.y + height - 10) / g_map_chip_size;
+	int TopX = 0; int BotomX = 0;
 	int X = (pos.x) / g_map_chip_size;
+	int WallX = 0;
+	for (int i = X; g_map_terrain[TopY][i + 1] == false; i--)
+		TopX = i;
+	for (int i = X; g_map_terrain[BotomY][i + 1] == false; i--)
+		BotomX = i;
+	if (TopX > BotomX)
+		WallX = TopX;
+	else
+		WallX = BotomX;
+	if (MiddleY != TopY && MiddleY != BotomY)
+	{
+		int MiddleX = 0;
+		for (int i = X - 1; g_map_terrain[MiddleY][i + 1] == false; i--)
+			MiddleX = i;
+		if (MiddleX > WallX)
+			WallX = MiddleX;
+	}
 
-	int n = 0;
-	do {
-		float YPos = (pos.y + ((height / HeightYNum) * n));
-		if (n == 0)YPos = pos.y + 10;
-		if (n == HeightYNum)YPos = pos.y + height - 10;
-		int Y = YPos / g_map_chip_size;
-		int WX = LWallX;
-		for (int i = X; g_map_terrain[Y][i + 1] == false; i--)
-			WX = i;
-		if (LWallX < WX)
-			LWallX = WX;
-		n++;
-	} while (n <= HeightYNum);
-
-
-	return (LWallX+1) * g_map_chip_size;
-
-
+	return (WallX + 1) * g_map_chip_size;
 }
 
 float Stage::GetCeiling(vivid::Vector2 pos, float width, float height)
 {
-	int WidthXNum = width / g_map_chip_size + 1;
+	int Lx = pos.x / g_map_chip_size;
+	int Rx = (pos.x + width - 1) / g_map_chip_size;
 	int Y = (pos.y) / g_map_chip_size;
 	int CeilingY = 0;
-	int n = 0;
-	do {
-		float XPos = (pos.x + ((width / WidthXNum) * n));
-		if (n == 0)XPos = pos.x + 10;
-		if (n == WidthXNum)XPos = pos.x + width - 10;
-		int X = XPos / g_map_chip_size;
-		int WY = 0;
-		for (int i = Y; g_map_terrain[i + 1][X] == false; i--)
-			WY = i;
-		if (CeilingY < WY)
-			CeilingY = WY;
-		n++;
-	} while (n <= WidthXNum);
-	return (CeilingY+1) * g_map_chip_size;
+	for (int i = Y; g_map_terrain[i + 1][Lx] == false; i--)
+		CeilingY = i;
+	if (Lx != Rx)
+	{
+		int Ry = 0;
+		for (int i = Y; g_map_terrain[i + 1][Rx] == false; i--)
+			Ry = i;
+		if (CeilingY < Ry)
+			CeilingY = Ry;
+	}
+
+	return (CeilingY + 1) * g_map_chip_size;
 }
 
 bool Stage::CheckHitWallPlayer(const vivid::Vector2& pos, int height, int width)

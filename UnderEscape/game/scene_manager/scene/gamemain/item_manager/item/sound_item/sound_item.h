@@ -28,10 +28,5 @@ private:
 	static const float item_width;		//アイテムオブジェクトの幅
 	static const float item_radius;		//アイテムオブジェクトの幅
 
-	//bool right_left_wall;
-	//bool down_wall;
-	//bool up_wall;
-		
-	
 };
 
