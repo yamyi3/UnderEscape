@@ -9,24 +9,27 @@ class SoundItem : public Item
 public:
 	SoundItem();
 	~SoundItem();
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	void Initialize(vivid::Vector2 position);
-	//•`‰æ
+	//æç”»
 	void Draw(void);
-	//ƒvƒŒƒCƒ„[‚ª‚Á‚Ä‚¢‚éó‘Ô‚Ìˆ—
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæŒã£ã¦ã„ã‚‹çŠ¶æ…‹ã®å‡¦ç†
 	void GetMove(vivid::Vector2, float, float);
-	//ƒvƒŒƒCƒ„[‚ª“Š‚°‚½Œã‚Ìˆ—(ƒ}ƒEƒXj
-	void UseMove(float, vivid::Vector2);
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæŠ•ã’ãŸå¾Œã®å‡¦ç†(ãƒã‚¦ã‚¹ï¼‰
+	void UseMove(vivid::Vector2);
 
 
 private:
-	float Xspeed ;						//”ò‹——£‚Ìƒ}ƒCƒiƒX”{—¦(X²)’l‚ğ¬‚³‚­‚·‚é‚Æ”ò‹——£‚ªL‚Ñ‚é
-	float Yspeed	;					//”ò‹——£‚Ìƒ}ƒCƒiƒX”{—¦(Y²)’l‚ğ¬‚³‚­‚·‚é‚Æ”ò‹——£‚ªL‚Ñ‚é
-	vivid::Vector2 Mouse;				//©ƒLƒƒƒ‰‚©‚ç‚Ìƒ}ƒEƒX‚ÌÀ•W
+	float Xspeed ;						//é£›è·é›¢ã®ãƒã‚¤ãƒŠã‚¹å€ç‡(Xè»¸)å€¤ã‚’å°ã•ãã™ã‚‹ã¨é£›è·é›¢ãŒä¼¸ã³ã‚‹
+	float Yspeed	;					//é£›è·é›¢ã®ãƒã‚¤ãƒŠã‚¹å€ç‡(Yè»¸)å€¤ã‚’å°ã•ãã™ã‚‹ã¨é£›è·é›¢ãŒä¼¸ã³ã‚‹
+	vivid::Vector2 Mouse;				//è‡ªã‚­ãƒ£ãƒ©ã‹ã‚‰ã®ãƒã‚¦ã‚¹ã®åº§æ¨™
 	
-	static const float item_height;		//ƒAƒCƒeƒ€ƒIƒuƒWƒFƒNƒg‚Ì‚‚³
-	static const float item_width;		//ƒAƒCƒeƒ€ƒIƒuƒWƒFƒNƒg‚Ì•
-	static const float item_radius;		//ƒAƒCƒeƒ€ƒIƒuƒWƒFƒNƒg‚Ì•
+	static const float item_height;		//ã‚¢ã‚¤ãƒ†ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®é«˜ã•
+	static const float item_width;		//ã‚¢ã‚¤ãƒ†ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¹…
+
+	static const float item_radius;		//ã‚¢ã‚¤ãƒ†ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¹…	
+
+	static const float item_radius;		//ã‚¢ã‚¤ãƒ†ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¹…
 
 };
 

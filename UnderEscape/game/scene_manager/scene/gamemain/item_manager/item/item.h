@@ -23,7 +23,7 @@ public:
     virtual void    Finalize(void);
 
 	// アイテムの保持
-    void CheckObject(vivid::Vector2 cPos);
+    void CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight);
 
     // 位置の取得 
     vivid::Vector2  GetPosition(void);
@@ -66,20 +66,19 @@ public:
     {
         return m_Height;
     }
+    void wallCheck();
     bool IsActive() const { return m_ActiveFlag; }
     void Destroy() { m_ActiveFlag = false; }
 protected:
 
     //プレイヤーが持っている状態の処理
     virtual void GetMove(vivid::Vector2 cPos, float cWidth, float cHeight);
-    //プレイヤーが置いた後の処理
-    virtual void PutMove(float);
+ 
     //プレイヤーが投げた後の処理(マウス）
-    virtual void UseMove(float, vivid::Vector2);
+    virtual void UseMove(vivid::Vector2);
 
    
     float                       Ga;					//重力加速度
-    float                       V;					//上昇する初速
     int                         m_Width;            //!< 幅 
     int                         m_Height;           //!< 高さ 
     float                       m_Radius;           //!< 半径 
@@ -99,4 +98,7 @@ protected:
 	static const float          throw_speed;		//アイテムオブジェクトの投げる速度
 	float                       item_fall;			//アイテムオブジェクトの落下速度
 	unsigned int                iColor;				//アイテムオブジェクトの色
+	bool						ceiling_wall;	    //天井と壁の判定フラグ
+	bool 					    left_right_wall;	//左右の壁の判定フラグ
+	bool                        ground_wall;		//床の判定フラグ
 };

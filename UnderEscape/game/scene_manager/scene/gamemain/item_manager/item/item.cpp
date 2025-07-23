@@ -18,6 +18,10 @@ Item::Item( ItemID id, ITEM_STATE state,float width,float heght,float radius)
 	, iPos(0.0f, 0.0f) 
 	, iCenter(0.0f, 0.0f) 
 	, item_fall(1.0f) 
+	, Ga(1.0f)
+	, ceiling_wall(false)
+	, left_right_wall(false)
+	, ground_wall(false)
 {
 }
 
@@ -45,11 +49,11 @@ void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeigh
 		GetMove(cPos, cWidth, cHeight);
 		break;
 	case ITEM_STATE::USE:
-		UseMove(rHeight, cPos);
+		wallCheck();
+		UseMove(cPos);
 		break;
 	case ITEM_STATE::PLACE:
-		CheckObject(cPos);
-		//PutMove(rHeight);
+		CheckObject(cPos,cWidth,cHeight);
 		break;
 	}
 
@@ -101,6 +105,36 @@ ItemID Item::GetBulletCategory(void)
 	return m_ItemID;
 }
 
+void Item::wallCheck()
+{
+	//å£åˆ¤å®š
+	//åœ°é¢åˆ¤å®š
+	if (Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height <iPos.y )
+	{
+		iPos.y = Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height;
+		ground_wall = true;
+	}
+	//å·¦å£åˆ¤å®š
+	if (Stage::GetInstance().GetLWall(iPos, m_Width, m_Height)> iPos.x)
+	{
+		iPos.x = Stage::GetInstance().GetLWall(iPos, m_Width, m_Height);
+		left_right_wall = true;
+	}
+	//å³å£åˆ¤å®š
+	if (Stage::GetInstance().GetRWall(iPos, m_Width, m_Height)-m_Width < iPos.x)
+	{
+		iPos.x = Stage::GetInstance().GetRWall(iPos, m_Width, m_Height) - m_Width;
+		left_right_wall = true;
+	}
+	//å¤©äº•åˆ¤å®š
+	if (Stage::GetInstance().GetCeiling(iPos, m_Width, m_Height) > iPos.y)
+	{
+		iPos.y = Stage::GetInstance().GetCeiling(iPos, m_Width, m_Height);
+		ceiling_wall = true;
+		Ga = 1.0f; //å¤©äº•ã«å½“ãŸã£ãŸã‚‰é‡åŠ›åŠ é€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
+	}
+}
+
 void Item::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 {
 	if (catchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
@@ -118,53 +152,49 @@ void Item::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 		iColor = 0xffff00ff;
 	}
 	Ga = 1.0;
-	V = 0.0;
+	m_Velocity = vivid::Vector2(0.0f, 0.0f); // é‡åŠ›åŠ é€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
 }
 
-void Item::PutMove(float rHeight)
-{
-	if (iPos.y + m_Height < rHeight)
-		iPos.y += 7.5;
-	else
-	{
-		iPos.y = rHeight - m_Height;
-	}
-	iColor = 0xffffffff;
 
-}
 
-void Item::UseMove(float rHeight, vivid::Vector2 c_pos)
+void Item::UseMove( vivid::Vector2 c_pos)
 {
 	catchFlg = false;
-	if (iPos.y + m_Height < rHeight)
+	if (iPos.y + m_Height <1)
 	{
 		iPos.x += 3;
 		iPos.y +=  (item_fall * Ga);
 		iColor = 0xff00ffff;
 	}
 
-	if (iPos.y + m_Height >= rHeight)
+	if (iPos.y + m_Height >= 1)
 	{
-		iPos.y = rHeight - m_Height;
+		iPos.y = 1 - m_Height;
 		m_ItemState = ITEM_STATE::PLACE;
 		iColor = 0xffffffff;
 	}
 	Ga += 0.981;
 }
 
-void Item::CheckObject(vivid::Vector2 cPos)//ƒAƒCƒeƒ€‚ğ‚Âi“–‚½‚è”»’èj
+void Item::CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight)//ã‚¢ã‚¤ãƒ†ãƒ ã‚’æŒã¤ï¼ˆå½“ãŸã‚Šåˆ¤å®šï¼‰
 {
-	//‘ÎŠpü‚ÆƒxƒNƒgƒ‹‚Åˆ—‚ğs‚¤(’PƒuƒƒbƒN‚Ég—p„§)  
+
+
+	//å¯¾è§’ç·šã¨ãƒ™ã‚¯ãƒˆãƒ«ã§å‡¦ç†ã‚’è¡Œã†(å˜ãƒ–ãƒ­ãƒƒã‚¯ã«ä½¿ç”¨æ¨å¥¨)  
 	float a1 = -GetItemHeight() / GetItemWidth();
 	float a2 = GetItemHeight() / GetItemWidth();
 	float a3 = (getItemPos().y - GetItemCenter().y) / (cPos.x - getItemPos().x);
 
-	if (cPos.x < getItemPos().x + GetItemWidth() && cPos.x + 72.0f > getItemPos().x
-		&& cPos.y < getItemPos().y + GetItemHeight() && cPos.y + 180.0f > getItemPos().y)
+
+	if (cPos.x < iPos.x + m_Width && cPos.x + cWidth > iPos.x
+		&& cPos.y < iPos.y + m_Height && cPos.y + cHeight > iPos.y)
 	{
 		if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
 		{
 			catchFlg = true;
+			ceiling_wall = false;
+			left_right_wall = false;
+			ground_wall = false;
 			m_ItemState = ITEM_STATE::GET;
 		}
 	}
