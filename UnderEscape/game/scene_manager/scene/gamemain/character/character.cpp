@@ -1,3 +1,4 @@
+//character.cpp
 #include "character.h"
 #include "../stage/stage.h"
 
@@ -18,6 +19,7 @@ const float Character::dash_speed	 = 2.4f;	//自機のダッシュ時の移動速度
 const float Character::sneak_speed	 = 0.6f;	//自機の歩行時の移動速度
 const float Character::fatigue_speed = 0.3f;	//自機の疲労時の移動速度
 
+const int	Character::skill_cool_time		= 300;		//スキルのクールタイムの最大数(60フレーム換算5秒)
 const int	Character::activation_time		= 300;		//スキルの効果時間(60フレーム換算5秒)
 const int	Character::stamina_width		= 76;		//スタミナ現在の1つあたりの幅
 const int	Character::stamina_height		= 16;		//スタミナゲージの高さ
@@ -41,6 +43,7 @@ Character& Character::GetInstance(void)
 //初期化
 void Character::Initialize(vivid::Vector2 rPos)
 {
+	accelerator = vivid::Vector2::ZERO;
 	cPos = {100.0f, rPos.y - ch_height};
 	gPos = { 0.0f, 0.0f };
 	gauge_rect.top = 0;
@@ -62,7 +65,9 @@ void Character::Initialize(vivid::Vector2 rPos)
 	stamina_scale = { 1.0f, 1.0f };
 
 	skill_active_flag = false;
+	skill_cool_flag = false;
 	active_count = 0;
+	cool_time_count = 0;
 }
 
 void Character::Update(void)
@@ -71,12 +76,12 @@ void Character::Update(void)
 	Control();
 	//画面端の判定
 	CheckWindow();
+	//クールタイムの処理
+	CoolTime();
 	//ステージとの当たり判定
 	StageHit();
 	//アニメーションの更新
 	UpdateAnimation();
-	//スキル発動後の処理
-	SkillMove();
 	//スクロールの更新
 	Scroll_Update();
 }
@@ -124,7 +129,6 @@ void Character::Draw(void)
 	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 
 #ifdef _DEBUG
-
 	if (skill_active_flag == false)
 		vivid::DrawText(40, "すきるつかってないよー", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
 	if (skill_active_flag)
@@ -133,8 +137,10 @@ void Character::Draw(void)
 		vivid::DrawText(40, "あしつよいよー", vivid::Vector2(0.0f, 100.0f), 0xff00ffff);
 	if (chara_skill == CHARA_SKILL::INVISIBLE)
 		vivid::DrawText(40, "めにみえないよー", vivid::Vector2(0.0f, 150.0f), 0xff00ffff);
-	vivid::DrawText(40,"キャラ速度：" +  std::to_string(ch_speed), vivid::Vector2(0.0f, 200.0f), 0xff00ffff);
-	vivid::DrawText(40, "キャラの色；" + std::to_string(color), vivid::Vector2(0.0f, 250.0f), 0xff00ffff);
+	if (skill_cool_flag)
+		vivid::DrawText(40, "スキルクールだよー", vivid::Vector2(0.0f, 200.0f), 0xff00ffff);
+	vivid::DrawText(40,"キャラ速度：" +  std::to_string(m_Velocity.x), vivid::Vector2(0.0f, 250.0f), 0xff00ffff);
+	vivid::DrawText(40, "キャラの色；" + std::to_string(color), vivid::Vector2(0.0f, 300.0f), 0xff00ffff);
 #endif
 }
 
@@ -218,7 +224,7 @@ void Character::Control(void)
 {
 	namespace keyboard = vivid::keyboard;
 
-	vivid::Vector2 accelerator = {};
+	accelerator = vivid::Vector2::ZERO;
 
 	//デフォルトはwalk_speedにする
 	ch_speed = walk_speed;
@@ -264,16 +270,6 @@ void Character::Control(void)
 		LimitStamina();
 	}
 
-	//Qキーを押すとスキルが発動する
-	if (keyboard::Trigger(keyboard::KEY_ID::Q))
-	{
-		//重複しないようにするためにフラグを通す
-		if (skill_active_flag == false)
-		{
-			skill_active_flag = true;
-		}
-	}
-
 	//Eキーを押すとスキルが切り替わる
 	if (keyboard::Trigger(keyboard::KEY_ID::E))
 	{
@@ -304,11 +300,24 @@ void Character::Control(void)
 		chara_state = CHARA_STATE::JUMP;
 	}
 
+	//Qキーを押すとスキルが発動する
+	if (keyboard::Trigger(keyboard::KEY_ID::Q))
+	{
+		//重複しないようにするためにフラグを通す
+		if (skill_active_flag == false && skill_cool_flag == false)
+		{
+			skill_active_flag = true;
+		}
+	}
+
+	SkillMove();
+
 	//落下処理
 	if (m_LandingFlag == false||1)
 	{
 		accelerator.y += fall_speed;
 	}
+
 
 	m_Velocity += accelerator;
 	cPos.x += m_Velocity.x;
@@ -655,7 +664,7 @@ void Character::SkillMove(void)
 			switch (chara_skill)
 			{
 			case CHARA_SKILL::ANIMALLEG:
-				ch_speed *= 4.0f;
+				accelerator *= 2.0f;
 				break;
 			case CHARA_SKILL::INVISIBLE:
 				color = 0x44ffffff;
@@ -668,7 +677,7 @@ void Character::SkillMove(void)
 			switch (chara_skill)
 			{
 			case CHARA_SKILL::ANIMALLEG:
-				ch_speed /= 4.0f;
+				accelerator *= 0.5f;
 				break;
 			case CHARA_SKILL::INVISIBLE:
 				color = 0xffffffff;
@@ -678,6 +687,7 @@ void Character::SkillMove(void)
 			}
 			active_count = 0;
 			skill_active_flag = false;
+			skill_cool_flag = true;
 		}
 	}
 }
@@ -696,6 +706,19 @@ void Character::ChangeSkill(void)
 		case CHARA_SKILL::ANIMALLEG:
 			chara_skill = CHARA_SKILL::INVISIBLE;
 			break;
+		}
+	}
+}
+
+void Character::CoolTime(void)
+{
+	if (skill_cool_flag)
+	{
+		cool_time_count++;
+		if (cool_time_count >= skill_cool_time)
+		{
+			cool_time_count = 0;
+			skill_cool_flag = false;
 		}
 	}
 }
