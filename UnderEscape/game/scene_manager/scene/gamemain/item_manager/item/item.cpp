@@ -27,8 +27,9 @@ Item::~Item(void)
 
 void Item::Initialize( const vivid::Vector2& position)
 {
-	iPos.x = position.x - m_Width;
-	iPos.y = position.y - m_Height;
+	iPos.x = position.x;
+	iPos.y = position.y;
+	iPos.y = Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height)-m_Height;
 	iColor = 0xffffffff;
 	iCenter.x = (iPos.x + m_Width) / 2;
 	iCenter.y = (iPos.y + m_Height) / 2;
@@ -37,8 +38,7 @@ void Item::Initialize( const vivid::Vector2& position)
 
 void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight)
 {
-	
-
+	 
 	switch (m_ItemState)
 	{
 	case ITEM_STATE::GET:
@@ -58,7 +58,7 @@ void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeigh
 
 void Item::Draw(void)
 {
-	vivid::DrawTexture("data\\ball.png", iPos, iColor);
+	vivid::DrawTexture("data\\ball.png", iPos- Character::GetInstance().GetScroll(), iColor);
 }
 
 void Item::Finalize(void)
@@ -154,10 +154,10 @@ void Item::UseMove(float rHeight, vivid::Vector2 c_pos)
 
 void Item::CheckObject(vivid::Vector2 cPos)//アイテムを持つ（当たり判定）
 {
-	//対角線とベクトルで処理を行う(単ブロックに使用推奨)  
-	float a1 = -GetItemHeight() / GetItemWidth();
-	float a2 = GetItemHeight() / GetItemWidth();
-	float a3 = (getItemPos().y - GetItemCenter().y) / (cPos.x - getItemPos().x);
+	////対角線とベクトルで処理を行う(単ブロックに使用推奨)  
+	//float a1 = -GetItemHeight() / GetItemWidth();
+	//float a2 = GetItemHeight() / GetItemWidth();
+	//float a3 = (getItemPos().y - GetItemCenter().y) / (cPos.x - getItemPos().x);
 
 	if (cPos.x < getItemPos().x + GetItemWidth() && cPos.x + 72.0f > getItemPos().x
 		&& cPos.y < getItemPos().y + GetItemHeight() && cPos.y + 180.0f > getItemPos().y)
