@@ -23,7 +23,11 @@ void GameMainScene::Initialize(void)
     
     
     ItemManager::GetInstance().Initialize();
+
     ItemManager::GetInstance().CreateItem(vivid::Vector2{ 200.0f,400.0f }, ItemID::SOUND_ITEM);
+
+    ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ItemID::SOUND_ITEM);
+
 }
 
 void GameMainScene::Update(void)
@@ -40,21 +44,17 @@ void GameMainScene::Update(void)
     if(pause_menu==false)
     { 
     EnemyManager::GetInstance().Update();
-
     Character::GetInstance().Update();
-
-    Stage::GetInstance().Update();
-    Character::GetInstance().Update();
-    Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight());
-    Character::GetInstance().CheckHit(Stage::GetInstance().GetWallpos(), Stage::GetInstance().GetWallWidth(),Stage::GetInstance().GetWallHeight(),
-        EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
+    Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight()));
+    Character::GetInstance().CheckHit({0,0},0, 0,
+    EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
 
    
 
     
 
     ItemManager::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
-       Stage::GetInstance().GetRoundHeight());
+        Stage::GetInstance().GetRoundHeight({ 150,300 }, 15, 15));
     
     }
 }

@@ -17,7 +17,7 @@ enum class CHARA_STATE
 enum class CHARA_SKILL
 {
 	ANIMALLEG,
-	INVISIBlLE,
+	INVISIBLE,
 
 	MAX,
 };
@@ -39,6 +39,8 @@ public:
 
 	//ステージとの当たり判定処理
 	void StageHit();
+	void HStageHit();
+	void VStageHit();
 	//画面端から出ないようにする処理
 	void CheckWindow(void);
 	//自機の操作処理
@@ -76,6 +78,8 @@ public:
 	void SkillMove(void);
 	//発動可能スキルの切り替え処理
 	void ChangeSkill(void);
+	//クールタイムの処理
+	void CoolTime(void);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -155,6 +159,7 @@ private:
 	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
 	const float cut_speed = 0.1f;		//自機の移動を0にする基準
+	vivid::Vector2 accelerator;
 	//<-自機の速度関係
 
 	vivid::Rect gauge_rect;				//ゲージ画像の表示幅
@@ -180,6 +185,9 @@ private:
 	static const int	activation_time;	//スキルの発動後の効果時間
 	bool				skill_active_flag;	//スキルのアクティブフラグ
 	int					active_count;		//スキル発動中のカウンタ
+	static const int	skill_cool_time;	//スキルのクールタイムの最大数
+	int					cool_time_count;	//クールタイムのカウンタ
+	bool				skill_cool_flag;	//クールタイム処理を呼び出すフラグ
 
 	/*各アクティブフラグは使用スキルの選択に使う(スキルはボタンでの切り替え式にする)*/
 
