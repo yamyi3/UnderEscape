@@ -7,9 +7,6 @@ unsigned Character::color = 0xffffffff;
 bool	Character::m_LandingFlag = false;
 bool	Character::cCatch = false;
 bool	Character::cAlive = true;
-int		Character::gauge = 0;
-int		Character::gauge_count_frame = 0;
-int		Character::down_gauge_count = 0;
 CHARA_SKILL chara_skill = CHARA_SKILL::ANIMALLEG;
 
 const float Character::ch_width		 = 72.0f;	//自機の幅
@@ -45,11 +42,6 @@ void Character::Initialize(vivid::Vector2 rPos)
 {
 	accelerator = vivid::Vector2::ZERO;
 	cPos = {100.0f, rPos.y - ch_height};
-	gPos = { 0.0f, 0.0f };
-	gauge_rect.top = 0;
-	gauge_rect.bottom = 30;
-	gauge_rect.left = 0;
-	gauge_rect.right = 20 * gauge;
 	chara_state = CHARA_STATE::WAIT;
 
 	c_anchor	= {ch_width / 2,ch_height / 2 };
@@ -91,16 +83,6 @@ void Character::Draw(void)
 	stamina_pos.x = (float)(((cPos.x + (ch_width / 2.0f))- (stamina_width / 2.0f)));
 	stamina_pos.y = (float)(cPos.y - 20);
 
-	vivid::Rect g_rect;
-	g_rect.top = 0;
-	g_rect.bottom = 30;
-	g_rect.left = 0;
-	g_rect.right = 200;
-
-	gauge_rect.top = 0;
-	gauge_rect.bottom = 30;
-	gauge_rect.left = 0;
-	gauge_rect.right = 20 * gauge;
 
 	//->自機のrect更新
 	c_rect.top = 0;
@@ -124,8 +106,6 @@ void Character::Draw(void)
 	//<-スタミナのrect更新
 
 	vivid::DrawTexture(c_image[(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
-	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xffffffff, g_rect);
-	vivid::DrawTexture("data\\gauge.png", gPos - Scroll, 0xff00ffff, gauge_rect);
 	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 
 #ifdef _DEBUG
@@ -426,7 +406,6 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, vivid
 	//壁に当たった時(障害物に隠れたとき)
 	if (CheckWallHit(wPos, wWidth, wHeight))
 	{
-		DownerGauge();
 #ifdef _DEGUB
 		color = 0xff0000ff;
 #endif // DEBUG
@@ -434,7 +413,6 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, vivid
 	//障害物の外で敵の視界に入った時
 	else if (CheckEnemyHit(ePos, eRadius))
 	{
-		UpperGauge();
 #ifdef _DEBUG
 		color = 0xffff0000;
 #endif // DEBUG
@@ -442,7 +420,6 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, vivid
 	//デフォルトの状態
 	else
 	{
-		DownerGauge();
 #ifdef _DEBUG
 		color = 0xffffffff;
 #endif // DEBUG
@@ -454,8 +431,6 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool 
 	//壁に当たった時(障害物に隠れたとき)
 	if (CheckWallHit(wPos, wWidth, wHeight))
 	{
-		DownerGauge();
-
 #ifdef _DEBUG
 		color = 0xff0000ff;
 #endif // DEBUG
@@ -464,7 +439,6 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool 
 	//障害物の外で敵の視界に入った時
 	else if (EnemyHitFlg)
 	{
-		UpperGauge();
 #ifdef _DEBUG
 		color = 0xffff0000;
 #endif // DEBUG
@@ -473,7 +447,6 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool 
 	//デフォルトの状態
 	else
 	{
-		DownerGauge();
 #ifdef _DEBUG
 		color = 0xffffffff;
 #endif // DEBUG
@@ -502,38 +475,6 @@ bool Character::checkPut(void)
 			return true;
 		}
 		return false;
-	}
-}
-
-void Character::UpperGauge(void)
-{
-	down_gauge_count = 0;
-	gauge_count_frame++;
-	if (gauge_count_frame == one_gauge_frame)
-	{
-		if (gauge < max_gauge)
-		{
-			gauge++;
-			gauge_count_frame = 0;
-		}
-		if (gauge >= max_gauge)
-		{
-			//終わり
-			vivid::DrawText(40, "おわりだよー", vivid::Vector2(800.0f, 500.0f));
-		}
-	}
-}
-
-void Character::DownerGauge(void)
-{
-	down_gauge_count++;
-	if (down_gauge_count >= downer_frame)
-	{
-		if (gauge > 0)
-		{
-			gauge--;
-		}
-		down_gauge_count = 0;
 	}
 }
 
