@@ -41,7 +41,7 @@ Character& Character::GetInstance(void)
 //‰Šú‰»
 void Character::Initialize(vivid::Vector2 rPos)
 {
-	cPos = {100.0f, rPos.y - ch_height};
+	cPos = rPos;
 	gPos = { 0.0f, 0.0f };
 	gauge_rect.top = 0;
 	gauge_rect.bottom = 30;
