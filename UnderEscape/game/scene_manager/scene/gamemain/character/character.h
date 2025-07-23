@@ -60,10 +60,6 @@ public:
 	bool CheckThrow(void);
 	//置いた判定
 	bool checkPut(void);
-	//ゲージの上昇処理
-	void UpperGauge(void);
-	//ゲージの下降処理
-	void DownerGauge(void);
 	//アニメーションの更新
 	void UpdateAnimation(void);
 	//自機の移動速度ごとの状態の判別
@@ -161,16 +157,7 @@ private:
 	const float cut_speed = 0.1f;		//自機の移動を0にする基準
 	vivid::Vector2 accelerator;
 	//<-自機の速度関係
-
-	vivid::Rect gauge_rect;				//ゲージ画像の表示幅
-	vivid::Vector2 gPos;				//ゲージの表示座標
-	const int max_gauge = 10;			//自機の発見ゲージの最大量
-	static int gauge;					//自機の現在の発見ゲージの量
-	const int one_gauge_frame = 60;		//発見ゲージ1個分あたりの増加にかかるフレーム数
-	static int gauge_count_frame;		//発見ゲージが溜まっている間のフレーム数カウンタ
-	const int downer_frame = 180;		//発見ゲージが1減るまでにかかるフレーム数
-	static int down_gauge_count;		//ゲージ減少のカウンタ
-
+	// 
 	//->スタミナ関係
 	static const int	c_max_stamina;		//自機のスタミナの最大値
 	static int			c_stamina_gauge;	//自機のスタミナのゲージ
@@ -188,9 +175,7 @@ private:
 	static const int	skill_cool_time;	//スキルのクールタイムの最大数
 	int					cool_time_count;	//クールタイムのカウンタ
 	bool				skill_cool_flag;	//クールタイム処理を呼び出すフラグ
-
 	/*各アクティブフラグは使用スキルの選択に使う(スキルはボタンでの切り替え式にする)*/
-
 	//<-スキル関係
 
 	static bool m_LandingFlag;			//接地フラグ
@@ -200,11 +185,11 @@ private:
 	CHARA_STATE chara_state;			//自機の状態
 	CHARA_SKILL chara_skill;			//スキルの使用状態
 
-	//インスタンスの生成
+	//->インスタンスの生成
 	Character(void) = default;
 	~Character(void) = default;
 	Character(const Character& rhs) = default;
 	Character& operator = (const Character& rhs) = default;
-
+	//<-インスタンスの生成
 
 };

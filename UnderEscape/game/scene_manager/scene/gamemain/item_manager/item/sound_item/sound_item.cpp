@@ -8,11 +8,14 @@ const float SoundItem::item_radius = 16.0f;
 
 SoundItem::SoundItem()
 	: Item(ItemID::SOUND_ITEM, ITEM_STATE::PLACE,item_width,item_height,item_radius)
-	, Xspeed(10.0f) //”ò‹——£‚Ìƒ}ƒCƒiƒX”{—¦(X²)’l‚ğ¬‚³‚­‚·‚é‚Æ”ò‹——£‚ªL‚Ñ‚é
-	, Yspeed(10.0f) //”ò‹——£‚Ìƒ}ƒCƒiƒX”{—¦(Y²)’l‚ğ¬‚³‚­‚·‚é‚Æ”ò‹——£‚ªL‚Ñ‚é
+
+	, Xspeed(10.0f) //é£›è·é›¢ã®ãƒã‚¤ãƒŠã‚¹å€ç‡(Xè»¸)å€¤ã‚’å°ã•ãã™ã‚‹ã¨é£›è·é›¢ãŒä¼¸ã³ã‚‹
+	, Yspeed(10.0f) //é£›è·é›¢ã®ãƒã‚¤ãƒŠã‚¹å€ç‡(Yè»¸)å€¤ã‚’å°ã•ãã™ã‚‹ã¨é£›è·é›¢ãŒä¼¸ã³ã‚‹
+
+	, Xspeed(100.0f) //é£›è·é›¢ã®ãƒã‚¤ãƒŠã‚¹å€ç‡(Xè»¸)å€¤ã‚’å°ã•ãã™ã‚‹ã¨é£›è·é›¢ãŒä¼¸ã³ã‚‹
+	, Yspeed(20.0f) //é£›è·é›¢ã®ãƒã‚¤ãƒŠã‚¹å€ç‡(Yè»¸)å€¤ã‚’å°ã•ãã™ã‚‹ã¨é£›è·é›¢ãŒä¼¸ã³ã‚‹
+
 	, Mouse(0.0f, 0.0f)
-	
-	
 {
 }
 
@@ -32,7 +35,7 @@ void SoundItem::Initialize(vivid::Vector2 position)
 
 void SoundItem::Draw(void)
 {
-	vivid::DrawTexture("data\\ball.png", iPos - Character::GetInstance().GetScroll(), iColor);
+	vivid::DrawTexture("data\\ball.png", iPos, iColor);
 }
 
 
@@ -43,9 +46,14 @@ void SoundItem::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 	{
 		m_ItemState = ITEM_STATE::USE;
 		catchFlg = false;
+
 		Mouse.x = (vivid::mouse::GetCursorPos().x)+ Character::GetInstance().GetScroll().x - cPos.x;
 		Mouse.y = cPos.y - (vivid::mouse::GetCursorPos().y + Character::GetInstance().GetScroll().y);
 		
+
+		Mouse.x = (vivid::mouse::GetCursorPos().x) - cPos.x; 
+		Mouse.y = cPos.y - vivid::mouse::GetCursorPos().y;
+
 	}
 
 	if (catchFlg)
@@ -57,19 +65,25 @@ void SoundItem::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 		iColor = 0xffff00ff;
 	}
 	Ga = 1.0;
-	m_Velocity = vivid::Vector2(0.0f, 0.0f); // d—Í‰Á‘¬“x‚ğƒŠƒZƒbƒg
+	m_Velocity = vivid::Vector2(0.0f, 0.0f); // é‡åŠ›åŠ é€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
 }
 
 void SoundItem::UseMove(vivid::Vector2 c_pos)
 {
-	//ƒAƒCƒeƒ€ƒIƒuƒWƒFƒNƒg‚ÌÀ•WXV
+	//ã‚¢ã‚¤ãƒ†ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åº§æ¨™æ›´æ–°
 
 		catchFlg = false;
 
+
 		m_Velocity.y = -(Mouse.y / Yspeed);
 		m_Velocity.x = (Mouse.x / Xspeed);
-		//•Ç‚ÉG‚ê‚½‚ç‚»‚Ìê‚Å©—R—‰º
+		//å£ã«è§¦ã‚ŒãŸã‚‰ãã®å ´ã§è‡ªç”±è½ä¸‹
 		if (ground_wall == false)
+
+		V = -(Mouse.y / Yspeed);
+
+		if (iPos.y + item_height < rHeight)
+
 		{
 			iColor = 0xff00ffff;
 			if (ceiling_wall == false)
@@ -81,6 +95,7 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 				iPos.y += (item_fall * Ga);
 			}
 		}
+
 		else
 		{
 			m_ItemState = ITEM_STATE::PLACE;
@@ -93,6 +108,14 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 		}else
 			ceiling_wall = true;
 		
+
+		if (iPos.y + item_height >= rHeight)
+		{
+			iPos.y = rHeight - item_height;
+			m_ItemState = ITEM_STATE::PLACE;
+			iColor = 0xffffffff;
+		}
+
 		Ga += 0.981;
 }
 

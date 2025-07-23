@@ -106,6 +106,8 @@ void Enemy::Initialize(void)
 void Enemy::Update(void)
 {
 	Sight_Check_Timer++;
+
+	vivid::Vector2 e_Velocity = {0.0f,0.0f};
 	switch (eStatus)
 	{
 	case eSTATUS::Stop:
@@ -113,8 +115,8 @@ void Enemy::Update(void)
 	case eSTATUS::Wandering:
 		if (eVector == 1)
 		{
-			ePos.x += eSpeed;
-			if (ePos.x >= Rwall)
+			e_Velocity.x += eSpeed;
+			if (ePos.x+ e_Velocity.x >= Rwall)
 			{
 				eVector *= -1;
 				if (Lwall == Rwall)
@@ -123,8 +125,8 @@ void Enemy::Update(void)
 		}
 		else
 		{
-			ePos.x -= eSpeed;
-			if (ePos.x <= Lwall)
+			e_Velocity.x -= eSpeed;
+			if (ePos.x + e_Velocity.x <= Lwall)
 			{
 				eVector *= -1;
 				if (Lwall == Rwall)
@@ -137,7 +139,7 @@ void Enemy::Update(void)
 		{
 			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
 			{
-				ePos.x += eChaseSpeed;
+				e_Velocity.x += eChaseSpeed;
 				eVector = 1;
 			}
 		}
@@ -145,11 +147,11 @@ void Enemy::Update(void)
 		{
 			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
 			{
-				ePos.x -= eChaseSpeed;
+				e_Velocity.x -= eChaseSpeed;
 				eVector = -1;
 			}
 		}
-		if (abs(ChasePos.x - ePos.x) < Source_End_Range)
+		if (abs(ChasePos.x - ePos.x + e_Velocity.x) < Source_End_Range)
 		{
 			if (Sight_Check_Timer >= 10)
 			{
@@ -177,11 +179,16 @@ void Enemy::Update(void)
 		break;
 	}
 
-
-	//左
-	if (ePos.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size))
+	//地面
+	if (ePos.y + e_height_size - eAnchor.y > Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size))
 	{
-		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size);
+		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size) - e_height_size+eAnchor.y;
+	}
+	//左
+	ePos.x += e_Velocity.x;
+	if (ePos.x- eAnchor.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size))
+	{
+		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size)+ eAnchor.x;
 		if (jpflg && eVector == -1)
 		{
 			WallTouchPosX = ePos.x;
@@ -189,9 +196,9 @@ void Enemy::Update(void)
 		}
 	}
 	//右
-	if (ePos.x + e_width_size > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size))
+	if (ePos.x + e_width_size- eAnchor.x > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size))
 	{
-		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size;
+		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size+ eAnchor.x;
 		if (jpflg && eVector == 1)
 		{
 			WallTouchPosX = ePos.x;
@@ -199,11 +206,11 @@ void Enemy::Update(void)
 		}
 	}
 	//天井
-	if (ePos.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
+	if (ePos.y- eAnchor.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
 	{
-		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size);
+		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size)+ eAnchor.y;
 	}
-	//地面
+
 	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size);
 
 	if (e_wool_jump())

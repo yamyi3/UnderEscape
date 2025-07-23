@@ -31,9 +31,8 @@ Item::~Item(void)
 
 void Item::Initialize( const vivid::Vector2& position)
 {
-	iPos.x = position.x;
-	iPos.y = position.y;
-	iPos.y = Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height)-m_Height;
+	iPos.x = position.x - m_Width;
+	iPos.y = position.y - m_Height;
 	iColor = 0xffffffff;
 	iCenter.x = (iPos.x + m_Width) / 2;
 	iCenter.y = (iPos.y + m_Height) / 2;
@@ -42,7 +41,8 @@ void Item::Initialize( const vivid::Vector2& position)
 
 void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight)
 {
-	 
+	
+
 	switch (m_ItemState)
 	{
 	case ITEM_STATE::GET:
@@ -62,7 +62,7 @@ void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeigh
 
 void Item::Draw(void)
 {
-	vivid::DrawTexture("data\\ball.png", iPos- Character::GetInstance().GetScroll(), iColor);
+	vivid::DrawTexture("data\\ball.png", iPos, iColor);
 }
 
 void Item::Finalize(void)
@@ -107,31 +107,31 @@ ItemID Item::GetBulletCategory(void)
 
 void Item::wallCheck()
 {
-	//•Ç”»’è
-	//’n–Ê”»’è
+	//å£åˆ¤å®š
+	//åœ°é¢åˆ¤å®š
 	if (Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height <iPos.y )
 	{
 		iPos.y = Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height;
 		ground_wall = true;
 	}
-	//¶•Ç”»’è
+	//å·¦å£åˆ¤å®š
 	if (Stage::GetInstance().GetLWall(iPos, m_Width, m_Height)> iPos.x)
 	{
 		iPos.x = Stage::GetInstance().GetLWall(iPos, m_Width, m_Height);
 		left_right_wall = true;
 	}
-	//‰E•Ç”»’è
+	//å³å£åˆ¤å®š
 	if (Stage::GetInstance().GetRWall(iPos, m_Width, m_Height)-m_Width < iPos.x)
 	{
 		iPos.x = Stage::GetInstance().GetRWall(iPos, m_Width, m_Height) - m_Width;
 		left_right_wall = true;
 	}
-	//“Vˆä”»’è
+	//å¤©äº•åˆ¤å®š
 	if (Stage::GetInstance().GetCeiling(iPos, m_Width, m_Height) > iPos.y)
 	{
 		iPos.y = Stage::GetInstance().GetCeiling(iPos, m_Width, m_Height);
 		ceiling_wall = true;
-		Ga = 1.0f; //“Vˆä‚É“–‚½‚Á‚½‚çd—Í‰Á‘¬“x‚ğƒŠƒZƒbƒg
+		Ga = 1.0f; //å¤©äº•ã«å½“ãŸã£ãŸã‚‰é‡åŠ›åŠ é€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
 	}
 }
 
@@ -152,7 +152,7 @@ void Item::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 		iColor = 0xffff00ff;
 	}
 	Ga = 1.0;
-	m_Velocity = vivid::Vector2(0.0f, 0.0f); // d—Í‰Á‘¬“x‚ğƒŠƒZƒbƒg
+	m_Velocity = vivid::Vector2(0.0f, 0.0f); // é‡åŠ›åŠ é€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
 }
 
 
@@ -176,8 +176,15 @@ void Item::UseMove( vivid::Vector2 c_pos)
 	Ga += 0.981;
 }
 
-void Item::CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight)//ƒAƒCƒeƒ€‚ğ‚Âi“–‚½‚è”»’èj
+void Item::CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight)//ã‚¢ã‚¤ãƒ†ãƒ ã‚’æŒã¤ï¼ˆå½“ãŸã‚Šåˆ¤å®šï¼‰
 {
+
+
+	//å¯¾è§’ç·šã¨ãƒ™ã‚¯ãƒˆãƒ«ã§å‡¦ç†ã‚’è¡Œã†(å˜ãƒ–ãƒ­ãƒƒã‚¯ã«ä½¿ç”¨æ¨å¥¨)  
+	float a1 = -GetItemHeight() / GetItemWidth();
+	float a2 = GetItemHeight() / GetItemWidth();
+	float a3 = (getItemPos().y - GetItemCenter().y) / (cPos.x - getItemPos().x);
+
 
 	if (cPos.x < iPos.x + m_Width && cPos.x + cWidth > iPos.x
 		&& cPos.y < iPos.y + m_Height && cPos.y + cHeight > iPos.y)
