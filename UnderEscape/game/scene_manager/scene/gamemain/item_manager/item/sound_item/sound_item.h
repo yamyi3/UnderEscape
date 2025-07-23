@@ -16,7 +16,7 @@ public:
 	//プレイヤーが持っている状態の処理
 	void GetMove(vivid::Vector2, float, float);
 	//プレイヤーが投げた後の処理(マウス）
-	void UseMove(float, vivid::Vector2);
+	void UseMove(vivid::Vector2);
 
 
 private:
@@ -26,12 +26,6 @@ private:
 	
 	static const float item_height;		//アイテムオブジェクトの高さ
 	static const float item_width;		//アイテムオブジェクトの幅
-	static const float item_radius;		//アイテムオブジェクトの幅
-
-	//bool right_left_wall;
-	//bool down_wall;
-	//bool up_wall;
-		
-	
+	static const float item_radius;		//アイテムオブジェクトの幅	
 };
 

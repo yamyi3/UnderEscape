@@ -8,8 +8,8 @@ const float SoundItem::item_radius = 16.0f;
 
 SoundItem::SoundItem()
 	: Item(ItemID::SOUND_ITEM, ITEM_STATE::PLACE,item_width,item_height,item_radius)
-	, Xspeed(50.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
-	, Yspeed(20.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
+	, Xspeed(10.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
+	, Yspeed(10.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	, Mouse(0.0f, 0.0f)
 	
 	
@@ -44,7 +44,7 @@ void SoundItem::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 		m_ItemState = ITEM_STATE::USE;
 		catchFlg = false;
 		Mouse.x = (vivid::mouse::GetCursorPos().x)+ Character::GetInstance().GetScroll().x - cPos.x;
-		Mouse.y = cPos.y - vivid::mouse::GetCursorPos().y + Character::GetInstance().GetScroll().y;
+		Mouse.y = cPos.y - (vivid::mouse::GetCursorPos().y + Character::GetInstance().GetScroll().y);
 		
 	}
 
@@ -57,39 +57,42 @@ void SoundItem::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 		iColor = 0xffff00ff;
 	}
 	Ga = 1.0;
-	V = 0.0;
+	m_Velocity = vivid::Vector2(0.0f, 0.0f); // 重力加速度をリセット
 }
 
-void SoundItem::UseMove(float rHeight, vivid::Vector2 c_pos)
+void SoundItem::UseMove(vivid::Vector2 c_pos)
 {
-	
+	//アイテムオブジェクトの座標更新
+
 		catchFlg = false;
 
-		V = -(Mouse.y / Yspeed);
-		//アイテムオブジェクトの座標更新
-		if (iPos.y  <= Stage::GetInstance().GetRoundHeight(iPos,m_Width,m_Height) - m_Height)
+		m_Velocity.y = -(Mouse.y / Yspeed);
+		m_Velocity.x = (Mouse.x / Xspeed);
+		//壁に触れたらその場で自由落下
+		if (ground_wall == false)
 		{
-			iPos.x += Mouse.x / Xspeed;
-			iPos.y += V + (item_fall * Ga);
 			iColor = 0xff00ffff;
+			if (ceiling_wall == false)
+			{
+				iPos.y += m_Velocity.y + (item_fall * Ga);
+			}
+			else 
+			{
+				iPos.y += (item_fall * Ga);
+			}
 		}
-
-		//地面判定
-		if (iPos.y  >= Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height)
+		else
 		{
-			iPos.y =Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height;
 			m_ItemState = ITEM_STATE::PLACE;
 			iColor = 0xffffffff;
 		}
-		//左壁判定
-		if (iPos.x < Stage::GetInstance().GetLWall(iPos, m_Width, m_Height))
-		{
-		}
-		//右壁判定
-		
-		//天井判定
 
-		//重力加速度の更新
+		if (ceiling_wall == false&&left_right_wall==false )
+		{
+			iPos.x += m_Velocity.x;
+		}else
+			ceiling_wall = true;
+		
 		Ga += 0.981;
 }
 
