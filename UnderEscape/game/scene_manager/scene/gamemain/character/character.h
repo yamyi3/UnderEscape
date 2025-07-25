@@ -76,6 +76,8 @@ public:
 	void ChangeSkill(void);
 	//クールタイムの処理
 	void CoolTime(void);
+	//スタミナの描画切り替え処理
+	void StaminaDraw(void);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -157,7 +159,7 @@ private:
 	const float cut_speed = 0.1f;		//自機の移動を0にする基準
 	vivid::Vector2 accelerator;
 	//<-自機の速度関係
-	// 
+	
 	//->スタミナ関係
 	static const int	c_max_stamina;		//自機のスタミナの最大値
 	static int			c_stamina_gauge;	//自機のスタミナのゲージ
@@ -165,6 +167,9 @@ private:
 	static int			c_limit_recovery;	//疲労状態のスタミナ回復開始までのカウンタ
 	static bool			c_stamina_dash;		//ダッシュ可能か判別するフラグ
 	static bool			c_stamina_fatigue;	//自機が疲労状態か判別するフラグ
+	static bool			c_stamina_draw;		//スタミナの描画を切り替えるフラグ
+	static const int	c_draw_stamina;		//スタミナが最大の時の描画時間
+	int					c_stamina_draw_count;	//スタミナの描画時間のカウンタ
 	static int			c_stamina_recovery;	//スタミナの回復カウンタ
 	//<-スタミナ関係
 
