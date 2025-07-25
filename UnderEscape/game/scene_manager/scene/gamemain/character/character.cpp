@@ -127,7 +127,12 @@ void Character::Draw(void)
 	if (skill_cool_flag)
 		vivid::DrawText(40, "スキルクールだよー", vivid::Vector2(0.0f, 200.0f), 0xff00ffff);
 	vivid::DrawText(40,"キャラ速度：" +  std::to_string(m_Velocity.x), vivid::Vector2(0.0f, 250.0f), 0xff00ffff);
-	vivid::DrawText(40, "キャラの色；" + std::to_string(color), vivid::Vector2(0.0f, 300.0f), 0xff00ffff);
+	vivid::DrawText(40, "キャラの色：" + std::to_string(color), vivid::Vector2(0.0f, 300.0f), 0xff00ffff);
+	if (found_flag == true)
+		vivid::DrawText(40, "判定あるよー", vivid::Vector2(0.0f, 350.0f), 0xff00ffff);
+	if (found_flag == false)
+		vivid::DrawText(40, "判定ないよー", vivid::Vector2(0.0f, 350.0f), 0xff00ffff);
+	
 #endif
 }
 

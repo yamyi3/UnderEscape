@@ -95,6 +95,8 @@ public:
 	float GetDash(void) { return dash_speed; }
 	//遮蔽フラグの取得
 	bool GetShilding(void) { return cShielding; }	//シールド状態の取得
+	//found_flagの取得
+	bool GetFound(void) { return found_flag; }
 
 	//スクロール変数更新用
 	void Scroll_Update();
