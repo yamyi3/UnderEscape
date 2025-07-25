@@ -29,6 +29,7 @@ bool		Character::c_stamina_dash		= true;		//ダッシュ可能か判別するフラグ
 bool		Character::c_stamina_fatigue	= false;	//自機が疲労状態か判別するフラグ
 const int	Character::c_draw_stamina		= 60;		//スタミナの描画する最大秒数(60フレーム換算1秒)
 bool		Character::c_stamina_draw		= false;	//スタミナの描画を切り替えるフラグ
+bool		Character::found_flag			= true;	//発見される状態か判断するフラグ(透明化時に使用)
 
 const float Character::scroll_width_space = 850;
 const float Character::scroll_height_space = 300;
@@ -378,6 +379,10 @@ bool Character::CheckEnemyHit(vivid::Vector2 ePos, float eRadius)
 	//上記の判定から当たっているか(視界に入っているか)を判断する
 	if (result_h || result_v || result_lu || result_ru || result_ld || result_rd)
 	{
+		if (found_flag == false)
+		{
+			return false;
+		}
 		return true;
 	}
 	//当たっていない場合はfalseを返す
@@ -615,6 +620,7 @@ void Character::SkillMove(void)
 				break;
 			case CHARA_SKILL::INVISIBLE:
 				color = 0x44ffffff;
+				found_flag = false;
 				break;
 			}
 		}
@@ -628,6 +634,7 @@ void Character::SkillMove(void)
 				break;
 			case CHARA_SKILL::INVISIBLE:
 				color = 0xffffffff;
+				found_flag = true;
 				break;
 			default:
 				break;
