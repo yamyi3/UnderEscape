@@ -26,10 +26,6 @@ private:
 	
 	static const float item_height;		//アイテムオブジェクトの高さ
 	static const float item_width;		//アイテムオブジェクトの幅
-
 	static const float item_radius;		//アイテムオブジェクトの幅	
-
-	static const float item_radius;		//アイテムオブジェクトの幅
-
 };
 

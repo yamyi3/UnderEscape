@@ -1,27 +1,27 @@
 #include"item.h"
 
 Item::Item( ItemID id, ITEM_STATE state,float width,float heght,float radius)
-	: m_Width(width)
-	, m_Height(heght)
-	, m_Radius(radius)
-	, m_ItemID(id)
+	: m_Width	(width)
+	, m_Height	(heght)
+	, m_Radius	(radius)
+	, m_ItemID	(id)
 	, m_Position(0.0f, 0.0f)
 	, m_Velocity(0.0f, 0.0f)
-	, m_Color(0xffffffff)
-	, m_Anchor(vivid::Vector2((float)m_Width / 2.0f, (float)m_Height / 2.0f))
-	, m_Rect{ 0, 0, m_Width,m_Height }
-	, m_Scale(1.0f, 1.0f)
-	, m_Rotation(0.0f)
-	, m_ActiveFlag(true)
-	, m_ItemState(state)
-	, catchFlg(false) 
-	, iPos(0.0f, 0.0f) 
-	, iCenter(0.0f, 0.0f) 
-	, item_fall(1.0f) 
-	, Ga(1.0f)
-	, ceiling_wall(false)
-	, left_right_wall(false)
-	, ground_wall(false)
+	, m_Color	(0xffffffff)
+	, m_Anchor	(vivid::Vector2((float)m_Width / 2.0f, (float)m_Height / 2.0f))
+	, m_Rect	{ 0, 0, m_Width,m_Height }
+	, m_Scale	(1.0f, 1.0f)
+	, m_Rotation	(0.0f)
+	, m_ActiveFlag	(true)
+	, m_ItemState	(state)
+	, catchFlg	(false) 
+	, iPos		(0.0f, 0.0f) 
+	, iCenter	(0.0f, 0.0f) 
+	, item_fall	(1.0f) 
+	, Ga		(1.0f)
+	, ceiling_wall		(false)
+	, left_right_wall	(false)
+	, ground_wall		(false)
 {
 }
 
@@ -45,14 +45,14 @@ void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeigh
 
 	switch (m_ItemState)
 	{
-	case ITEM_STATE::GET:
+	case ITEM_STATE::GET:	//アイテムが所持している状態
 		GetMove(cPos, cWidth, cHeight);
 		break;
-	case ITEM_STATE::USE:
-		wallCheck();
+	case ITEM_STATE::USE:	//アイテムが使用されている状態
+		WallCheck();
 		UseMove(cPos);
 		break;
-	case ITEM_STATE::PLACE:
+	case ITEM_STATE::PLACE:	//アイテムが置かれた状態
 		CheckObject(cPos,cWidth,cHeight);
 		break;
 	}
@@ -62,7 +62,7 @@ void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeigh
 
 void Item::Draw(void)
 {
-	vivid::DrawTexture("data\\ball.png", iPos, iColor);
+	vivid::DrawTexture("data\\ball.png", iPos - Character::GetInstance().GetScroll(), iColor);
 }
 
 void Item::Finalize(void)
@@ -71,17 +71,17 @@ void Item::Finalize(void)
 
 vivid::Vector2 Item::GetPosition(void)
 {
-	return m_Position;
+	return iPos;
 }
 
 void Item::SetPosition(const vivid::Vector2& position)
 {
-	m_Position = position;
+	iPos = position;
 }
 
 vivid::Vector2 Item::GetCenterPosition(void)
 {
-	return m_Position + vivid::Vector2((float)m_Width / 2.0f, (float)m_Height /
+	return iPos + vivid::Vector2((float)m_Width / 2.0f, (float)m_Height /
 		2.0f);
 }
 
@@ -105,7 +105,7 @@ ItemID Item::GetBulletCategory(void)
 	return m_ItemID;
 }
 
-void Item::wallCheck()
+void Item::WallCheck()
 {
 	//壁判定
 	//地面判定
@@ -137,6 +137,7 @@ void Item::wallCheck()
 
 void Item::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 {
+	//Cキーでアイテムを使用状態にする
 	if (catchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
 	{
 		m_ItemState = ITEM_STATE::USE;
@@ -159,17 +160,16 @@ void Item::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 
 void Item::UseMove( vivid::Vector2 c_pos)
 {
+	//アイテムオブジェクトの座標更新
 	catchFlg = false;
-	if (iPos.y + m_Height <1)
+	if (ground_wall == false)
 	{
 		iPos.x += 3;
 		iPos.y +=  (item_fall * Ga);
 		iColor = 0xff00ffff;
 	}
-
-	if (iPos.y + m_Height >= 1)
+	else
 	{
-		iPos.y = 1 - m_Height;
 		m_ItemState = ITEM_STATE::PLACE;
 		iColor = 0xffffffff;
 	}
@@ -178,24 +178,16 @@ void Item::UseMove( vivid::Vector2 c_pos)
 
 void Item::CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight)//アイテムを持つ（当たり判定）
 {
-
-
-	//対角線とベクトルで処理を行う(単ブロックに使用推奨)  
-	float a1 = -GetItemHeight() / GetItemWidth();
-	float a2 = GetItemHeight() / GetItemWidth();
-	float a3 = (getItemPos().y - GetItemCenter().y) / (cPos.x - getItemPos().x);
-
-
 	if (cPos.x < iPos.x + m_Width && cPos.x + cWidth > iPos.x
 		&& cPos.y < iPos.y + m_Height && cPos.y + cHeight > iPos.y)
 	{
 		if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
 		{
-			catchFlg = true;
-			ceiling_wall = false;
+			catchFlg		= true;
+			ceiling_wall	= false;
 			left_right_wall = false;
-			ground_wall = false;
-			m_ItemState = ITEM_STATE::GET;
+			ground_wall		= false;
+			m_ItemState		= ITEM_STATE::GET;
 		}
 	}
 }
