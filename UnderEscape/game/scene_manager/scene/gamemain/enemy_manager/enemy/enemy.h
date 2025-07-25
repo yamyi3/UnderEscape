@@ -89,6 +89,9 @@ private:
 	int Vigilance_Timer;							//追跡目標地点到達後の待機時間用
 	int Surprised_Timer;							//追跡開始前の停止時間用
 
+	int TurnAroundtimer;
+	static const int turn_around_ct;
+
 	bool WallTouchFlg;		//壁に触れたかの判定保存
 	float WallTouchPosX;	//壁に触れた時の位置
 
