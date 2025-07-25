@@ -42,6 +42,8 @@ public:
 
 	int GetStageWidthSize() { return g_map_chip_count_width * g_map_chip_size; }
 	int GetStageHeightSize() { return g_map_chip_count_height * g_map_chip_size; }
+
+	int GetMapChipSize(){ return g_map_chip_size; }
 private:
 
 

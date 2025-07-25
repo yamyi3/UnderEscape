@@ -20,6 +20,8 @@ const float Enemy::enemy_jump_height = 250.0f;		//ジャンプの高さ
 const float Enemy::enemy_jump_upspeed = 3.0f;		//ジャンプの上昇スピード
 const float Enemy::enemy_jump_downspeed = 100.0f;	//落下スピード(上昇スピードの何％か)
 
+const int Enemy::turn_around_ct = 10;
+
 const int Enemy::animation_change_time = 5;
 
 const float Enemy::eCircleRadius = 200.0f;
@@ -43,6 +45,7 @@ Enemy::Enemy(void)
 	, WallTouchPosX(0.0f)
 	, AnimationTimer(0)
 	, AnimationFrame(0)
+	,TurnAroundtimer(10)
 {
 }
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground)
@@ -118,7 +121,7 @@ void Enemy::Update(void)
 			e_Velocity.x += eSpeed;
 			if (ePos.x+ e_Velocity.x >= Rwall)
 			{
-				eVector *= -1;
+				eVector = -1;
 				if (Lwall == Rwall)
 					eStatus = eSTATUS::Stop;
 			}
@@ -128,7 +131,7 @@ void Enemy::Update(void)
 			e_Velocity.x -= eSpeed;
 			if (ePos.x + e_Velocity.x <= Lwall)
 			{
-				eVector *= -1;
+				eVector = 1;
 				if (Lwall == Rwall)
 					eStatus = eSTATUS::Stop;
 			}
@@ -184,33 +187,31 @@ void Enemy::Update(void)
 	{
 		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size) - e_height_size+eAnchor.y;
 	}
+	bool TurnAroundFlg=false;
+	TurnAroundtimer++;
 	//左
 	ePos.x += e_Velocity.x;
-	if (ePos.x- eAnchor.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size))
+	if (ePos.x- eAnchor.x < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)
 	{
-		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size)+ eAnchor.x;
-		if (jpflg && eVector == -1)
-		{
-			WallTouchPosX = ePos.x;
-			WallTouchFlg = true;
-		}
+		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size)- eAnchor.x;
+		TurnAroundFlg = true;
 	}
 	//右
-	if (ePos.x + e_width_size- eAnchor.x > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size))
+	if (ePos.x + e_width_size- eAnchor.x > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size)&&eVector==1)
 	{
 		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size+ eAnchor.x;
-		if (jpflg && eVector == 1)
-		{
-			WallTouchPosX = ePos.x;
-			WallTouchFlg = true;
-		}
+		TurnAroundFlg = true;
 	}
 	//天井
 	if (ePos.y- eAnchor.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
 	{
 		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size)+ eAnchor.y;
 	}
-
+	if (TurnAroundFlg&&TurnAroundtimer>=10)
+	{
+		eVector *= -1;
+		TurnAroundtimer = 0;
+	}
 	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size);
 
 	if (e_wool_jump())
@@ -288,6 +289,7 @@ vivid::Vector2 Enemy::GetCircleCenterPos(void)
 
 bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width)
 {
+
 	//点と矩形の判定その1(横長)
 	bool result_h = ePos.x > cPos.x - eCircleRadius
 		&& ePos.x < cPos.x + c_width + eCircleRadius
@@ -356,9 +358,14 @@ void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 //壁に当たったらジャンプする判定
 bool Enemy::e_wool_jump()
 {
-	if (WallTouchFlg)
+	//if ()
+	//{
+	//	WallTouchFlg = false;
+	//	return 1;
+	//}
+	if (((ePos.x - eAnchor.x -Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)&& ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize()>Lwall)||
+		((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == 1)&& ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize()<Rwall))
 	{
-		WallTouchFlg = false;
 		return 1;
 	}
 
@@ -390,12 +397,12 @@ vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 6
 	{
 		pos.y = yuka - (CharacterVSize - anchor.y);
 		jpflg = 1;
-		if (WallTouchFlg)
-		{
-			if (abs( ePos.x - WallTouchPosX) < 3)
-				eVector *= -1;
-			WallTouchFlg = false;
-		}
+		//if (WallTouchFlg)
+		//{
+		//	if (abs( ePos.x - WallTouchPosX) < 3)
+		//		eVector *= -1;
+		//	WallTouchFlg = false;
+		//}
 	}
 	return pos;
 }
