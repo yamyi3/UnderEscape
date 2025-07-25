@@ -27,6 +27,8 @@ int			Character::c_limit_recovery		= 0;		//疲労状態のスタミナ回復までのカウンタ
 int			Character::c_stamina_recovery	= 0;		//スタミナ回復のカウンタ
 bool		Character::c_stamina_dash		= true;		//ダッシュ可能か判別するフラグ
 bool		Character::c_stamina_fatigue	= false;	//自機が疲労状態か判別するフラグ
+const int	Character::c_draw_stamina		= 60;		//スタミナの描画する最大秒数(60フレーム換算1秒)
+bool		Character::c_stamina_draw		= false;	//スタミナの描画を切り替えるフラグ
 
 const float Character::scroll_width_space = 850;
 const float Character::scroll_height_space = 300;
@@ -60,6 +62,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	skill_cool_flag = false;
 	active_count = 0;
 	cool_time_count = 0;
+	c_stamina_draw_count = 0;
 }
 
 void Character::Update(void)
@@ -76,6 +79,8 @@ void Character::Update(void)
 	UpdateAnimation();
 	//スクロールの更新
 	Scroll_Update();
+	//スタミナの描画切り替え
+	StaminaDraw();
 }
 
 void Character::Draw(void)
@@ -106,7 +111,8 @@ void Character::Draw(void)
 	//<-スタミナのrect更新
 
 	vivid::DrawTexture(c_image[(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
-	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
+	if (c_stamina_draw)
+		vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 
 #ifdef _DEBUG
 	if (skill_active_flag == false)
@@ -605,7 +611,7 @@ void Character::SkillMove(void)
 			switch (chara_skill)
 			{
 			case CHARA_SKILL::ANIMALLEG:
-				accelerator *= 2.0f;
+				accelerator *= 1.5f;
 				break;
 			case CHARA_SKILL::INVISIBLE:
 				color = 0x44ffffff;
@@ -660,6 +666,31 @@ void Character::CoolTime(void)
 		{
 			cool_time_count = 0;
 			skill_cool_flag = false;
+		}
+	}
+}
+
+void Character::StaminaDraw(void)
+{
+	namespace keyboard = vivid::keyboard;
+
+	//ダッシュボタンを押している間は描画フラグをtrueにして描画カウンタをリセットする
+	if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
+	{
+		c_stamina_draw = true;
+		c_stamina_draw_count = 0;
+	}
+	//押していない時にスタミナが最大値だったらカウンタを進め、規定値に達したら描画フラグをfalseにしてカウンタをリセットする
+	else
+	{
+		if (c_stamina_gauge == c_max_stamina)
+		{
+			c_stamina_draw_count++;
+			if (c_stamina_draw_count >= c_draw_stamina)
+			{
+				c_stamina_draw = false;
+				c_stamina_draw_count = 0;
+			}
 		}
 	}
 }
