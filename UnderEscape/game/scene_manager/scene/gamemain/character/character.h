@@ -182,7 +182,7 @@ private:
 	bool				skill_cool_flag;	//クールタイム処理を呼び出すフラグ
 	/*各アクティブフラグは使用スキルの選択に使う(スキルはボタンでの切り替え式にする)*/
 	//<-スキル関係
-
+	static bool found_flag;				//発見される状態か判断するフラグ(透明化時に使用)
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
 	static bool cAlive;					//生存フラグ
@@ -196,5 +196,4 @@ private:
 	Character(const Character& rhs) = default;
 	Character& operator = (const Character& rhs) = default;
 	//<-インスタンスの生成
-
 };
