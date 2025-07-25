@@ -1,7 +1,8 @@
 #pragma once
 #include "vivid.h"
 #include "item_id.h"
-
+#include "..\..\stage\stage.h"
+#include "..\..\character\character.h"
 class Item
 {
 public:
@@ -66,7 +67,7 @@ public:
     {
         return m_Height;
     }
-    void wallCheck();
+    void WallCheck();
     bool IsActive() const { return m_ActiveFlag; }
     void Destroy() { m_ActiveFlag = false; }
 protected:
