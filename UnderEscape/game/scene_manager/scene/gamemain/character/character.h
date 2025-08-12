@@ -155,7 +155,7 @@ private:
 	static const float dash_speed;		//自機のダッシュ時の移動速度
 	static const float sneak_speed;		//自機のしゃがみ時の移動速度
 	static const float fatigue_speed;	//自機の疲労時の移動速度(スタミナが0の時の移動速度)
-	const float jump_speed = -20.0f;	//自機のジャンプの速度
+	const float jump_speed = -18.0f;	//自機のジャンプの速度
 	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
 	const float cut_speed = 0.1f;		//自機の移動を0にする基準
