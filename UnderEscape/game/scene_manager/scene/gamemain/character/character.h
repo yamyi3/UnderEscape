@@ -16,6 +16,7 @@ enum class CHARA_STATE
 
 enum class CHARA_SKILL
 {
+	NORMAL,
 	ANIMALLEG,
 	INVISIBLE,
 
@@ -43,8 +44,10 @@ public:
 	void VStageHit();
 	//画面端から出ないようにする処理
 	void CheckWindow(void);
-	//自機の操作処理
-	void Control(void);
+	//自機のキーボード操作処理
+	void KeyboardControl(void);
+	//自機のコントローラー操作処理
+	void ControllerControl(void);
 	//地面をすり抜けないようにする処理
 	void RoundHit(float);
 	//障害物(壁)に完全に隠れている時の処理
@@ -78,6 +81,8 @@ public:
 	void CoolTime(void);
 	//スタミナの描画切り替え処理
 	void StaminaDraw(void);
+	//移動距離を座標に反映する処理
+	void ChangePosition(int);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -122,13 +127,36 @@ private:
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
 	int	c_change_anime_frame;						//各アニメーションの枚数
-	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像
-	{	"data\\自機\\前待機スプレッド.png",			//待機
-		"data\\自機\\前歩きスプレッド.png",			//歩行
-		"data\\自機\\前走りスプレッド.png",			//ダッシュ
-		"data\\自機\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
-		"data\\自機\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
-		"data\\自機\\前ジャンプスプレッド.png" };	//ジャンプ
+	std::string	c_image[(int)CHARA_SKILL::MAX][(int)CHARA_STATE::MAX] =	//自機の画像
+	{
+		//通常状態
+		{
+			"data\\自機\\通常状態\\前待機スプレッド.png",			//待機
+			"data\\自機\\通常状態\\前歩きスプレッド.png",			//歩行
+			"data\\自機\\通常状態\\前走りスプレッド.png",			//ダッシュ
+			"data\\自機\\通常状態\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
+			"data\\自機\\通常状態\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
+			"data\\自機\\通常状態\\前ジャンプスプレッド.png"		//ジャンプ
+		},
+		//獣化状態
+		{
+			"data\\自機\\獣化状態\\獣化前待機.png",					//待機
+			"data\\自機\\獣化状態\\獣化前歩行.png",					//歩行
+			"data\\自機\\獣化状態\\獣化前走り.png",					//ダッシュ
+			"data\\自機\\獣化状態\\獣化前しゃがみ待機.png",			//しゃがみ待機
+			"data\\自機\\獣化状態\\獣化前しゃがみ歩き.png",			//しゃがみ歩き
+			"data\\自機\\獣化状態\\獣化前ジャンプ.png"				//ジャンプ
+		},
+		//透明化状態
+		{
+			"data\\自機\\透明化状態\\透明化前待機.png",				//待機
+			"data\\自機\\透明化状態\\透明化前歩行.png",				//歩行
+			"data\\自機\\透明化状態\\透明化前走り.png",				//ダッシュ
+			"data\\自機\\透明化状態\\透明化前しゃがみ待機.png",		//しゃがみ待機
+			"data\\自機\\透明化状態\\透明化前しゃがみ歩き.png",		//しゃがみ歩き
+			"data\\自機\\透明化状態\\透明化前ジャンプ.png"			//ジャンプ
+		}
+	};
 	vivid::Rect		c_rect;							//画像の描画範囲
 	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
@@ -182,6 +210,7 @@ private:
 	static const int	skill_cool_time;	//スキルのクールタイムの最大数
 	int					cool_time_count;	//クールタイムのカウンタ
 	bool				skill_cool_flag;	//クールタイム処理を呼び出すフラグ
+	static int			skill_memory;		//最後に使用したスキルを記憶させる
 	/*各アクティブフラグは使用スキルの選択に使う(スキルはボタンでの切り替え式にする)*/
 	//<-スキル関係
 	static bool found_flag;				//発見される状態か判断するフラグ(透明化時に使用)
