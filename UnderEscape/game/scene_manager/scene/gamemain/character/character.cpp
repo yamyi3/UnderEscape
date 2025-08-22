@@ -2,6 +2,7 @@
 #include "character.h"
 #include "../stage/stage.h"
 
+bool	Character::ch_alive = true;
 float	Character::ch_speed = sneak_speed;
 unsigned Character::color = 0xffffffff;
 bool	Character::m_LandingFlag = false;
@@ -16,7 +17,7 @@ const float Character::dash_speed	 = 2.4f;			//自機のダッシュ時の移動速度
 const float Character::sneak_speed	 = 0.6f;			//自機の歩行時の移動速度
 const float Character::fatigue_speed = 0.3f;			//自機の疲労時の移動速度
 
-int			Character::skill_memory			= 1;
+int			Character::skill_memory			= 1;		//スキルの切り替えに使用(画像の切り替えも関係するためenumのみでは対応しきれないので用意)
 const int	Character::skill_cool_time		= 300;		//スキルのクールタイムの最大数(60フレーム換算5秒)
 const int	Character::activation_time		= 300;		//スキルの効果時間(60フレーム換算5秒)
 const int	Character::stamina_width		= 76;		//スタミナ現在の1つあたりの幅
@@ -362,6 +363,7 @@ void Character::KeyboardControl(void)
 	m_Velocity.x *= m_friction;
 }
 
+//コントローラー操作の処理
 void Character::ControllerControl(void)
 {
 	namespace controller = vivid::controller;
