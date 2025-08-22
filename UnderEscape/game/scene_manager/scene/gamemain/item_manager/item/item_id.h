@@ -3,6 +3,7 @@ enum class ItemID
 {
 	// アイテムのIDを定義
 	DUMMY ,			//ダミー
+	FLASH_ITEM,		//フラッシュアイテム
 	SOUND_ITEM,		//音の出るアイテム
 	UNKNOWN_ITEM,	//不明なアイテム
 };

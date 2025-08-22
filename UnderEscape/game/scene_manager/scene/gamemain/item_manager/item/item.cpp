@@ -22,6 +22,8 @@ Item::Item( ItemID id, ITEM_STATE state,float width,float heght,float radius)
 	, ceiling_wall		(false)
 	, left_right_wall	(false)
 	, ground_wall		(false)
+	,m_Active			(false)
+	, m_Area			(0.0f)
 {
 }
 

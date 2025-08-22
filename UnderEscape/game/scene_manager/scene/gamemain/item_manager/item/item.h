@@ -48,7 +48,7 @@ public:
     ItemID   GetBulletCategory(void);
 
     //アイテムオブジェクトの座標取得
-    vivid::Vector2 getItemPos(void)
+    vivid::Vector2 GetItemPos(void)
     {
         return iPos;
     }
@@ -68,6 +68,9 @@ public:
         return m_Height;
     }
     void WallCheck();
+    bool GetItemActive() { return m_Active; }
+	float GetEffectiveArea() { return m_Area; } //アイテムの有効範囲を取得
+
     bool IsActive() const { return m_ActiveFlag; }
     void Destroy() { m_ActiveFlag = false; }
 protected:
@@ -102,4 +105,6 @@ protected:
 	bool						ceiling_wall;	    //天井と壁の判定フラグ
 	bool 					    left_right_wall;	//左右の壁の判定フラグ
 	bool                        ground_wall;		//床の判定フラグ
+	bool 					    m_Active;           //!< 使用フラグ
+	float                       m_Area;             //!< アイテムの有効範囲
 };
