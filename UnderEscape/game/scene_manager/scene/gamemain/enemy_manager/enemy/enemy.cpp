@@ -1,5 +1,6 @@
 #include "enemy.h"
 #include "..\..\stage\stage.h"
+#include"..\..\item_manager\item_manager.h"
 
 const int Enemy::e_visibility_width_size = 400;
 const int Enemy::e_visibility_height_size = 400;
@@ -105,8 +106,22 @@ void Enemy::Initialize(void)
 
 void Enemy::Update(void)
 {
-	Sight_Check_Timer++;
+	bool flg = false;	
+	vivid::Vector2 item;																					//アイテムとエネミーの距離を測るのに使う
+	item.x = abs(ItemManager::GetInstance().GetItemPos().x - ePos.x);										//アイテムとエネミーの横の距離
+	item.y = abs(ItemManager::GetInstance().GetItemPos().y - ePos.y);										//アイテムとエネミーの縦の距離
+	if (sqrt((item.x * item.x) + (item.y * item.y)) <= ItemManager::GetInstance().GetEfectiveArea())		//平方根で距離を求め比べる
+	{
+		flg = true;		//音源がエネミーの索敵範囲内にある
+	}
+	else 
+		flg = false;	//音源がエネミーの索敵範囲外にある
+	if (ItemManager::GetInstance().GetItemActiveFlag() == true&& flg == true)
+	{
+		eStatus = eSTATUS::Surprised;
+	}
 
+	Sight_Check_Timer++;
 	vivid::Vector2 e_Velocity = {0.0f,0.0f};
 	switch (eStatus)
 	{
@@ -135,30 +150,37 @@ void Enemy::Update(void)
 		}
 		break;
 	case eSTATUS::Chase:
-		if (ChasePos.x > ePos.x)
+		if (ItemManager::GetInstance().GetItemActiveFlag()==false)
 		{
-			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
+
+
+			if (ChasePos.x > ePos.x)
 			{
-				e_Velocity.x += eChaseSpeed;
-				eVector = 1;
+				if (abs(ChasePos.x - ePos.x) > Source_End_Range)
+				{
+					e_Velocity.x += eChaseSpeed;
+					eVector = 1;
+				}
+			}
+			else
+			{
+				if (abs(ChasePos.x - ePos.x) > Source_End_Range)
+				{
+					e_Velocity.x -= eChaseSpeed;
+					eVector = -1;
+				}
+			}
+			if (abs(ChasePos.x - ePos.x + e_Velocity.x) < Source_End_Range)
+			{
+				if (Sight_Check_Timer >= 10)
+				{
+					Vigilance_Timer = 0;
+					eStatus = eSTATUS::Vigilance;
+				}
 			}
 		}
 		else
-		{
-			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
-			{
-				e_Velocity.x -= eChaseSpeed;
-				eVector = -1;
-			}
-		}
-		if (abs(ChasePos.x - ePos.x + e_Velocity.x) < Source_End_Range)
-		{
-			if (Sight_Check_Timer >= 10)
-			{
-				Vigilance_Timer = 0;
-				eStatus = eSTATUS::Vigilance;
-			}
-		}
+			eStatus = eSTATUS::Vigilance;
 		break;
 	case eSTATUS::Vigilance:
 		if (++Vigilance_Timer >= Vigilance_time)
@@ -170,10 +192,19 @@ void Enemy::Update(void)
 		}
 		break;
 	case eSTATUS::Surprised:
-		if (++Surprised_Timer >= Surprised_time)
-		{
-			eStatus = eSTATUS::Chase;
-		}
+		
+		
+			if (++Surprised_Timer >= Surprised_time)
+			{
+				if (ItemManager::GetInstance().GetItemActiveFlag() == false)
+				eStatus = eSTATUS::Chase;
+				else
+				{
+					eStatus = eSTATUS::Vigilance;
+					Vigilance_Timer = 0;
+				}
+			}
+		
 		break;
 	default:
 		break;

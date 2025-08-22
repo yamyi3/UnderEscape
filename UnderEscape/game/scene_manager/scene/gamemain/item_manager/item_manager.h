@@ -1,12 +1,12 @@
 #pragma once
 #include<list>
 #include"vivid.h"
-//#include"item/sound_item/sound_item.h"
 #include"item/item.h"
 #include"item/item_id.h"
 class ItemManager
 {
 public:
+
 	// インスタンスの取得
 	static ItemManager& GetInstance();
 	// 初期化
@@ -19,7 +19,12 @@ public:
 	void Finalize();
 	// アイテムの生成
 	void CreateItem(vivid::Vector2 position,ItemID id);
-
+	//アイテムのアクティブフラグを取得
+	bool GetItemActiveFlag();	
+	//アイテムの位置を取得
+	vivid::Vector2 GetItemPos();	
+	//アイテムの有効範囲を取得
+	float GetEfectiveArea();	
 private:
 	using ITEM_LIST = std::list<Item*>;
 	ITEM_LIST m_Item;										// アイテムのリスト
