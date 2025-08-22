@@ -1,6 +1,7 @@
 #include "item_manager.h"
 #include"item/item.h"
 #include"item/sound_item/sound_item.h"
+#include"item/flash_item/flash_item.h"
 #include"../character/character.h"
 ItemManager& ItemManager::GetInstance()
 {
@@ -77,6 +78,8 @@ void ItemManager::CreateItem(vivid::Vector2 position, ItemID id)
 	{
 	case ItemID::SOUND_ITEM:	item = new SoundItem();
 		break;
+	case ItemID::FLASH_ITEM:	item = new FlashItem();
+		break;
 	case ItemID::UNKNOWN_ITEM:
 		break;
 	default:
@@ -89,4 +92,54 @@ void ItemManager::CreateItem(vivid::Vector2 position, ItemID id)
 
 	m_Item.push_back(item);
 }
+
+bool ItemManager::GetItemActiveFlag()
+{
+	//各アイテムオブジェクトの描画
+	ITEM_LIST::iterator    it = m_Item.begin();
+	ITEM_LIST::iterator    end = m_Item.end();
+
+	bool Active = false;
+	while (it != end)
+	{
+		Active=(*it)->GetItemActive();
+
+		++it;
+	}
+	return Active;
+
+}
+
+vivid::Vector2 ItemManager::GetItemPos()
+{
+	//各アイテムオブジェクトの描画
+	ITEM_LIST::iterator    it = m_Item.begin();
+	ITEM_LIST::iterator    end = m_Item.end();
+
+	vivid::Vector2 Pos(0.0f, 0.0f);
+	while (it != end)
+	{
+		Pos = (*it)->GetItemPos();
+
+		++it;
+	}
+	return Pos;
+}
+
+float ItemManager::GetEfectiveArea()
+{
+	//各アイテムオブジェクトの描画
+	ITEM_LIST::iterator    it = m_Item.begin();
+	ITEM_LIST::iterator    end = m_Item.end();
+
+	float Area;
+	while (it != end)
+	{
+		Area = (*it)->GetEffectiveArea();
+
+		++it;
+	}
+	return Area;
+}
+
 

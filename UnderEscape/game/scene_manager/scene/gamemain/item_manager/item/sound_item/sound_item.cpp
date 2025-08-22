@@ -91,7 +91,7 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 			iColor = 0xffffffff;
 		}
 
-		if (ceiling_wall == false&&left_right_wall==false )
+		if (ceiling_wall == false && left_right_wall == false && ground_wall == false)
 		{
 			iPos.x += m_Velocity.x;
 		}else

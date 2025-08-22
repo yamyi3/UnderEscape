@@ -168,6 +168,7 @@
     <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\gamemain.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\item_manager\item\flash_item\flash_item.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\item_manager\item\item.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\item_manager\item_manager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\item_manager\item\sound_item\sound_item.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy_status_id.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\gamemain.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\item_manager\item\flash_item\flash_item.h" />
     <ClInclude Include="scene_manager\scene\gamemain\item_manager\item\item.h" />
     <ClInclude Include="scene_manager\scene\gamemain\item_manager\item\item_id.h" />
     <ClInclude Include="scene_manager\scene\gamemain\item_manager\item_manager.h" />
