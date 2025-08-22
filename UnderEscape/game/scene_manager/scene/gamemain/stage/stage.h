@@ -73,10 +73,13 @@ private:
 		EMPTY,
 		GROUND,
 		BLOCK,
+		RSTAIRS,	//Å^
+		LSTAIRS,	//Å_
 		WALL,
 		ENEMY_AREA,
 		R_ENEMY,
 		L_ENEMY,
+		TPSTAIRS,
 		START,
 		GOAL,
 	};

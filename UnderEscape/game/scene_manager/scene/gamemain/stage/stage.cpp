@@ -62,7 +62,7 @@ void Stage::Initialize(void)
 	for (int i = 0, k = 0; i < size; ++i)
 	{
 		// 文字の0～8であれば数値に変換する 
-		if (buf[i] >= '0' && buf[i] <= '8')
+		if (buf[i] >= '0' && buf[i] <= '11')
 		{
 			char t = buf[i];
 			g_Map[k / g_map_chip_count_width][k % g_map_chip_count_width] =
@@ -73,6 +73,7 @@ void Stage::Initialize(void)
 	// 一時的なデータを削除 
 	delete[] buf;
 	
+	int TPcount=0;
 
 	for (int y = 0; y < g_map_chip_count_height; y++)
 	{
@@ -90,12 +91,19 @@ void Stage::Initialize(void)
 				case Stage::MAP_CHIP_ID::WALL:
 					GenerateObject(x, y, (int)g_Map[y][x]);
 					break;
+				case Stage::MAP_CHIP_ID::RSTAIRS:
+					break;
+				case Stage::MAP_CHIP_ID::LSTAIRS:
+					break;
 				case Stage::MAP_CHIP_ID::ENEMY_AREA:
 					g_map_flg[y][x] = true;
 					break;
 				case Stage::MAP_CHIP_ID::R_ENEMY:
 				case Stage::MAP_CHIP_ID::L_ENEMY:
 					GenerateEnemy(x, y, (int)g_Map[y][x]);
+				case Stage::MAP_CHIP_ID::TPSTAIRS:
+					TPcount++;
+					break;
 				case Stage::MAP_CHIP_ID::START:
 					start_pos = { (float)(x * g_map_chip_size),((y+1) * g_map_chip_size)-Character::GetInstance().GetCharaHeight()};
 					break;
