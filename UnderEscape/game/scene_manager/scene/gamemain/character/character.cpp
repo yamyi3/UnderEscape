@@ -65,6 +65,8 @@ void Character::Initialize(vivid::Vector2 rPos)
 	active_count = 0;
 	cool_time_count = 0;
 	c_stamina_draw_count = 0;
+
+	Scroll = { 0.0f, 0.0f };
 }
 
 void Character::Update(void)
