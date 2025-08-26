@@ -30,7 +30,7 @@ void GameMainScene::Initialize(void)
 
     ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ITEM_ID::FLASH_ITEM);
 
-    ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ItemID::FLASH_ITEM);
+    ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ITEM_ID::FLASH_ITEM);
 
     for (int i = 0; i < 3; i++)
     {
