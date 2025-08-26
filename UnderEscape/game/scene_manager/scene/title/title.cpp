@@ -41,7 +41,7 @@ void TitleScene::Title_Update()
 
     //フェードアウト
     //ENTERを押すと60フレームでタイトルロゴが完全に透明になる
-    if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::RETURN)&& title_sw == false)
+    if ((vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::RETURN)&& title_sw == false) || (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::A)))
     {
         title_sw = true;
         title_time = 0;
@@ -91,7 +91,7 @@ void TitleScene::Team_Update()
 void TitleScene::Title_Draw()
 {
     vivid::DrawTexture("data\\title.png", title_pos, title_color);
-    vivid::DrawText(40, "Please[ENTER]", start_pos, title_color);
+    vivid::DrawText(40, "Please[ENTER] or [A]", start_pos, title_color);
 }
 void TitleScene::Team_Draw()
 {

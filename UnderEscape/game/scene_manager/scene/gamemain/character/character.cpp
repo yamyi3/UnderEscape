@@ -7,15 +7,16 @@ unsigned Character::color = 0xffffffff;
 bool	Character::m_LandingFlag = false;
 bool	Character::cCatch = false;
 bool	Character::cAlive = true;
-CHARA_SKILL chara_skill = CHARA_SKILL::ANIMALLEG;
+CHARA_SKILL chara_skill = CHARA_SKILL::NORMAL;
 
-const float Character::ch_width		 = 72.0f;	//自機の幅
-const float Character::ch_height	 = 180.0f;	//自機の高さ
-const float Character::walk_speed	 = 1.2f;	//自機の通常移動速度
-const float Character::dash_speed	 = 2.4f;	//自機のダッシュ時の移動速度
-const float Character::sneak_speed	 = 0.6f;	//自機の歩行時の移動速度
-const float Character::fatigue_speed = 0.3f;	//自機の疲労時の移動速度
+const float Character::ch_width		 = 72.0f;			//自機の幅
+const float Character::ch_height	 = 180.0f;			//自機の高さ
+const float Character::walk_speed	 = 1.2f;			//自機の通常移動速度
+const float Character::dash_speed	 = 2.4f;			//自機のダッシュ時の移動速度
+const float Character::sneak_speed	 = 0.6f;			//自機の歩行時の移動速度
+const float Character::fatigue_speed = 0.3f;			//自機の疲労時の移動速度
 
+int			Character::skill_memory			= 1;
 const int	Character::skill_cool_time		= 300;		//スキルのクールタイムの最大数(60フレーム換算5秒)
 const int	Character::activation_time		= 300;		//スキルの効果時間(60フレーム換算5秒)
 const int	Character::stamina_width		= 76;		//スタミナ現在の1つあたりの幅
@@ -27,6 +28,9 @@ int			Character::c_limit_recovery		= 0;		//疲労状態のスタミナ回復までのカウンタ
 int			Character::c_stamina_recovery	= 0;		//スタミナ回復のカウンタ
 bool		Character::c_stamina_dash		= true;		//ダッシュ可能か判別するフラグ
 bool		Character::c_stamina_fatigue	= false;	//自機が疲労状態か判別するフラグ
+const int	Character::c_draw_stamina		= 60;		//スタミナの描画する最大秒数(60フレーム換算1秒)
+bool		Character::c_stamina_draw		= false;	//スタミナの描画を切り替えるフラグ
+bool		Character::found_flag			= true;		//発見される状態か判断するフラグ(透明化時に使用)
 
 const float Character::scroll_width_space = 850;
 const float Character::scroll_height_space = 300;
@@ -60,12 +64,17 @@ void Character::Initialize(vivid::Vector2 rPos)
 	skill_cool_flag = false;
 	active_count = 0;
 	cool_time_count = 0;
+	c_stamina_draw_count = 0;
+
+	Scroll = { 0.0f, 0.0f };
 }
 
 void Character::Update(void)
 {
-	//自機の操作
-	Control();
+	//自機のキーボード操作
+	//KeyboardControl();
+	//自機のコントローラー操作
+	ControllerControl();
 	//画面端の判定
 	CheckWindow();
 	//クールタイムの処理
@@ -76,13 +85,17 @@ void Character::Update(void)
 	UpdateAnimation();
 	//スクロールの更新
 	Scroll_Update();
+	//スタミナの描画切り替え
+	StaminaDraw();
 }
 
+//描画
 void Character::Draw(void)
 {
+	//->スタミナの描画座標の更新
 	stamina_pos.x = (float)(((cPos.x + (ch_width / 2.0f))- (stamina_width / 2.0f)));
 	stamina_pos.y = (float)(cPos.y - 20);
-
+	//<-スタミナの描画座標の更新
 
 	//->自機のrect更新
 	c_rect.top = 0;
@@ -105,29 +118,51 @@ void Character::Draw(void)
 	stamina_rect.right = stamina_rect.left + stamina_width;
 	//<-スタミナのrect更新
 
-	vivid::DrawTexture(c_image[(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
-	vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
+	//自機の描画
+	vivid::DrawTexture(c_image[(int)chara_skill][(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
+	//スタミナ描画フラグがtrueの時にのみスタミナゲージを描画する
+	if (c_stamina_draw)
+		vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 
+	//デバッグモードの時に各必要情報を表示
 #ifdef _DEBUG
+	switch (chara_skill)
+	{
+	case CHARA_SKILL::NORMAL:
+		vivid::DrawText(40, "ふつうだよー", vivid::Vector2(0.0f, 0.0f), 0xff00ffff);
+		break;
+	case CHARA_SKILL::ANIMALLEG:
+		vivid::DrawText(40, "けものだよー", vivid::Vector2(0.0f, 0.0f), 0xff00ffff);
+		break;
+	case CHARA_SKILL::INVISIBLE:
+		vivid::DrawText(40, "みえないよー", vivid::Vector2(0.0f, 0.0f), 0xff00ffff);
+		break;
+	}
 	if (skill_active_flag == false)
 		vivid::DrawText(40, "すきるつかってないよー", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
 	if (skill_active_flag)
 		vivid::DrawText(40, "すきるつかうよー", vivid::Vector2(0.0f, 50.0f), 0xff00ffff);
-	if (chara_skill == CHARA_SKILL::ANIMALLEG)
+	if (skill_memory == (int)CHARA_SKILL::ANIMALLEG)
 		vivid::DrawText(40, "あしつよいよー", vivid::Vector2(0.0f, 100.0f), 0xff00ffff);
-	if (chara_skill == CHARA_SKILL::INVISIBLE)
+	if (skill_memory == (int)CHARA_SKILL::INVISIBLE)
 		vivid::DrawText(40, "めにみえないよー", vivid::Vector2(0.0f, 150.0f), 0xff00ffff);
 	if (skill_cool_flag)
 		vivid::DrawText(40, "スキルクールだよー", vivid::Vector2(0.0f, 200.0f), 0xff00ffff);
 	vivid::DrawText(40,"キャラ速度：" +  std::to_string(m_Velocity.x), vivid::Vector2(0.0f, 250.0f), 0xff00ffff);
-	vivid::DrawText(40, "キャラの色；" + std::to_string(color), vivid::Vector2(0.0f, 300.0f), 0xff00ffff);
+	vivid::DrawText(40, "キャラの色：" + std::to_string(color), vivid::Vector2(0.0f, 300.0f), 0xff00ffff);
+	if (found_flag == true)
+		vivid::DrawText(40, "視覚判定あるよー", vivid::Vector2(0.0f, 350.0f), 0xff00ffff);
+	if (found_flag == false)
+		vivid::DrawText(40, "視覚判定ないよー", vivid::Vector2(0.0f, 350.0f), 0xff00ffff);
 #endif
 }
 
+//解放
 void Character::Finalize(void)
 {
 }
 
+//ステージの当たり判定
 void Character::StageHit()
 {
 	//左
@@ -162,6 +197,7 @@ void Character::HStageHit()
 	}
 }
 
+//天井と地面の判定
 void Character::VStageHit()
 {
 	//地面
@@ -200,7 +236,7 @@ void Character::CheckWindow(void)
 }
 
 //自機の操作
-void Character::Control(void)
+void Character::KeyboardControl(void)
 {
 	namespace keyboard = vivid::keyboard;
 
@@ -218,7 +254,7 @@ void Character::Control(void)
 			chara_state = CHARA_STATE::WAIT;
 		}
 	}
-
+	//デフォルトは待機状態にする
 	if (m_LandingFlag)
 		chara_state = CHARA_STATE::WAIT;
 
@@ -261,6 +297,12 @@ void Character::Control(void)
 	{
 		accelerator.x = -ch_speed;
 		c_scale.x = -1.0f;
+		//ダッシュ中のスタミナ処理
+		if (ch_speed == dash_speed && c_stamina_dash)
+		{
+			DashStamina();
+		}
+
 		CheckMoveState();
 	}
 
@@ -269,6 +311,12 @@ void Character::Control(void)
 	{
 		accelerator.x = ch_speed;
 		c_scale.x = 1.0f;
+		//ダッシュ中のスタミナ処理
+		if (ch_speed == dash_speed && c_stamina_dash)
+		{
+			DashStamina();
+		}
+
 		CheckMoveState();
 	}
 
@@ -290,6 +338,7 @@ void Character::Control(void)
 		}
 	}
 
+	//スキルの動作処理
 	SkillMove();
 
 	//落下処理
@@ -298,11 +347,137 @@ void Character::Control(void)
 		accelerator.y += fall_speed;
 	}
 
-
+	//置き換えた座標を代入する
 	m_Velocity += accelerator;
 	cPos.x += m_Velocity.x;
+	//ステージとの当たり判定の確認
 	HStageHit();
+
 	cPos.y += m_Velocity.y;
+
+	VStageHit();
+
+	//画面端の判定
+	CheckWindow();
+
+	//移動に慣性をつける
+	m_Velocity.x *= m_friction;
+}
+
+void Character::ControllerControl(void)
+{
+	namespace controller = vivid::controller;
+
+	accelerator = vivid::Vector2::ZERO;
+
+	//デフォルトはwalk_speedにする
+	ch_speed = walk_speed;
+
+	//一定値を超えたら速度を0にして慣性の移動を止める
+	if (abs(m_Velocity.x) < cut_speed)
+	{
+		m_Velocity.x = 0.0f;
+		if (m_LandingFlag)
+		{
+			chara_state = CHARA_STATE::WAIT;
+		}
+	}
+	//デフォルトは待機状態にする
+	if (m_LandingFlag)
+		chara_state = CHARA_STATE::WAIT;
+
+	//Aボタンを長押しでダッシュする
+	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A))
+	{
+		ch_speed = dash_speed;
+		if (m_LandingFlag)
+			chara_state = CHARA_STATE::WAIT;
+	}
+
+	//下ボタンを長押しでしゃがみになる
+	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::DOWN))
+	{
+		ch_speed = sneak_speed;
+		if (m_LandingFlag)
+			chara_state = CHARA_STATE::SNEAKWAIT;
+	}
+	
+	//スタミナが0ではなく走っていない時はスタミナが回復する
+	if (!(chara_state == CHARA_STATE::RUN) && c_stamina_dash)
+	{
+		RecoveryStamina();
+	}
+
+	//スタミナゲージが0の時はfatigue_speedになる
+	if (!c_stamina_dash)
+	{
+		LimitStamina();
+	}
+	//Yボタンを押したらスキルが切り替わる
+	if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::Y))
+	{
+		ChangeSkill();
+	}
+	//十字左長押しで左移動
+	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::LEFT))
+	{
+		accelerator.x = -ch_speed;
+		c_scale.x = -1.0f;
+		//ダッシュ中のスタミナ処理
+		if (ch_speed == dash_speed && c_stamina_dash)
+		{
+			DashStamina();
+		}
+
+		CheckMoveState();
+	}
+	//十字右長押しで右移動
+	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::RIGHT))
+	{
+		accelerator.x = ch_speed;
+		c_scale.x = 1.0f;
+		//ダッシュ中のスタミナ処理
+		if (ch_speed == dash_speed && c_stamina_dash)
+		{
+			DashStamina();
+		}
+
+		CheckMoveState();
+	}
+
+	//Bボタンを押すとジャンプをする
+	if ((controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::B)) && m_LandingFlag)
+	{
+		accelerator.y += jump_speed;
+		chara_state = CHARA_STATE::JUMP;
+	}
+	//Xボタンを押すとスキルが発動する
+	if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::X))
+	{
+		//重複しないようにするためにフラグを通す
+		if (skill_active_flag == false && skill_cool_flag == false)
+		{
+			skill_active_flag = true;
+		}
+	}
+	
+	//スキルの動作処理
+	SkillMove();
+
+	//落下処理
+	if (m_LandingFlag == false || 1)
+	{
+		accelerator.y += fall_speed;
+	}
+
+	//置き換えた座標を代入する
+	m_Velocity += accelerator;
+	cPos.x += m_Velocity.x;
+	//ステージとの当たり判定の確認
+	HStageHit();
+
+	cPos.y += m_Velocity.y;
+
 	VStageHit();
 
 	//画面端の判定
@@ -372,6 +547,10 @@ bool Character::CheckEnemyHit(vivid::Vector2 ePos, float eRadius)
 	//上記の判定から当たっているか(視界に入っているか)を判断する
 	if (result_h || result_v || result_lu || result_ru || result_ld || result_rd)
 	{
+		if (found_flag == false)
+		{
+			return false;
+		}
 		return true;
 	}
 	//当たっていない場合はfalseを返す
@@ -381,6 +560,7 @@ bool Character::CheckEnemyHit(vivid::Vector2 ePos, float eRadius)
 	}
 }
 
+//アイテムとの当たり判定
 bool Character::CheckObtainItem(vivid::Vector2 iPos, vivid::Vector2 iCenter, float iWidth, float iHeight)
 {
 	//対角線とベクトルで処理を行う(単ブロックに使用推奨)
@@ -426,6 +606,7 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, vivid
 	}
 }
 
+//敵や障害物との当たり判定
 void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool EnemyHitFlg)
 {	
 	//壁に当たった時(障害物に隠れたとき)
@@ -454,6 +635,7 @@ void Character::CheckHit(vivid::Vector2 wPos, float wWidth, float wHeight, bool 
 	}
 }
 
+//投げた動作を実行したかを返すフラグ
 bool Character::CheckThrow(void)
 {
 	if (cCatch)
@@ -466,6 +648,7 @@ bool Character::CheckThrow(void)
 	}
 }
 
+//アイテムを置く動作を実行したかを返す
 bool Character::checkPut(void)
 {
 	if (cCatch)
@@ -478,6 +661,7 @@ bool Character::checkPut(void)
 	}
 }
 
+//アニメーションの更新
 void Character::UpdateAnimation(void)
 {
 	//状態ごとにアニメーションの最大枚数の設定
@@ -518,6 +702,7 @@ void Character::UpdateAnimation(void)
 	//<-アニメーションの更新
 }
 
+//自機が接地している状態の変更処理
 void Character::CheckMoveState(void)
 {
 	if (m_LandingFlag)
@@ -526,10 +711,6 @@ void Character::CheckMoveState(void)
 		if (ch_speed == dash_speed)
 		{
 			chara_state = CHARA_STATE::RUN;
-			if (c_stamina_dash)
-			{
-				DashStamina();
-			}
 		}
 		if (ch_speed == sneak_speed)
 		{
@@ -538,9 +719,10 @@ void Character::CheckMoveState(void)
 	}
 }
 
+//スタミナの消費処理
 void Character::DashStamina(void)
 {
-	//スタミナゲージに残量がある時の処理
+	//スタミナゲージに残量がある時かの確認
 	if (c_stamina_gauge > 0)
 	{
 	//スタミナ消費のカウンタを進める
@@ -561,6 +743,7 @@ void Character::DashStamina(void)
 	c_stamina_recovery = 0;
 }
 
+//スタミナの回復処理
 void Character::RecoveryStamina(void)
 {
 	c_stamina_recovery++;
@@ -575,6 +758,7 @@ void Character::RecoveryStamina(void)
 	}
 }
 
+//スタミナが0になった後の回復処理
 void Character::LimitStamina(void)
 {
 	ch_speed = fatigue_speed;
@@ -602,30 +786,35 @@ void Character::SkillMove(void)
 		active_count++;
 		if (active_count < activation_time)
 		{
-			switch (chara_skill)
+			switch ((skill_memory))
 			{
-			case CHARA_SKILL::ANIMALLEG:
-				accelerator *= 2.0f;
+			case (int)CHARA_SKILL::ANIMALLEG:
+				accelerator *= 1.6f;
+				chara_skill = CHARA_SKILL::ANIMALLEG;
 				break;
-			case CHARA_SKILL::INVISIBLE:
+			case (int)CHARA_SKILL::INVISIBLE:
+				chara_skill = CHARA_SKILL::INVISIBLE;
 				color = 0x44ffffff;
+				found_flag = false;
 				break;
 			}
 		}
 		//タイマーが規定値を超えたら各数値をリセットする
 		if (active_count >= activation_time)
 		{
-			switch (chara_skill)
+			switch (skill_memory)
 			{
-			case CHARA_SKILL::ANIMALLEG:
-				accelerator *= 0.5f;
+			case (int)CHARA_SKILL::ANIMALLEG:
+				accelerator *= 0.625f;
 				break;
-			case CHARA_SKILL::INVISIBLE:
+			case (int)CHARA_SKILL::INVISIBLE:
 				color = 0xffffffff;
+				found_flag = true;
 				break;
 			default:
 				break;
 			}
+			chara_skill = CHARA_SKILL::NORMAL;
 			active_count = 0;
 			skill_active_flag = false;
 			skill_cool_flag = true;
@@ -638,19 +827,20 @@ void Character::ChangeSkill(void)
 {
 	if (skill_active_flag == false)
 	{
-		switch (chara_skill)
+		switch (skill_memory)
 		{
-		case CHARA_SKILL::INVISIBLE:
-			chara_skill = CHARA_SKILL::ANIMALLEG;
+		case (int)CHARA_SKILL::INVISIBLE:
+			skill_memory = (int)CHARA_SKILL::ANIMALLEG;
 			break;
 
-		case CHARA_SKILL::ANIMALLEG:
-			chara_skill = CHARA_SKILL::INVISIBLE;
+		case (int)CHARA_SKILL::ANIMALLEG:
+			skill_memory = (int)CHARA_SKILL::INVISIBLE;
 			break;
 		}
 	}
 }
 
+//スキルのクールタイム処理
 void Character::CoolTime(void)
 {
 	if (skill_cool_flag)
@@ -664,6 +854,34 @@ void Character::CoolTime(void)
 	}
 }
 
+//スタミナの描画を切り替える処理
+void Character::StaminaDraw(void)
+{
+	namespace keyboard = vivid::keyboard;
+	namespace controller = vivid::controller;
+
+	//ダッシュボタンを押している間は描画フラグをtrueにして描画カウンタをリセットする
+	if ((keyboard::Button(keyboard::KEY_ID::LSHIFT)) || (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A)))
+	{
+		c_stamina_draw = true;
+		c_stamina_draw_count = 0;
+	}
+	//押していない時にスタミナが最大値だったらカウンタを進め、規定値に達したら描画フラグをfalseにしてカウンタをリセットする
+	else
+	{
+		if (c_stamina_gauge == c_max_stamina)
+		{
+			c_stamina_draw_count++;
+			if (c_stamina_draw_count >= c_draw_stamina)
+			{
+				c_stamina_draw = false;
+				c_stamina_draw_count = 0;
+			}
+		}
+	}
+}
+
+//スクロールの更新
 void Character::Scroll_Update()
 {
 	if (cPos.x > Scroll.x + vivid::WINDOW_WIDTH - scroll_width_space)
@@ -683,5 +901,4 @@ void Character::Scroll_Update()
 		Scroll.y = cPos.y - scroll_height_space;
 	if (Scroll.y < 0)
 		Scroll.y = 0;
-
 }

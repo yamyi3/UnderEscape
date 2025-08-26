@@ -5,21 +5,23 @@
 const int Enemy::e_visibility_width_size = 400;
 const int Enemy::e_visibility_height_size = 400;
 
-const int Enemy::e_width_size = 128;						//ƒGƒlƒ~[‚Ì‰¡‚Ìƒhƒbƒg”
-const int Enemy::e_height_size = 98;                       //ƒGƒlƒ~[‚Ìc;;;;‚Ìƒhƒbƒg”
+const int Enemy::e_width_size = 128;						//ã‚¨ãƒãƒŸãƒ¼ã®æ¨ªã®ãƒ‰ãƒƒãƒˆæ•°
+const int Enemy::e_height_size = 98;                       //ã‚¨ãƒãƒŸãƒ¼ã®ç¸¦;;;;ã®ãƒ‰ãƒƒãƒˆæ•°
 
-const int Enemy::mark_width_size = 32;		//!‚Ì‰¡‚Ìƒhƒbƒg”
-const int Enemy::mark_height_size = 32;      //!‚Ìc‚Ìƒhƒbƒg”
+const int Enemy::mark_width_size = 32;		//!ã®æ¨ªã®ãƒ‰ãƒƒãƒˆæ•°
+const int Enemy::mark_height_size = 32;      //!ã®ç¸¦ã®ãƒ‰ãƒƒãƒˆæ•°
 
-const float Enemy::eSpeed = 4;						//ƒGƒlƒ~[‚Ì„‰ñ’†‚ÌˆÚ“®‘¬“x
-const float Enemy::eChaseSpeed = 6;					//ƒGƒlƒ~[‚ÌƒvƒŒƒCƒ„[’ÇÕ’†‚ÌˆÚ“®‘¬“x
-const int Enemy::Source_End_Range = 4;				//Œx‰úÀ•W‚Æ‚Ì‚˜²‚Ì·‚ª‚±‚Ì”’l‚æ‚è’Z‚­‚È‚Á‚½‚ç’ÇÕ‚ğI—¹‚·‚éB
-const int Enemy::Vigilance_time = 150;				//’ÇÕ–Ú•W’n“_“’BŒã‚Ì‘Ò‹@ƒtƒŒ[ƒ€”
+const float Enemy::eSpeed = 4;						//ã‚¨ãƒãƒŸãƒ¼ã®å·¡å›ä¸­ã®ç§»å‹•é€Ÿåº¦
+const float Enemy::eChaseSpeed = 6;					//ã‚¨ãƒãƒŸãƒ¼ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½è·¡ä¸­ã®ç§»å‹•é€Ÿåº¦
+const int Enemy::Source_End_Range = 4;				//è­¦æˆ’åº§æ¨™ã¨ã®ï½˜è»¸ã®å·®ãŒã“ã®æ•°å€¤ã‚ˆã‚ŠçŸ­ããªã£ãŸã‚‰è¿½è·¡ã‚’çµ‚äº†ã™ã‚‹ã€‚
+const int Enemy::Vigilance_time = 150;				//è¿½è·¡ç›®æ¨™åœ°ç‚¹åˆ°é”å¾Œã®å¾…æ©Ÿãƒ•ãƒ¬ãƒ¼ãƒ æ•°
 
-const int Enemy::Surprised_time = 30;				//’ÇÕŠJn‘O‚Ì’â~ƒtƒŒ[ƒ€”
-const float Enemy::enemy_jump_height = 250.0f;		//ƒWƒƒƒ“ƒv‚Ì‚‚³
-const float Enemy::enemy_jump_upspeed = 3.0f;		//ƒWƒƒƒ“ƒv‚Ìã¸ƒXƒs[ƒh
-const float Enemy::enemy_jump_downspeed = 100.0f;	//—‰ºƒXƒs[ƒh(ã¸ƒXƒs[ƒh‚Ì‰½“‚©)
+const int Enemy::Surprised_time = 30;				//è¿½è·¡é–‹å§‹å‰ã®åœæ­¢ãƒ•ãƒ¬ãƒ¼ãƒ æ•°
+const float Enemy::enemy_jump_height = 250.0f;		//ã‚¸ãƒ£ãƒ³ãƒ—ã®é«˜ã•
+const float Enemy::enemy_jump_upspeed = 3.0f;		//ã‚¸ãƒ£ãƒ³ãƒ—ã®ä¸Šæ˜‡ã‚¹ãƒ”ãƒ¼ãƒ‰
+const float Enemy::enemy_jump_downspeed = 100.0f;	//è½ä¸‹ã‚¹ãƒ”ãƒ¼ãƒ‰(ä¸Šæ˜‡ã‚¹ãƒ”ãƒ¼ãƒ‰ã®ä½•ï¼…ã‹)
+
+const int Enemy::turn_around_ct = 10;
 
 const int Enemy::animation_change_time = 5;
 
@@ -44,8 +46,12 @@ Enemy::Enemy(void)
 	, WallTouchPosX(0.0f)
 	, AnimationTimer(0)
 	, AnimationFrame(0)
+
 	, item_area(false)
 	, item_pos({ 0.0f, 0.0f })
+
+	,TurnAroundtimer(10)
+
 {
 }
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground)
@@ -73,12 +79,12 @@ void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float
 	AnimationTimer = 0;
 	AnimationFrame = 0;
 
-	enemy_picture_name[(int)eSTATUS::Stop]		= "data\\“G‹@\\’wåŒ^‘Ò‹@.png";
-	enemy_picture_name[(int)eSTATUS::Wandering] = "data\\“G‹@\\’wåŒ^¶•às.png";
-	enemy_picture_name[(int)eSTATUS::Chase]		= "data\\“G‹@\\’wåŒ^¶•às.png";
-	enemy_picture_name[(int)eSTATUS::Vigilance] = "data\\“G‹@\\’wåŒ^‘Ò‹@.png";
-	enemy_picture_name[(int)eSTATUS::Surprised] = "data\\“G‹@\\’wåŒ^‘Ò‹@.png";
-	enemy_picture_name[(int)eSTATUS::Kill]		= "data\\“G‹@\\’wåŒ^¶•às.png";
+	enemy_picture_name[(int)eSTATUS::Stop]		= "data\\æ•µæ©Ÿ\\èœ˜è››å‹å¾…æ©Ÿ.png";
+	enemy_picture_name[(int)eSTATUS::Wandering] = "data\\æ•µæ©Ÿ\\èœ˜è››å‹å·¦æ­©è¡Œ.png";
+	enemy_picture_name[(int)eSTATUS::Chase]		= "data\\æ•µæ©Ÿ\\èœ˜è››å‹å·¦æ­©è¡Œ.png";
+	enemy_picture_name[(int)eSTATUS::Vigilance] = "data\\æ•µæ©Ÿ\\èœ˜è››å‹å¾…æ©Ÿ.png";
+	enemy_picture_name[(int)eSTATUS::Surprised] = "data\\æ•µæ©Ÿ\\èœ˜è››å‹å¾…æ©Ÿ.png";
+	enemy_picture_name[(int)eSTATUS::Kill]		= "data\\æ•µæ©Ÿ\\èœ˜è››å‹å·¦æ­©è¡Œ.png";
 
 	AnimationMaxFrame[(int)eSTATUS::Stop] = 16;
 	AnimationMaxFrame[(int)eSTATUS::Wandering] = 8;
@@ -109,14 +115,14 @@ void Enemy::Initialize(void)
 void Enemy::Update(void)
 {
 	item_pos = ItemManager::GetInstance().GetItemPos();
-	item_pos.x = abs((item_pos.x) - ePos.x);										//ƒAƒCƒeƒ€‚ÆƒGƒlƒ~[‚Ì‰¡‚Ì‹——£
-	item_pos.y = abs((item_pos.y) - ePos.y);										//ƒAƒCƒeƒ€‚ÆƒGƒlƒ~[‚Ìc‚Ì‹——£
-	if ( ItemManager::GetInstance().GetItemActiveFlag() == true)		//•½•ûª‚Å‹——£‚ğ‹‚ß”ä‚×‚é 300‚ÍŒø‰Ê”ÍˆÍ
+	item_pos.x = abs((item_pos.x) - ePos.x);										//ã‚¢ã‚¤ãƒ†ãƒ ã¨ã‚¨ãƒãƒŸãƒ¼ã®æ¨ªã®è·é›¢
+	item_pos.y = abs((item_pos.y) - ePos.y);										//ã‚¢ã‚¤ãƒ†ãƒ ã¨ã‚¨ãƒãƒŸãƒ¼ã®ç¸¦ã®è·é›¢
+	if ( ItemManager::GetInstance().GetItemActiveFlag() == true)		//å¹³æ–¹æ ¹ã§è·é›¢ã‚’æ±‚ã‚æ¯”ã¹ã‚‹ 300ã¯åŠ¹æœç¯„å›²
 	{
 		if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= 300)
 		{
-			Surprised_Timer = 0;	//ƒAƒCƒeƒ€‚ÌŒø‰Ê”ÍˆÍ“à‚É‚¢‚éê‡‚ÍSurprised_Timer‚ğƒŠƒZƒbƒg
-			Vigilance_Timer = 0; 	//ƒAƒCƒeƒ€‚ÌŒø‰Ê”ÍˆÍ“à‚É‚¢‚éê‡‚ÍVigilance_Timer‚ğƒŠƒZƒbƒg
+			Surprised_Timer = 0;	//ã‚¢ã‚¤ãƒ†ãƒ ã®åŠ¹æœç¯„å›²å†…ã«ã„ã‚‹å ´åˆã¯Surprised_Timerã‚’ãƒªã‚»ãƒƒãƒˆ
+			Vigilance_Timer = 0; 	//ã‚¢ã‚¤ãƒ†ãƒ ã®åŠ¹æœç¯„å›²å†…ã«ã„ã‚‹å ´åˆã¯Vigilance_Timerã‚’ãƒªã‚»ãƒƒãƒˆ
 			eStatus = eSTATUS::Surprised;
 
 		}
@@ -135,7 +141,7 @@ void Enemy::Update(void)
 			e_Velocity.x += eSpeed;
 			if (ePos.x+ e_Velocity.x >= Rwall)
 			{
-				eVector *= -1;
+				eVector = -1;
 				if (Lwall == Rwall)
 					eStatus = eSTATUS::Stop;
 			}
@@ -145,7 +151,7 @@ void Enemy::Update(void)
 			e_Velocity.x -= eSpeed;
 			if (ePos.x + e_Velocity.x <= Lwall)
 			{
-				eVector *= -1;
+				eVector = 1;
 				if (Lwall == Rwall)
 					eStatus = eSTATUS::Stop;
 			}
@@ -211,38 +217,36 @@ void Enemy::Update(void)
 		break;
 	}
 
-	//’n–Ê
+	//åœ°é¢
 	if (ePos.y + e_height_size - eAnchor.y > Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size))
 	{
 		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size) - e_height_size+eAnchor.y;
 	}
-	//¶
+	bool TurnAroundFlg=false;
+	TurnAroundtimer++;
+	//å·¦
 	ePos.x += e_Velocity.x;
-	if (ePos.x- eAnchor.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size))
+	if (ePos.x- eAnchor.x < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)
 	{
-		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size)+ eAnchor.x;
-		if (jpflg && eVector == -1)
-		{
-			WallTouchPosX = ePos.x;
-			WallTouchFlg = true;
-		}
+		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size)- eAnchor.x;
+		TurnAroundFlg = true;
 	}
-	//‰E
-	if (ePos.x + e_width_size- eAnchor.x > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size))
+	//å³
+	if (ePos.x + e_width_size- eAnchor.x > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size)&&eVector==1)
 	{
 		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size+ eAnchor.x;
-		if (jpflg && eVector == 1)
-		{
-			WallTouchPosX = ePos.x;
-			WallTouchFlg = true;
-		}
+		TurnAroundFlg = true;
 	}
-	//“Vˆä
+	//å¤©äº•
 	if (ePos.y- eAnchor.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
 	{
 		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size)+ eAnchor.y;
 	}
-
+	if (TurnAroundFlg&&TurnAroundtimer>=10)
+	{
+		eVector *= -1;
+		TurnAroundtimer = 0;
+	}
 	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size);
 
 	if (e_wool_jump())
@@ -269,12 +273,12 @@ void Enemy::Draw(vivid::Vector2 scroll)
 	eScale.x = abs(eScale.x) * eVector;
 
 #ifdef _DEBUG
-	vivid::DrawTexture("data\\“G‹ŠE.png", { ePos.x - e_visibility_width_size / 2 - scroll.x,ePos.y - e_visibility_height_size / 2 - scroll.y }, 0x6fffffff);
+	vivid::DrawTexture("data\\æ•µè¦–ç•Œ.png", { ePos.x - e_visibility_width_size / 2 - scroll.x,ePos.y - e_visibility_height_size / 2 - scroll.y }, 0x6fffffff);
 #endif // DEBUG
 
 
 
-	vivid::Rect eRect;						//ƒGƒlƒ~[‚Ì‰æ‘œ”ÍˆÍ
+	vivid::Rect eRect;						//ã‚¨ãƒãƒŸãƒ¼ã®ç”»åƒç¯„å›²
 
 	eRect.top = 0;
 	eRect.bottom = e_height_size ;
@@ -284,14 +288,14 @@ void Enemy::Draw(vivid::Vector2 scroll)
 	vivid::DrawTexture(enemy_picture_name[(int)eStatus], {ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y}, 0xffffffff, eRect, eAnchor, eScale);
 	if (eStatus == eSTATUS::Surprised)
 	{
-		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//!‚Ì‰æ‘œ”ÍˆÍ
+		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//!ã®ç”»åƒç¯„å›²
 		markPos = { ePos.x - (mark_width_size / 2),(ePos.y - eAnchor.y - mark_height_size - (eScale.y * e_height_size / 10)) };
 		markScale = { abs(eScale.x) ,abs(eScale.y) };
 		vivid::DrawTexture("data\\exclamation_mark.png", markPos - scroll, 0xffffffff, markRect, markAnchor, markScale);
 	}
 	if (eStatus == eSTATUS::Vigilance)
 	{
-		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//?‚Ì‰æ‘œ”ÍˆÍ
+		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//?ã®ç”»åƒç¯„å›²
 		markPos = { ePos.x - (mark_width_size / 2),(ePos.y - eAnchor.y - mark_height_size - (eScale.y * e_height_size / 10)) };
 		markScale = { abs(eScale.x) ,abs(eScale.y) };
 		vivid::DrawTexture("data\\question_mark.png", markPos - scroll, 0xffffffff, markRect, markAnchor, markScale);
@@ -320,32 +324,33 @@ vivid::Vector2 Enemy::GetCircleCenterPos(void)
 
 bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width)
 {
-	//“_‚Æ‹éŒ`‚Ì”»’è‚»‚Ì1(‰¡’·)
+
+	//ç‚¹ã¨çŸ©å½¢ã®åˆ¤å®šãã®1(æ¨ªé•·)
 	bool result_h = ePos.x > cPos.x - eCircleRadius
 		&& ePos.x < cPos.x + c_width + eCircleRadius
 		&& ePos.y > cPos.y
 		&& ePos.y < cPos.y + c_height;
 
-	//“_‚Æ‹éŒ`‚Ì”»’è‚»‚Ì2(c’·)
+	//ç‚¹ã¨çŸ©å½¢ã®åˆ¤å®šãã®2(ç¸¦é•·)
 	bool result_v = ePos.x > cPos.x
 		&& ePos.x < cPos.x + c_width
 		&& ePos.y > cPos.y - eCircleRadius
 		&& ePos.y < cPos.y + c_height + eCircleRadius;
 
-	//“_‚Æ‰~‚Ì”»’è	
-	//©‹@‚Ì¶ã(LeftUpper)
+	//ç‚¹ã¨å††ã®åˆ¤å®š	
+	//è‡ªæ©Ÿã®å·¦ä¸Š(LeftUpper)
 	vivid::Vector2 v = ePos - cPos;
 	bool result_lu = v.Length() <= eCircleRadius;
-	//©‹@‚Ì‰Eã(RightUpper)
+	//è‡ªæ©Ÿã®å³ä¸Š(RightUpper)
 	v = ePos - vivid::Vector2(cPos.x + c_width, cPos.y);
 	bool result_ru = v.Length() <= eCircleRadius;
-	//©‹@‚Ì¶‰º(LeftDown)
+	//è‡ªæ©Ÿã®å·¦ä¸‹(LeftDown)
 	v = ePos - vivid::Vector2(cPos.x, cPos.y + c_height);
 	bool result_ld = v.Length() <= eCircleRadius;
-	//©‹@‚Ì‰E‰º(RightDown)
+	//è‡ªæ©Ÿã®å³ä¸‹(RightDown)
 	v = ePos - vivid::Vector2(cPos.x + c_width, cPos.y + c_height);
 	bool result_rd = v.Length() <= eCircleRadius;
-	//ã‹L‚Ì”»’è‚©‚ç“–‚½‚Á‚Ä‚¢‚é‚©(‹ŠE‚É“ü‚Á‚Ä‚¢‚é‚©)‚ğ”»’f‚·‚é
+	//ä¸Šè¨˜ã®åˆ¤å®šã‹ã‚‰å½“ãŸã£ã¦ã„ã‚‹ã‹(è¦–ç•Œã«å…¥ã£ã¦ã„ã‚‹ã‹)ã‚’åˆ¤æ–­ã™ã‚‹
 	if (result_h || result_v || result_lu || result_ru || result_ld || result_rd)
 	{
 		Sight_Check_Timer = 0;
@@ -359,21 +364,21 @@ bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width
 		ChasePos = cPos;
 		return true;
 	}
-	//“–‚½‚Á‚Ä‚¢‚È‚¢ê‡‚Ífalse‚ğ•Ô‚·
+	//å½“ãŸã£ã¦ã„ãªã„å ´åˆã¯falseã‚’è¿”ã™
 	else
 	{
 		return false;
 	}
 }
 
-//‰¹‚Ì”»’è
+//éŸ³ã®åˆ¤å®š
 void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 {
-	float sound_work = 1.0f;														//‰¹‚Ì‘å‚«‚³‚Ì”{—¦
-	vivid::Vector2 work;															//‰¹Œ¹‚ÆƒGƒlƒ~[‚Ì‹——£‚ğ‘ª‚é‚Ì‚Ég‚¤
-	work.x = abs(sound_source.x - ePos.x);										//‰¹Œ¹‚ÆƒGƒlƒ~[‚Ì‰¡‚Ì‹——£
-	work.y = abs(sound_source.y - ePos.y);										//‰¹Œ¹‚ÆƒGƒlƒ~[‚Ìc‚Ì‹——£
-	if (sqrt((work.x * work.x) + (work.y * work.y)) <= sound_size * sound_work)		//•½•ûª‚Å‹——£‚ğ‹‚ß”ä‚×‚é
+	float sound_work = 1.0f;														//éŸ³ã®å¤§ãã•ã®å€ç‡
+	vivid::Vector2 work;															//éŸ³æºã¨ã‚¨ãƒãƒŸãƒ¼ã®è·é›¢ã‚’æ¸¬ã‚‹ã®ã«ä½¿ã†
+	work.x = abs(sound_source.x - ePos.x);										//éŸ³æºã¨ã‚¨ãƒãƒŸãƒ¼ã®æ¨ªã®è·é›¢
+	work.y = abs(sound_source.y - ePos.y);										//éŸ³æºã¨ã‚¨ãƒãƒŸãƒ¼ã®ç¸¦ã®è·é›¢
+	if (sqrt((work.x * work.x) + (work.y * work.y)) <= sound_size * sound_work)		//å¹³æ–¹æ ¹ã§è·é›¢ã‚’æ±‚ã‚æ¯”ã¹ã‚‹
 	{
 		if (eStatus == eSTATUS::Wandering || eStatus == eSTATUS::Vigilance)
 		{
@@ -385,19 +390,24 @@ void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 	}
 }
 
-//•Ç‚É“–‚½‚Á‚½‚çƒWƒƒƒ“ƒv‚·‚é”»’è
+//å£ã«å½“ãŸã£ãŸã‚‰ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹åˆ¤å®š
 bool Enemy::e_wool_jump()
 {
-	if (WallTouchFlg)
+	//if ()
+	//{
+	//	WallTouchFlg = false;
+	//	return 1;
+	//}
+	if (((ePos.x - eAnchor.x -Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)&& ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize()>Lwall)||
+		((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == 1)&& ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize()<Rwall))
 	{
-		WallTouchFlg = false;
 		return 1;
 	}
 
 	return 0;
 }
 
-//ƒWƒƒƒ“ƒv
+//ã‚¸ãƒ£ãƒ³ãƒ—
 void Enemy::jump()
 {
 	if (jpflg)
@@ -407,7 +417,7 @@ void Enemy::jump()
 	}
 }
 
-//d—Í
+//é‡åŠ›
 vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 600, int CharacterVSize = 32, vivid::Vector2 anchor = { 0.0f,0.0f }, float height = 50, float upspeed = 5, float downspeed = 100)
 {
 	height /= 57;
@@ -422,12 +432,12 @@ vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 6
 	{
 		pos.y = yuka - (CharacterVSize - anchor.y);
 		jpflg = 1;
-		if (WallTouchFlg)
-		{
-			if (abs( ePos.x - WallTouchPosX) < 3)
-				eVector *= -1;
-			WallTouchFlg = false;
-		}
+		//if (WallTouchFlg)
+		//{
+		//	if (abs( ePos.x - WallTouchPosX) < 3)
+		//		eVector *= -1;
+		//	WallTouchFlg = false;
+		//}
 	}
 	return pos;
 }

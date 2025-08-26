@@ -16,6 +16,7 @@ enum class CHARA_STATE
 
 enum class CHARA_SKILL
 {
+	NORMAL,
 	ANIMALLEG,
 	INVISIBLE,
 
@@ -43,8 +44,10 @@ public:
 	void VStageHit();
 	//画面端から出ないようにする処理
 	void CheckWindow(void);
-	//自機の操作処理
-	void Control(void);
+	//自機のキーボード操作処理
+	void KeyboardControl(void);
+	//自機のコントローラー操作処理
+	void ControllerControl(void);
 	//地面をすり抜けないようにする処理
 	void RoundHit(float);
 	//障害物(壁)に完全に隠れている時の処理
@@ -76,6 +79,10 @@ public:
 	void ChangeSkill(void);
 	//クールタイムの処理
 	void CoolTime(void);
+	//スタミナの描画切り替え処理
+	void StaminaDraw(void);
+	//移動距離を座標に反映する処理
+	void ChangePosition(int);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -93,6 +100,8 @@ public:
 	float GetDash(void) { return dash_speed; }
 	//遮蔽フラグの取得
 	bool GetShilding(void) { return cShielding; }	//シールド状態の取得
+	//found_flagの取得
+	bool GetFound(void) { return found_flag; }
 
 	//スクロール変数更新用
 	void Scroll_Update();
@@ -118,13 +127,36 @@ private:
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
 	int	c_change_anime_frame;						//各アニメーションの枚数
-	std::string	c_image[(int)CHARA_STATE::MAX] =	//自機の画像
-	{	"data\\自機\\前待機スプレッド.png",			//待機
-		"data\\自機\\前歩きスプレッド.png",			//歩行
-		"data\\自機\\前走りスプレッド.png",			//ダッシュ
-		"data\\自機\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
-		"data\\自機\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
-		"data\\自機\\前ジャンプスプレッド.png" };	//ジャンプ
+	std::string	c_image[(int)CHARA_SKILL::MAX][(int)CHARA_STATE::MAX] =	//自機の画像
+	{
+		//通常状態
+		{
+			"data\\自機\\通常状態\\前待機スプレッド.png",			//待機
+			"data\\自機\\通常状態\\前歩きスプレッド.png",			//歩行
+			"data\\自機\\通常状態\\前走りスプレッド.png",			//ダッシュ
+			"data\\自機\\通常状態\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
+			"data\\自機\\通常状態\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
+			"data\\自機\\通常状態\\前ジャンプスプレッド.png"		//ジャンプ
+		},
+		//獣化状態
+		{
+			"data\\自機\\獣化状態\\獣化前待機.png",					//待機
+			"data\\自機\\獣化状態\\獣化前歩行.png",					//歩行
+			"data\\自機\\獣化状態\\獣化前走り.png",					//ダッシュ
+			"data\\自機\\獣化状態\\獣化前しゃがみ待機.png",			//しゃがみ待機
+			"data\\自機\\獣化状態\\獣化前しゃがみ歩き.png",			//しゃがみ歩き
+			"data\\自機\\獣化状態\\獣化前ジャンプ.png"				//ジャンプ
+		},
+		//透明化状態
+		{
+			"data\\自機\\透明化状態\\透明化前待機.png",				//待機
+			"data\\自機\\透明化状態\\透明化前歩行.png",				//歩行
+			"data\\自機\\透明化状態\\透明化前走り.png",				//ダッシュ
+			"data\\自機\\透明化状態\\透明化前しゃがみ待機.png",		//しゃがみ待機
+			"data\\自機\\透明化状態\\透明化前しゃがみ歩き.png",		//しゃがみ歩き
+			"data\\自機\\透明化状態\\透明化前ジャンプ.png"			//ジャンプ
+		}
+	};
 	vivid::Rect		c_rect;							//画像の描画範囲
 	vivid::Vector2	c_anchor;						//自機の拡大基準点
 	vivid::Vector2	c_scale;						//自機のスケール
@@ -151,13 +183,13 @@ private:
 	static const float dash_speed;		//自機のダッシュ時の移動速度
 	static const float sneak_speed;		//自機のしゃがみ時の移動速度
 	static const float fatigue_speed;	//自機の疲労時の移動速度(スタミナが0の時の移動速度)
-	const float jump_speed = -20.0f;	//自機のジャンプの速度
+	const float jump_speed = -18.0f;	//自機のジャンプの速度
 	const float fall_speed = 0.7f;		//自機の落下速度(重力)
 	const float m_friction = 0.8f;		//慣性を作る
 	const float cut_speed = 0.1f;		//自機の移動を0にする基準
 	vivid::Vector2 accelerator;
 	//<-自機の速度関係
-	// 
+	
 	//->スタミナ関係
 	static const int	c_max_stamina;		//自機のスタミナの最大値
 	static int			c_stamina_gauge;	//自機のスタミナのゲージ
@@ -165,6 +197,9 @@ private:
 	static int			c_limit_recovery;	//疲労状態のスタミナ回復開始までのカウンタ
 	static bool			c_stamina_dash;		//ダッシュ可能か判別するフラグ
 	static bool			c_stamina_fatigue;	//自機が疲労状態か判別するフラグ
+	static bool			c_stamina_draw;		//スタミナの描画を切り替えるフラグ
+	static const int	c_draw_stamina;		//スタミナが最大の時の描画時間
+	int					c_stamina_draw_count;	//スタミナの描画時間のカウンタ
 	static int			c_stamina_recovery;	//スタミナの回復カウンタ
 	//<-スタミナ関係
 
@@ -175,9 +210,10 @@ private:
 	static const int	skill_cool_time;	//スキルのクールタイムの最大数
 	int					cool_time_count;	//クールタイムのカウンタ
 	bool				skill_cool_flag;	//クールタイム処理を呼び出すフラグ
+	static int			skill_memory;		//最後に使用したスキルを記憶させる
 	/*各アクティブフラグは使用スキルの選択に使う(スキルはボタンでの切り替え式にする)*/
 	//<-スキル関係
-
+	static bool found_flag;				//発見される状態か判断するフラグ(透明化時に使用)
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
 	static bool cAlive;					//生存フラグ
@@ -191,5 +227,4 @@ private:
 	Character(const Character& rhs) = default;
 	Character& operator = (const Character& rhs) = default;
 	//<-インスタンスの生成
-
 };
