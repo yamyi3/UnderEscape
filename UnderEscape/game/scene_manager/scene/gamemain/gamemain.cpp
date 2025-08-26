@@ -27,6 +27,9 @@ void GameMainScene::Initialize(void)
     
     
     ItemManager::GetInstance().Initialize();
+
+    ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ITEM_ID::FLASH_ITEM);
+
     ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ItemID::FLASH_ITEM);
 
     for (int i = 0; i < 3; i++)
@@ -39,6 +42,7 @@ void GameMainScene::Initialize(void)
             menu_color[i] = color_list[2];
         }
     }
+
 }
 
 void GameMainScene::Update(void)

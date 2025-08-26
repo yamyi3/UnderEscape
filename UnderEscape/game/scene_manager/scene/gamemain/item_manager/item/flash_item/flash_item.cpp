@@ -1,5 +1,4 @@
 #include "flash_item.h"
-
 const float FlashItem::item_height = 32.0f;
 const float FlashItem::item_width = 32.0f;
 const float FlashItem::item_radius = 16.0f;
@@ -8,12 +7,12 @@ const int FlashItem::max_item_time = 50;
 
 
 FlashItem::FlashItem()
-	: Item(ItemID::FLASH_ITEM, ITEM_STATE::PLACE, item_width, item_height, item_radius)
+	: Item(ITEM_ID::FLASH_ITEM, ITEM_STATE::PLACE, item_width, item_height, item_radius)
 
-	, Xspeed(50.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
-	, Yspeed(50.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
+	, Xspeed(30.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
+	, Yspeed(30.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	, Flash_State(false)
-	, item_time(0)
+	, item_active_time(0)
 	, Mouse(0.0f, 0.0f)
 	
 {
@@ -37,6 +36,11 @@ void FlashItem::Initialize(vivid::Vector2 position)
 void FlashItem::Draw(void)
 {
 	vivid::DrawTexture("data\\ball.png", iPos - Character::GetInstance().GetScroll(), iColor);
+	
+	if (m_Active == true)
+	{
+		vivid::DrawTexture("data\\ball.png", iPos - Character::GetInstance().GetScroll(), 0x55ffffff, vivid::Rect{ 0,0,32,32 }, vivid::Vector2  { 16.0f,16.0f } , vivid::Vector2{ 9.375f,9.375f });
+	}
 }
 
 
@@ -93,17 +97,16 @@ void FlashItem::UseMove(vivid::Vector2 c_pos)
 	else 
 	{
 		m_Active = true;
-		if (item_time++ > max_item_time)
+		if (item_active_time++ > max_item_time)
 		{
 			m_ItemState = ITEM_STATE::PLACE;
-			item_time = 0;
+			item_active_time = 0;
 			m_Active = false;
 			iColor = 0xffffffff;
 		}
 	}
 
 		
-
 	if (ceiling_wall == false && left_right_wall == false&& ground_wall == false)
 	{
 		iPos.x += m_Velocity.x;

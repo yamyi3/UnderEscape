@@ -70,17 +70,18 @@ void ItemManager::Finalize()
 	m_Item.clear(); // リストをクリア
 }
 
-void ItemManager::CreateItem(vivid::Vector2 position, ItemID id)
+void ItemManager::CreateItem(vivid::Vector2 position, ITEM_ID id)
 {
 	Item* item = nullptr;
 
 	switch (id)
 	{
-	case ItemID::SOUND_ITEM:	item = new SoundItem();
+	case ITEM_ID::SOUND_ITEM:	item = new SoundItem();
+		Item_effective_area = item->GetEffectiveArea();
 		break;
-	case ItemID::FLASH_ITEM:	item = new FlashItem();
-		break;
-	case ItemID::UNKNOWN_ITEM:
+	case ITEM_ID::FLASH_ITEM:	item = new FlashItem();
+		Item_effective_area = item->GetEffectiveArea();
+
 		break;
 	default:
 		break;
@@ -128,18 +129,8 @@ vivid::Vector2 ItemManager::GetItemPos()
 
 float ItemManager::GetEfectiveArea()
 {
-	//各アイテムオブジェクトの描画
-	ITEM_LIST::iterator    it = m_Item.begin();
-	ITEM_LIST::iterator    end = m_Item.end();
-
-	float Area;
-	while (it != end)
-	{
-		Area = (*it)->GetEffectiveArea();
-
-		++it;
-	}
-	return Area;
+	
+	return Item_effective_area;
 }
 
 

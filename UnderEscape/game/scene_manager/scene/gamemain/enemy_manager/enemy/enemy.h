@@ -103,6 +103,9 @@ private:
 	int AnimationFrame;
 	int AnimationMaxFrame[(int)eSTATUS::MAX];
 
+	bool item_area;				//アイテムの効果範囲内にいるかどうかのフラグ
+	vivid::Vector2 item_pos;		//アイテムの座標
+
 	vivid::Vector2	eCircleCenterPos;
 
 	eSTATUS eStatus;				//エネミーの状態保存用
