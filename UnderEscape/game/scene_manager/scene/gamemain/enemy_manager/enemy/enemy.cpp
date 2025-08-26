@@ -1,3 +1,5 @@
+//enemy.cpp
+
 #include "enemy.h"
 #include "..\..\stage\stage.h"
 #include"..\..\item_manager\item_manager.h"
@@ -50,7 +52,7 @@ Enemy::Enemy(void)
 	, item_area(false)
 	, item_pos({ 0.0f, 0.0f })
 
-	,TurnAroundtimer(10)
+	, TurnAroundtimer(10)
 
 {
 }
@@ -78,13 +80,6 @@ void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float
 
 	AnimationTimer = 0;
 	AnimationFrame = 0;
-
-	enemy_picture_name[(int)eSTATUS::Stop]		= "data\\敵機\\蜘蛛型待機.png";
-	enemy_picture_name[(int)eSTATUS::Wandering] = "data\\敵機\\蜘蛛型左歩行.png";
-	enemy_picture_name[(int)eSTATUS::Chase]		= "data\\敵機\\蜘蛛型左歩行.png";
-	enemy_picture_name[(int)eSTATUS::Vigilance] = "data\\敵機\\蜘蛛型待機.png";
-	enemy_picture_name[(int)eSTATUS::Surprised] = "data\\敵機\\蜘蛛型待機.png";
-	enemy_picture_name[(int)eSTATUS::Kill]		= "data\\敵機\\蜘蛛型左歩行.png";
 
 	AnimationMaxFrame[(int)eSTATUS::Stop] = 16;
 	AnimationMaxFrame[(int)eSTATUS::Wandering] = 8;
@@ -117,7 +112,7 @@ void Enemy::Update(void)
 	item_pos = ItemManager::GetInstance().GetItemPos();
 	item_pos.x = abs((item_pos.x) - ePos.x);										//アイテムとエネミーの横の距離
 	item_pos.y = abs((item_pos.y) - ePos.y);										//アイテムとエネミーの縦の距離
-	if ( ItemManager::GetInstance().GetItemActiveFlag() == true)		//平方根で距離を求め比べる 300は効果範囲
+	if (ItemManager::GetInstance().GetItemActiveFlag() == true)		//平方根で距離を求め比べる 300は効果範囲
 	{
 		if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= 300)
 		{
@@ -130,7 +125,7 @@ void Enemy::Update(void)
 
 
 	Sight_Check_Timer++;
-	vivid::Vector2 e_Velocity = {0.0f,0.0f};
+	vivid::Vector2 e_Velocity = { 0.0f,0.0f };
 	switch (eStatus)
 	{
 	case eSTATUS::Stop:
@@ -139,7 +134,7 @@ void Enemy::Update(void)
 		if (eVector == 1)
 		{
 			e_Velocity.x += eSpeed;
-			if (ePos.x+ e_Velocity.x >= Rwall)
+			if (ePos.x + e_Velocity.x >= Rwall)
 			{
 				eVector = -1;
 				if (Lwall == Rwall)
@@ -158,34 +153,34 @@ void Enemy::Update(void)
 		}
 		break;
 	case eSTATUS::Chase:
-		
 
 
-			if (ChasePos.x > ePos.x)
+
+		if (ChasePos.x > ePos.x)
+		{
+			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
 			{
-				if (abs(ChasePos.x - ePos.x) > Source_End_Range)
-				{
-					e_Velocity.x += eChaseSpeed;
-					eVector = 1;
-				}
+				e_Velocity.x += eChaseSpeed;
+				eVector = 1;
 			}
-			else
+		}
+		else
+		{
+			if (abs(ChasePos.x - ePos.x) > Source_End_Range)
 			{
-				if (abs(ChasePos.x - ePos.x) > Source_End_Range)
-				{
-					e_Velocity.x -= eChaseSpeed;
-					eVector = -1;
-				}
+				e_Velocity.x -= eChaseSpeed;
+				eVector = -1;
 			}
-			if (abs(ChasePos.x - ePos.x + e_Velocity.x) < Source_End_Range)
+		}
+		if (abs(ChasePos.x - ePos.x + e_Velocity.x) < Source_End_Range)
+		{
+			if (Sight_Check_Timer >= 10)
 			{
-				if (Sight_Check_Timer >= 10)
-				{
-					Vigilance_Timer = 0;
-					eStatus = eSTATUS::Vigilance;
-				}
+				Vigilance_Timer = 0;
+				eStatus = eSTATUS::Vigilance;
 			}
-		
+		}
+
 		break;
 	case eSTATUS::Vigilance:
 		if (++Vigilance_Timer >= Vigilance_time)
@@ -197,21 +192,21 @@ void Enemy::Update(void)
 		}
 		break;
 	case eSTATUS::Surprised:
-		
-		
-			if (++Surprised_Timer >= Surprised_time)
-			{
-				if (ItemManager::GetInstance().GetItemActiveFlag() == false)
-				{
-					eStatus = eSTATUS::Chase;
 
-				}
-				else
-				{
-					eStatus = eSTATUS::Vigilance;
-				}
+
+		if (++Surprised_Timer >= Surprised_time)
+		{
+			if (ItemManager::GetInstance().GetItemActiveFlag() == false)
+			{
+				eStatus = eSTATUS::Chase;
+
 			}
-		
+			else
+			{
+				eStatus = eSTATUS::Vigilance;
+			}
+		}
+
 		break;
 	default:
 		break;
@@ -220,29 +215,29 @@ void Enemy::Update(void)
 	//地面
 	if (ePos.y + e_height_size - eAnchor.y > Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size))
 	{
-		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size) - e_height_size+eAnchor.y;
+		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size) - e_height_size + eAnchor.y;
 	}
-	bool TurnAroundFlg=false;
+	bool TurnAroundFlg = false;
 	TurnAroundtimer++;
 	//左
 	ePos.x += e_Velocity.x;
-	if (ePos.x- eAnchor.x < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)
+	if (ePos.x - eAnchor.x < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)
 	{
-		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size)- eAnchor.x;
+		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size) - eAnchor.x;
 		TurnAroundFlg = true;
 	}
 	//右
-	if (ePos.x + e_width_size- eAnchor.x > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size)&&eVector==1)
+	if (ePos.x + e_width_size - eAnchor.x > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == 1)
 	{
-		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size+ eAnchor.x;
+		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size + eAnchor.x;
 		TurnAroundFlg = true;
 	}
 	//天井
-	if (ePos.y- eAnchor.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
+	if (ePos.y - eAnchor.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
 	{
-		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size)+ eAnchor.y;
+		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size) + eAnchor.y;
 	}
-	if (TurnAroundFlg&&TurnAroundtimer>=10)
+	if (TurnAroundFlg && TurnAroundtimer >= 10)
 	{
 		eVector *= -1;
 		TurnAroundtimer = 0;
@@ -263,7 +258,7 @@ void Enemy::Update(void)
 void Enemy::Draw(vivid::Vector2 scroll)
 {
 	AnimationTimer++;
-	if (AnimationTimer>=animation_change_time)
+	if (AnimationTimer >= animation_change_time)
 	{
 		AnimationTimer -= animation_change_time;
 		++AnimationFrame %= AnimationMaxFrame[(int)eStatus];
@@ -273,7 +268,7 @@ void Enemy::Draw(vivid::Vector2 scroll)
 	eScale.x = abs(eScale.x) * eVector;
 
 #ifdef _DEBUG
-	vivid::DrawTexture("data\\敵視界.png", { ePos.x - e_visibility_width_size / 2 - scroll.x,ePos.y - e_visibility_height_size / 2 - scroll.y }, 0x6fffffff);
+	vivid::DrawTexture(enemy_sight, { ePos.x - e_visibility_width_size / 2 - scroll.x,ePos.y - e_visibility_height_size / 2 - scroll.y }, 0x6fffffff);
 #endif // DEBUG
 
 
@@ -281,11 +276,11 @@ void Enemy::Draw(vivid::Vector2 scroll)
 	vivid::Rect eRect;						//エネミーの画像範囲
 
 	eRect.top = 0;
-	eRect.bottom = e_height_size ;
+	eRect.bottom = e_height_size;
 	eRect.left = (AnimationFrame % AnimationMaxFrame[(int)eStatus]) * e_width_size;
 	eRect.right = eRect.left + e_width_size;
 
-	vivid::DrawTexture(enemy_picture_name[(int)eStatus], {ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y}, 0xffffffff, eRect, eAnchor, eScale);
+	vivid::DrawTexture(enemy_picture_name[(int)eStatus], { ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y }, 0xffffffff, eRect, eAnchor, eScale);
 	if (eStatus == eSTATUS::Surprised)
 	{
 		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//!の画像範囲
@@ -398,8 +393,8 @@ bool Enemy::e_wool_jump()
 	//	WallTouchFlg = false;
 	//	return 1;
 	//}
-	if (((ePos.x - eAnchor.x -Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)&& ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize()>Lwall)||
-		((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == 1)&& ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize()<Rwall))
+	if (((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1) && ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() > Lwall) ||
+		((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == 1) && ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() < Rwall))
 	{
 		return 1;
 	}
@@ -444,7 +439,7 @@ vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 6
 
 void Enemy::player_check(bool shielding)
 {
-	if(shielding==true)
+	if (shielding == true)
 	{
 		Vigilance_Timer = 0;
 		eStatus = eSTATUS::Wandering;
@@ -453,5 +448,5 @@ void Enemy::player_check(bool shielding)
 	{
 		eStatus = eSTATUS::Surprised;
 	}
-	
+
 }

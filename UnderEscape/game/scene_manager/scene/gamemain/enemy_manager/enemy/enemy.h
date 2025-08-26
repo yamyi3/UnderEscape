@@ -97,7 +97,15 @@ private:
 
 	bool m_ActiveFlag;	//アクティブフラグ
 
-	std::string enemy_picture_name[(int)eSTATUS::MAX];	//エネミーの画像のファイル名
+	std::string enemy_sight = "data\\敵視界.png";
+	std::string enemy_picture_name[(int)eSTATUS::MAX]	//エネミーの画像のファイル名
+		= {
+	"data\\敵機\\蜘蛛型\\待機.png" ,	//Stop			//待機
+	"data\\敵機\\蜘蛛型\\左移動.png" ,	//Wandering		//徘徊
+	"data\\敵機\\蜘蛛型\\左追跡.png" ,	//Chase			//追跡
+	"data\\敵機\\蜘蛛型\\待機.png",		//Vigilance		//警戒
+	"data\\敵機\\蜘蛛型\\待機.png" ,	//Surprised		//スタン
+	"data\\敵機\\蜘蛛型\\捕獲モーション.png" };	//Kill			//メメントモリ
 	int AnimationTimer;
 	static const int animation_change_time;
 	int AnimationFrame;
