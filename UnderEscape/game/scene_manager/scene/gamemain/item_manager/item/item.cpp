@@ -1,6 +1,6 @@
 #include"item.h"
 
-Item::Item( ItemID id, ITEM_STATE state,float width,float heght,float radius)
+Item::Item(ITEM_ID id, ITEM_STATE state,float width,float heght,float radius)
 	: m_Width	(width)
 	, m_Height	(heght)
 	, m_Radius	(radius)
@@ -102,7 +102,7 @@ void Item::SetActive(bool active)
 	m_ActiveFlag = active;
 }
 
-ItemID Item::GetBulletCategory(void)
+ITEM_ID Item::GetBulletCategory(void)
 {
 	return m_ItemID;
 }

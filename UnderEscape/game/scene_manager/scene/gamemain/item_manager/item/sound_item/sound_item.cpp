@@ -7,11 +7,10 @@ const float SoundItem::item_radius = 16.0f;
 
 
 SoundItem::SoundItem()
-	: Item(ItemID::SOUND_ITEM, ITEM_STATE::PLACE,item_width,item_height,item_radius)
+	: Item(ITEM_ID::SOUND_ITEM, ITEM_STATE::PLACE,item_width,item_height,item_radius)
 
-	, Xspeed(10.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
-	, Yspeed(10.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
-
+	, Xspeed(50.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
+	, Yspeed(50.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	, Mouse(0.0f, 0.0f)
 {
 }
@@ -96,7 +95,6 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 			iPos.x += m_Velocity.x;
 		}else
 			ceiling_wall = true;
-		
 		Ga += 0.981;
 }
 

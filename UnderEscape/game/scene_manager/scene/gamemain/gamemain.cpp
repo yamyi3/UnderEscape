@@ -23,7 +23,7 @@ void GameMainScene::Initialize(void)
     
     
     ItemManager::GetInstance().Initialize();
-    ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ItemID::FLASH_ITEM);
+    ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ITEM_ID::FLASH_ITEM);
 }
 
 void GameMainScene::Update(void)

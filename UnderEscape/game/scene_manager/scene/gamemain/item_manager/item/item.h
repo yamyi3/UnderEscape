@@ -7,7 +7,7 @@ class Item
 {
 public:
     // コンストラクタ 
-    Item(ItemID id,ITEM_STATE state, float width, float heght,float radius);
+    Item(ITEM_ID id,ITEM_STATE state, float width, float heght,float radius);
 
     // デストラクタ 
     virtual ~Item(void);
@@ -45,7 +45,7 @@ public:
     void            SetActive(bool active);
 
     // ユニット識別子取得 
-    ItemID   GetBulletCategory(void);
+    ITEM_ID   GetBulletCategory(void);
 
     //アイテムオブジェクトの座標取得
     vivid::Vector2 GetItemPos(void)
@@ -94,7 +94,7 @@ protected:
     vivid::Vector2              m_Scale;            //!< 拡大率 
     float                       m_Rotation;         //!< 回転値 
     bool                        m_ActiveFlag;       //!< アクティブフラグ 
-	ItemID                      m_ItemID;  	        //!< アイテムのID
+    ITEM_ID                     m_ItemID;  	        //!< アイテムのID
 	ITEM_STATE				    m_ItemState;        //!< アイテムの状態
     bool                        catchFlg;			//アイテム取得の判断フラグ
 	vivid::Vector2              iPos;				//アイテムオブジェクトの座標

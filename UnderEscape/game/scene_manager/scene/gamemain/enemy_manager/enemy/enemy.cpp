@@ -44,6 +44,8 @@ Enemy::Enemy(void)
 	, WallTouchPosX(0.0f)
 	, AnimationTimer(0)
 	, AnimationFrame(0)
+	, item_area(false)
+	, item_pos({ 0.0f, 0.0f })
 {
 }
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground)
@@ -106,20 +108,20 @@ void Enemy::Initialize(void)
 
 void Enemy::Update(void)
 {
-	bool flg = false;	
-	vivid::Vector2 item;																					//アイテムとエネミーの距離を測るのに使う
-	item.x = abs(ItemManager::GetInstance().GetItemPos().x - ePos.x);										//アイテムとエネミーの横の距離
-	item.y = abs(ItemManager::GetInstance().GetItemPos().y - ePos.y);										//アイテムとエネミーの縦の距離
-	if (sqrt((item.x * item.x) + (item.y * item.y)) <= ItemManager::GetInstance().GetEfectiveArea())		//平方根で距離を求め比べる
+	item_pos = ItemManager::GetInstance().GetItemPos();
+	item_pos.x = abs((item_pos.x) - ePos.x);										//アイテムとエネミーの横の距離
+	item_pos.y = abs((item_pos.y) - ePos.y);										//アイテムとエネミーの縦の距離
+	if ( ItemManager::GetInstance().GetItemActiveFlag() == true)		//平方根で距離を求め比べる 300は効果範囲
 	{
-		flg = true;		//音源がエネミーの索敵範囲内にある
+		if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= 300)
+		{
+			Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
+			Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
+			eStatus = eSTATUS::Surprised;
+
+		}
 	}
-	else 
-		flg = false;	//音源がエネミーの索敵範囲外にある
-	if (ItemManager::GetInstance().GetItemActiveFlag() == true&& flg == true)
-	{
-		eStatus = eSTATUS::Surprised;
-	}
+
 
 	Sight_Check_Timer++;
 	vivid::Vector2 e_Velocity = {0.0f,0.0f};
@@ -150,8 +152,7 @@ void Enemy::Update(void)
 		}
 		break;
 	case eSTATUS::Chase:
-		if (ItemManager::GetInstance().GetItemActiveFlag()==false)
-		{
+		
 
 
 			if (ChasePos.x > ePos.x)
@@ -178,9 +179,7 @@ void Enemy::Update(void)
 					eStatus = eSTATUS::Vigilance;
 				}
 			}
-		}
-		else
-			eStatus = eSTATUS::Vigilance;
+		
 		break;
 	case eSTATUS::Vigilance:
 		if (++Vigilance_Timer >= Vigilance_time)
@@ -197,11 +196,13 @@ void Enemy::Update(void)
 			if (++Surprised_Timer >= Surprised_time)
 			{
 				if (ItemManager::GetInstance().GetItemActiveFlag() == false)
-				eStatus = eSTATUS::Chase;
+				{
+					eStatus = eSTATUS::Chase;
+
+				}
 				else
 				{
 					eStatus = eSTATUS::Vigilance;
-					Vigilance_Timer = 0;
 				}
 			}
 		
