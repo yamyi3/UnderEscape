@@ -4,7 +4,10 @@
 #include "blockmanager/blockmanager.h"
 #include "groundmanager/groundmanager.h"
 #include "wallmanager/wallmanager.h"
-
+#include "teleportmanager/teleportmanager.h"
+#include <sstream>
+#include <iostream>
+#include <fstream>
 
 
 vivid::Vector2 Stage::start_pos = { 0.0f, vivid::WINDOW_HEIGHT - 300.0f };
@@ -13,7 +16,7 @@ vivid::Vector2 Stage::goal_pos = { 0,0 };
 
 const int Stage::g_map_chip_size = 100;
 //const int Stage::g_map_chip_count_width = 40;
-//const int Stage::g_map_chip_count_height = 13;
+//const int Stage::g_map_chip_count_height = 26;
 
 Stage& Stage::GetInstance(void)
 {
@@ -28,7 +31,11 @@ void Stage::Initialize(void)
 	//{
 	//	g_Map = new MAP_CHIP_ID[g_map_chip_count_width];
 	//}
-
+	MapSizeInitialize();
+	g_Map.resize(g_map_chip_count_height, std::vector<MAP_CHIP_ID>(g_map_chip_count_width));
+	g_map_flg.resize(g_map_chip_count_height, std::vector<bool>(g_map_chip_count_width));
+	g_map_terrain.resize(g_map_chip_count_height, std::vector<bool>(g_map_chip_count_width));
+	g_map_wall.resize(g_map_chip_count_height, std::vector<bool>(g_map_chip_count_width));
 
 	for (int y = 0; y < g_map_chip_count_height; y++)
 		for (int x = 0; x < g_map_chip_count_width; x++)
@@ -40,38 +47,75 @@ void Stage::Initialize(void)
 		}
 
 
-	//ファイル操作
+	////ファイル操作
 
+	//FILE* fp = nullptr;
+	//// ファイルを開く 
+	//fopen_s(&fp, "data\\map.csv", "r");
+	//// サイズを調べる 
+	//fseek(fp, 0, SEEK_END);
+	//int size = ftell(fp);
+	//fseek(fp, 0, SEEK_SET);
+	//// サイズ分だけ入れ物を用意する(一時的なデータ) 
+	//char* buf = new char[size];
+	//// データ(CSVファイル内の文字列)を読み込む 
+	//fread(buf, size, 1, fp);
+	//// ファイルを閉じる
+	//fclose(fp);
+
+	////データ解析
+
+	//	// データのサイズ分繰り返し 
+	//for (int i = 0, k = 0; i < size; ++i)
+	//{
+	//	// 文字の0～11であれば数値に変換する 
+	//	if (buf[i] >= '0' && buf[i] <= '11')
+	//	{
+	//		char t = buf[i];
+	//		g_Map[k / g_map_chip_count_width][k % g_map_chip_count_width] =
+	//			(MAP_CHIP_ID)atoi(&t);
+	//		++k;
+	//	}
+	//}
+	//// 一時的なデータを削除 
+	//delete[] buf;
+	
+	
+
+
+
+// ファイル読み込み
 	FILE* fp = nullptr;
-	// ファイルを開く 
 	fopen_s(&fp, "data\\map.csv", "r");
-	// サイズを調べる 
 	fseek(fp, 0, SEEK_END);
 	int size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	// サイズ分だけ入れ物を用意する(一時的なデータ) 
-	char* buf = new char[size];
-	// データ(CSVファイル内の文字列)を読み込む 
+
+	char* buf = new char[size + 1];   // +1 は文字列終端用
 	fread(buf, size, 1, fp);
-	// ファイルを閉じる
+	buf[size] = '\0';                 // 文字列終端を付与
 	fclose(fp);
 
-	//データ解析
+	// CSV解析
+	std::string data(buf);
+	delete[] buf;
 
-		// データのサイズ分繰り返し 
-	for (int i = 0, k = 0; i < size; ++i)
-	{
-		// 文字の0～8であれば数値に変換する 
-		if (buf[i] >= '0' && buf[i] <= '11')
-		{
-			char t = buf[i];
-			g_Map[k / g_map_chip_count_width][k % g_map_chip_count_width] =
-				(MAP_CHIP_ID)atoi(&t);
-			++k;
+	std::stringstream ss(data);
+	int k = 0;
+	int value;
+
+	while (ss >> value) {
+		// 配列に代入（2次元→1次元に直して格納）
+		g_Map[k / g_map_chip_count_width][k % g_map_chip_count_width] =
+			static_cast<MAP_CHIP_ID>(value);
+		++k;
+
+		// 区切り文字が来たら読み飛ばす
+		if (ss.peek() == ',' || ss.peek() == '\n') {
+			ss.ignore();
 		}
 	}
-	// 一時的なデータを削除 
-	delete[] buf;
+
 	
 	int TPcount=0;
 
@@ -118,6 +162,7 @@ void Stage::Initialize(void)
 		}
 	}
 
+	TeleportManager::GetInstance().Initialize(TPcount);
 
 }
 
@@ -145,6 +190,45 @@ void Stage::Draw(void)
 
 void Stage::Finalize(void)
 {
+}
+
+void Stage::MapSizeInitialize(void)
+{
+	// ファイル読み込み
+	FILE* fp = nullptr;
+	fopen_s(&fp, "data\\map_size.csv", "r");
+	fseek(fp, 0, SEEK_END);
+	int size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	char* buf = new char[size + 1];   // +1 は文字列終端用
+	fread(buf, size, 1, fp);
+	buf[size] = '\0';                 // 文字列終端を付与
+	fclose(fp);
+
+	// CSV解析
+	std::string data(buf);
+	delete[] buf;
+
+	std::stringstream ss(data);
+	int k = 0;
+	int value;
+	int work[2] = {};
+
+
+	while (ss >> value) {
+		// 配列に代入（2次元→1次元に直して格納）
+		work[k] = static_cast<int>(value);
+		++k;
+
+		// 区切り文字が来たら読み飛ばす
+		if (ss.peek() == ',' || ss.peek() == '\n') {
+			ss.ignore();
+		}
+	}
+
+	g_map_chip_count_height = work[0];
+	g_map_chip_count_width = work[1];
 }
 
 void Stage::ScrollStage(void)
@@ -196,6 +280,7 @@ float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
 {
 	int WidthXNum = width / g_map_chip_size + 1;
 	int Y = (pos.y + height) / g_map_chip_size;
+	if (Y < 1)Y = 1;
 	int RoundY = g_map_chip_count_height;
 	int n = 0;
 	do {
@@ -204,7 +289,7 @@ float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
 		if (n == WidthXNum)XPos = pos.x + width - 10;
 		int X = XPos / g_map_chip_size;
 		int WY = RoundY;
-		for (int i = Y; g_map_terrain[i - 1][X] == false; i++)
+		for (int i = Y; i >= 0 && i < g_map_chip_count_height && g_map_terrain[i - 1][X] == false; i++)
 			WY = i;
 		if (RoundY > WY)
 			RoundY = WY;
@@ -224,8 +309,9 @@ float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
 		if (n == 0)YPos = pos.y + 10;
 		if (n == HeightYNum)YPos = pos.y + height - 10;
 		int Y = YPos / g_map_chip_size;
+		if (Y < 0)Y = 0;
 		int WX = RWallX;
-		for (int i = X; g_map_terrain[Y][i - 1] == false; i++)
+		for (int i = X; i >= 0 && i < g_map_chip_count_width && g_map_terrain[Y][i - 1] == false; i++)
 			WX = i;
 		if (RWallX > WX)
 			RWallX = WX;
@@ -247,8 +333,9 @@ float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
 		if (n == 0)YPos = pos.y + 10;
 		if (n == HeightYNum)YPos = pos.y + height - 10;
 		int Y = YPos / g_map_chip_size;
+		if (Y < 0)Y = 0;
 		int WX = LWallX;
-		for (int i = X; g_map_terrain[Y][i + 1] == false; i--)
+		for (int i = X; i >= 0 && i < g_map_chip_count_width && g_map_terrain[Y][i + 1] == false; i--)
 			WX = i;
 		if (LWallX < WX)
 			LWallX = WX;
@@ -270,7 +357,7 @@ float Stage::GetCeiling(vivid::Vector2 pos, float width, float height)
 		if (n == WidthXNum)XPos = pos.x + width - 10;
 		int X = XPos / g_map_chip_size;
 		int WY = 0;
-		for (int i = Y; g_map_terrain[i + 1][X] == false; i--)
+		for (int i = Y; i >= 0 && i < g_map_chip_count_height && g_map_terrain[i + 1][X] == false; i--)
 			WY = i;
 		if (CeilingY < WY)
 			CeilingY = WY;
