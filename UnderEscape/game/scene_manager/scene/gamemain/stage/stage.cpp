@@ -173,14 +173,16 @@ void Stage::Update(void)
 void Stage::Draw(void)
 {
 
-
-	WallManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
-	GroundManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
-	BlockManager::GetInstance().Input_scroll(Character::GetInstance().GetScroll());
+	vivid::Vector2 scroll = Character::GetInstance().GetScroll();
+	WallManager::GetInstance().Input_scroll(scroll);
+	GroundManager::GetInstance().Input_scroll(scroll);
+	BlockManager::GetInstance().Input_scroll(scroll);
+	TeleportManager::GetInstance().Input_scroll(scroll);
 
 	WallManager::GetInstance().Draw();
 	GroundManager::GetInstance().Draw();
 	BlockManager::GetInstance().Draw();
+	TeleportManager::GetInstance().Draw();
 
 	if (cflg)
 	{

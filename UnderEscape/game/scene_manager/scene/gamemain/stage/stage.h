@@ -78,18 +78,18 @@ private:
 	// マップチップ番号を列挙型で定義 
 	enum class MAP_CHIP_ID
 	{
-		EMPTY,
-		GROUND,
-		BLOCK,
-		RSTAIRS,	//／
-		LSTAIRS,	//＼
-		WALL,
-		ENEMY_AREA,
-		R_ENEMY,
-		L_ENEMY,
-		TPSTAIRS,
-		START,
-		GOAL,
+		EMPTY,			//0
+		GROUND,			//1
+		BLOCK,			//2
+		RSTAIRS,		//3／
+		LSTAIRS,		//4＼
+		WALL,			//5
+		ENEMY_AREA,		//6
+		R_ENEMY,		//7
+		L_ENEMY,		//8
+		TPSTAIRS,		//9
+		START,			//10
+		GOAL,			//11
 	};
 
 	//配置データを入れておくための二次元配列(整数) 

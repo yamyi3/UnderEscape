@@ -3,8 +3,13 @@
 #include "..\..\..\stage\stage.h"
 
 const int Teleport::TpCount = 2;
+const std::string Teleport::teleport_picture_name="data\\box.png";
 
 Teleport::Teleport()
+	:tp_Scale{1,1}
+	, tp_WidthSize(100)
+	,tp_HeightSize(100)
+	, tp_color(0xff2222ff)
 {
 }
 
@@ -31,8 +36,16 @@ void Teleport::Update(void)
 {
 }
 
-void Teleport::Draw(void)
+void Teleport::Draw(vivid::Vector2 scroll)
 {
+	for (int i = 0; i < TpCount; i++)
+	{
+		if (vivid::WINDOW_WIDTH > TpPos[i].x - scroll.x && TpPos[i].x - scroll.x + tp_WidthSize > 0)
+		{
+			vivid::Rect rect = { 0,0,tp_WidthSize,tp_HeightSize };
+			vivid::DrawTexture(teleport_picture_name, TpPos[i] - scroll, tp_color, rect, { 0,0 }, tp_Scale);
+		}
+	}
 }
 
 void Teleport::Finalize(void)

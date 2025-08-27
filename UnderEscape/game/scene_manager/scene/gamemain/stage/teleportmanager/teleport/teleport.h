@@ -13,7 +13,7 @@ public:
 	//更新
 	void Update(void);
 	//描画
-	void Draw(void);
+	void Draw(vivid::Vector2 scroll);
 	//解放
 	void Finalize(void);
 
@@ -25,6 +25,12 @@ public:
 private:
 	vivid::Vector2 TpPos[2];
 	static const int TpCount;
+	static const std::string teleport_picture_name;
+
+	vivid::Vector2 tp_Scale;
+	float tp_WidthSize;					//階段の横のドット数
+	float tp_HeightSize;                 //階段の縦のドット数
+	unsigned int tp_color;
 
 	float ch_width;					//自機の幅
 	float ch_height;				//自機の高さ
