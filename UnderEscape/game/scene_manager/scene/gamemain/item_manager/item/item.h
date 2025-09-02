@@ -15,7 +15,7 @@ public:
     // 初期化 
     virtual void    Initialize(const vivid::Vector2& position);
     // 更新 
-    virtual void    Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight);
+    virtual void    Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight,bool check);
 
     // 描画 
     virtual void    Draw(void);
@@ -24,7 +24,7 @@ public:
     virtual void    Finalize(void);
 
 	// アイテムの保持
-    void CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight);
+    void CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight,bool check);
 
     // 位置の取得 
     vivid::Vector2  GetPosition(void);
@@ -67,11 +67,25 @@ public:
     {
         return m_Height;
     }
+    //アイテムの当たり判定
     void WallCheck();
-    bool GetItemActive() { return m_Active; }
-	float GetEffectiveArea() { return m_Area; } //アイテムの有効範囲を取得
+
+	//アイテムの効果が有効かどうかを取得
+   bool GetItemActive() { return m_Active; }
+	
+   //アイテムの効果範囲を取得
+   float GetEffectiveArea(ITEM_ID);
+    
+   ITEM_STATE GetItemState() { return m_ItemState; }
+    //アイテムのIDを取得
+	ITEM_ID GetItemID() { return m_GetItemID; } 
+
+	ITEM_STATE GetState() { return m_ItemState; }
+
+	bool GetCatchFlg() { return catchFlg; }
 
     bool IsActive() const { return m_ActiveFlag; }
+
     void Destroy() { m_ActiveFlag = false; }
 protected:
 
@@ -81,7 +95,7 @@ protected:
     //プレイヤーが投げた後の処理(マウス）
     virtual void UseMove(vivid::Vector2);
 
-   
+    static const float area[];
     float                       Ga;					//重力加速度
     int                         m_Width;            //!< 幅 
     int                         m_Height;           //!< 高さ 
@@ -95,6 +109,8 @@ protected:
     float                       m_Rotation;         //!< 回転値 
     bool                        m_ActiveFlag;       //!< アクティブフラグ 
     ITEM_ID                     m_ItemID;  	        //!< アイテムのID
+    ITEM_ID                     m_GetItemID;  	        //!< アイテムのID
+
 	ITEM_STATE				    m_ItemState;        //!< アイテムの状態
     bool                        catchFlg;			//アイテム取得の判断フラグ
 	vivid::Vector2              iPos;				//アイテムオブジェクトの座標
@@ -107,4 +123,7 @@ protected:
 	bool                        ground_wall;		//床の判定フラグ
 	bool 					    m_Active;           //!< 使用フラグ
 	float                       m_Area;             //!< アイテムの有効範囲
+    int                         item_active_time;	//アイテムの効果時間	
+    bool item_check;
+
 };

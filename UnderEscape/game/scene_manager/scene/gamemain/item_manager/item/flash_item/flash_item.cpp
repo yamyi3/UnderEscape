@@ -12,7 +12,6 @@ FlashItem::FlashItem()
 	, Xspeed(30.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
 	, Yspeed(30.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	, Flash_State(false)
-	, item_active_time(0)
 	, Mouse(0.0f, 0.0f)
 	
 {
@@ -30,6 +29,7 @@ void FlashItem::Initialize(vivid::Vector2 position)
 	iCenter.x = (iPos.x + item_width) / 2;
 	iCenter.y = (iPos.y + item_height) / 2;
 	m_Area = 300.0f;
+	item_active_time = 50;
 }
 
 
@@ -50,7 +50,7 @@ void FlashItem::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 	if (catchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
 	{
 		m_ItemState = ITEM_STATE::USE;
-		catchFlg = false;
+		//catchFlg = false;
 
 		Mouse.x = (vivid::mouse::GetCursorPos().x) + Character::GetInstance().GetScroll().x - cPos.x;
 		Mouse.y = cPos.y - (vivid::mouse::GetCursorPos().y + Character::GetInstance().GetScroll().y);
@@ -73,7 +73,7 @@ void FlashItem::UseMove(vivid::Vector2 c_pos)
 {
 	//アイテムオブジェクトの座標更新
 
-	catchFlg = false;
+	//catchFlg = false;
 
 
 	m_Velocity.y = -(Mouse.y / Yspeed);
@@ -103,6 +103,7 @@ void FlashItem::UseMove(vivid::Vector2 c_pos)
 			item_active_time = 0;
 			m_Active = false;
 			iColor = 0xffffffff;
+			catchFlg = false;
 		}
 	}
 

@@ -1,9 +1,8 @@
 #include "sound_item.h"
-
 const float SoundItem::item_height = 32.0f;
 const float SoundItem::item_width = 32.0f;
 const float SoundItem::item_radius = 16.0f;
-
+const int SoundItem::max_item_time = 10;
 
 
 SoundItem::SoundItem()
@@ -26,6 +25,8 @@ void SoundItem::Initialize(vivid::Vector2 position)
 	iColor = 0xffffffff;
 	iCenter.x = (iPos.x + item_width) / 2;
 	iCenter.y = (iPos.y + item_height) / 2;
+	m_Area = 500.0f;
+	item_active_time = 1;
 }
 
 
@@ -41,7 +42,6 @@ void SoundItem::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 	if (catchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
 	{
 		m_ItemState = ITEM_STATE::USE;
-		catchFlg = false;
 
 		Mouse.x = (vivid::mouse::GetCursorPos().x)+ Character::GetInstance().GetScroll().x - cPos.x;
 		Mouse.y = cPos.y - (vivid::mouse::GetCursorPos().y + Character::GetInstance().GetScroll().y);
@@ -64,7 +64,7 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 {
 	//アイテムオブジェクトの座標更新
 
-		catchFlg = false;
+		//catchFlg = false;
 
 
 		m_Velocity.y = -(Mouse.y / Yspeed);
@@ -86,8 +86,17 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 		}
 		else
 		{
-			m_ItemState = ITEM_STATE::PLACE;
-			iColor = 0xffffffff;
+			m_Active = true;
+			if (item_active_time++ > max_item_time)
+			{
+				m_ItemState = ITEM_STATE::PLACE;
+				item_active_time = 0;
+				m_Active = false;
+				iColor = 0xffffffff;
+				catchFlg = false;
+
+			}
+
 		}
 
 		if (ceiling_wall == false && left_right_wall == false && ground_wall == false)
@@ -97,5 +106,6 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 			ceiling_wall = true;
 		Ga += 0.981;
 }
+
 
 
