@@ -21,7 +21,7 @@ void TeleportManager::Initialize(const int tp_stairs_count)
     std::vector<std::vector<int>> g_Map(g_map_chip_count_height, std::vector<int>(g_map_chip_count_width));
 
 	const int tp_set_count = tp_stairs_count / 2;
-	for (int i = 0; i < tp_set_count; i++)
+	for (int i = 0; i < tp_set_count-1; i++)
 	{
 		Teleport* teleport = nullptr;
 		teleport = new Teleport();
@@ -51,7 +51,7 @@ void TeleportManager::Initialize(const int tp_stairs_count)
         // データのサイズ分繰り返し 
     for (int i = 0, k = 0; i < size; ++i)
     {
-        // 文字の0～3であれば数値に変換する 
+        // 文字の0～tp_set_countであれば数値に変換する 
         if (buf[i] >= '0' && buf[i] <= '0'+ tp_set_count)
         {
             char t = buf[i];
@@ -62,6 +62,8 @@ void TeleportManager::Initialize(const int tp_stairs_count)
     }
     // 一時的なデータを削除 
     delete[] buf;
+
+
     for (int y = 0; y < g_map_chip_count_height; y++)
     {
         for (int x = 0; x < g_map_chip_count_width; x++)
@@ -70,10 +72,10 @@ void TeleportManager::Initialize(const int tp_stairs_count)
             {
                 //m_Teleport g_Map[y][x]
                 TELEPORT_LIST::iterator it = m_Teleport.begin();
-                //for (int i = 0; i < g_Map[y][x]-1; i++)
-                //{
-                //    it++;
-                //}
+                for (int i = 0; i < g_Map[y][x]-1; i++)
+                {
+                    it++;
+                }
                 vivid::Vector2 ob_pos = { (float)(x * map_chip_size),(float)(y * map_chip_size) };
                 (*it)->InputTpPos(ob_pos);
             }
@@ -89,6 +91,7 @@ void TeleportManager::Draw()
 {
     TELEPORT_LIST::iterator it = m_Teleport.begin();
     TELEPORT_LIST::iterator end = m_Teleport.end();
+    
     while (it != end)
     {
         (*it)->Draw(scroll);
