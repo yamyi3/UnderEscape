@@ -1,5 +1,7 @@
 #include"item.h"
 
+const float Item::area[(int)ITEM_ID::MAX] = {0.0f,300.0f,500.0f};
+
 Item::Item(ITEM_ID id, ITEM_STATE state,float width,float heght,float radius)
 	: m_Width	(width)
 	, m_Height	(heght)
@@ -24,6 +26,7 @@ Item::Item(ITEM_ID id, ITEM_STATE state,float width,float heght,float radius)
 	, ground_wall		(false)
 	,m_Active			(false)
 	, m_Area			(0.0f)
+	, item_check(false)
 {
 }
 
@@ -39,9 +42,11 @@ void Item::Initialize( const vivid::Vector2& position)
 	iCenter.x = (iPos.x + m_Width) / 2;
 	iCenter.y = (iPos.y + m_Height) / 2;
 	m_ActiveFlag = true; 
+	m_GetItemID = m_ItemID;
+
 }
 
-void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight)
+void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight,bool check)
 {
 	
 
@@ -49,13 +54,14 @@ void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeigh
 	{
 	case ITEM_STATE::GET:	//アイテムが所持している状態
 		GetMove(cPos, cWidth, cHeight);
+		item_check = true;
 		break;
 	case ITEM_STATE::USE:	//アイテムが使用されている状態
 		WallCheck();
 		UseMove(cPos);
 		break;
 	case ITEM_STATE::PLACE:	//アイテムが置かれた状態
-		CheckObject(cPos,cWidth,cHeight);
+		CheckObject(cPos,cWidth,cHeight,check);
 		break;
 	}
 
@@ -137,6 +143,11 @@ void Item::WallCheck()
 	}
 }
 
+float Item::GetEffectiveArea(ITEM_ID id)
+{
+	return area[(int)id];
+}
+
 void Item::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 {
 	//Cキーでアイテムを使用状態にする
@@ -178,18 +189,20 @@ void Item::UseMove( vivid::Vector2 c_pos)
 	Ga += 0.981;
 }
 
-void Item::CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight)//アイテムを持つ（当たり判定）
+void Item::CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight,bool check)//アイテムを持つ（当たり判定）
 {
 	if (cPos.x < iPos.x + m_Width && cPos.x + cWidth > iPos.x
 		&& cPos.y < iPos.y + m_Height && cPos.y + cHeight > iPos.y)
 	{
-		if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F))
+		if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F) )
 		{
 			catchFlg		= true;
 			ceiling_wall	= false;
 			left_right_wall = false;
 			ground_wall		= false;
+			//m_GetItemID		= m_ItemID;
 			m_ItemState		= ITEM_STATE::GET;
+			
 		}
 	}
 }
