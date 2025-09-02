@@ -14,11 +14,11 @@ void ItemManager::Initialize()
 	
 }
 
-void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight,   float rHeight, bool check)
+void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight,   float rHeight)
 {
 	ITEM_LIST::iterator it = m_Item.begin();
 	ITEM_LIST::iterator end = m_Item.end();
-
+	bool check = GetItemCheck();
 	while (it != end)
 	{
 		//不活性なデータの消去

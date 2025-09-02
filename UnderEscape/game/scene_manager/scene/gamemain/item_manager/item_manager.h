@@ -12,7 +12,7 @@ public:
 	// ‰Šú‰»
 	void Initialize();
 	// XV
-	void Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight,bool check);
+	void Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight);
 	// •`‰æ
 	void Draw();
 	// ŠJ•ú
