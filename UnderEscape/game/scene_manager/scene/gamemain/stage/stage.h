@@ -2,6 +2,7 @@
 #include "vivid.h"
 #include <iostream>
 #include <vector>
+#include "teleportmanager/teleportmanager.h"
 
 class Stage
 {
