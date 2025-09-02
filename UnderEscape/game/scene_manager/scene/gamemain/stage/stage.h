@@ -20,6 +20,10 @@ public:
 	void MapSizeInitialize(void);
 	//ステージのスクロール処理
 	void ScrollStage(void);
+	//テレポート階段の判定取得
+	bool GetStairsFlg(vivid::Vector2 cpos) { return TeleportManager::GetInstance().GetTeleportFlg(cpos); }
+	//テレポート階段の座標取得
+	vivid::Vector2 GetStairs(vivid::Vector2 cpos) { return TeleportManager::GetInstance().StairsTeleport(cpos); }
 	//地面座標のスタート地点取得
 	vivid::Vector2 GetStartpos(void)
 	{
