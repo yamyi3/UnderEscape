@@ -22,12 +22,16 @@ public:
 	//アイテムのアクティブフラグを取得
 	bool GetItemActiveFlag();	
 	//アイテムの位置を取得
-	vivid::Vector2 GetItemPos();	
+	vivid::Vector2 GetItemPos();
 	//アイテムの有効範囲を取得
-	float GetEfectiveArea();	
+	float GetEfectiveArea(ITEM_ID);
+	//ITEM_IDを取得
+	ITEM_ID GetItemID();
+	//ITEM_STATEを取得
+	bool GetItemCheck();
 private:
-	float Item_effective_area;						//アイテムの有効範囲
 
+	ITEM_ID Item_id;
 	using ITEM_LIST = std::list<Item*>;
 	ITEM_LIST m_Item;										// アイテムのリスト
 	ItemManager() = default;								// コンストラクタ

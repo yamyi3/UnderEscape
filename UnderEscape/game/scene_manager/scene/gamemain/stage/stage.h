@@ -1,5 +1,8 @@
 #pragma once
 #include "vivid.h"
+#include <iostream>
+#include <vector>
+#include "teleportmanager/teleportmanager.h"
 
 class Stage
 {
@@ -14,8 +17,14 @@ public:
 	void Draw(void);
 	//解放
 	void Finalize(void);
+	//
+	void MapSizeInitialize(void);
 	//ステージのスクロール処理
 	void ScrollStage(void);
+	//テレポート階段の判定取得
+	bool GetStairsFlg(vivid::Vector2 cpos) { return TeleportManager::GetInstance().GetTeleportFlg(cpos); }
+	//テレポート階段の座標取得
+	vivid::Vector2 GetStairs(vivid::Vector2 cpos) { return TeleportManager::GetInstance().StairsTeleport(cpos); }
 	//地面座標のスタート地点取得
 	vivid::Vector2 GetStartpos(void)
 	{
@@ -43,6 +52,10 @@ public:
 	int GetStageWidthSize() { return g_map_chip_count_width * g_map_chip_size; }
 	int GetStageHeightSize() { return g_map_chip_count_height * g_map_chip_size; }
 
+	int GetStageWidthCount() { return g_map_chip_count_width; }
+	int GetStageHeightCount() { return g_map_chip_count_height; }
+
+
 	int GetMapChipSize(){ return g_map_chip_size; }
 private:
 
@@ -65,27 +78,31 @@ private:
 
 
 	static const int g_map_chip_size;
-	static const int g_map_chip_count_width=40;
-	static const int g_map_chip_count_height=26;
+	int g_map_chip_count_width;
+	int g_map_chip_count_height;
 	// マップチップ番号を列挙型で定義 
 	enum class MAP_CHIP_ID
 	{
-		EMPTY,
-		GROUND,
-		BLOCK,
-		WALL,
-		ENEMY_AREA,
-		R_ENEMY,
-		L_ENEMY,
-		START,
-		GOAL,
+		EMPTY,			//0
+		GROUND,			//1
+		BLOCK,			//2
+		RSTAIRS,		//3／
+		LSTAIRS,		//4＼
+		WALL,			//5
+		ENEMY_AREA,		//6
+		R_ENEMY,		//7
+		L_ENEMY,		//8
+		TPSTAIRS,		//9
+		START,			//10
+		GOAL,			//11
 	};
 
 	//配置データを入れておくための二次元配列(整数) 
-	MAP_CHIP_ID g_Map[g_map_chip_count_height][g_map_chip_count_width];
-	bool g_map_flg[g_map_chip_count_height][g_map_chip_count_width];
-	bool g_map_terrain[g_map_chip_count_height][g_map_chip_count_width];
-	bool g_map_wall[g_map_chip_count_height][g_map_chip_count_width];
+	std::vector<std::vector<MAP_CHIP_ID>> g_Map;
+	std::vector<std::vector<bool>> g_map_flg;
+	std::vector<std::vector<bool>> g_map_terrain;
+	std::vector<std::vector<bool>> g_map_wall;
+
 	//MAP_CHIP_ID *g_Map;
 	//bool *g_map_flg;
 	//bool *g_map_terrain;

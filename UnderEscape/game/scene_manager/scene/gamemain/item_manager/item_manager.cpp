@@ -18,7 +18,7 @@ void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight,   flo
 {
 	ITEM_LIST::iterator it = m_Item.begin();
 	ITEM_LIST::iterator end = m_Item.end();
-
+	bool check = GetItemCheck();
 	while (it != end)
 	{
 		//不活性なデータの消去
@@ -33,7 +33,7 @@ void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight,   flo
 			continue;
 		}
 
-		(*it)->Update( cPos,  cWidth,  cHeight,  rHeight);
+		(*it)->Update( cPos,  cWidth,  cHeight,  rHeight, check);
 		++it;
 	}
 }
@@ -77,11 +77,10 @@ void ItemManager::CreateItem(vivid::Vector2 position, ITEM_ID id)
 	switch (id)
 	{
 	case ITEM_ID::SOUND_ITEM:	item = new SoundItem();
-		Item_effective_area = item->GetEffectiveArea();
+		//Item_effective_area = item->GetEffectiveArea();
 		break;
 	case ITEM_ID::FLASH_ITEM:	item = new FlashItem();
-		Item_effective_area = item->GetEffectiveArea();
-
+		//Item_effective_area = item->GetEffectiveArea();
 		break;
 	default:
 		break;
@@ -121,16 +120,66 @@ vivid::Vector2 ItemManager::GetItemPos()
 	while (it != end)
 	{
 		Pos = (*it)->GetItemPos();
-
 		++it;
 	}
 	return Pos;
 }
 
-float ItemManager::GetEfectiveArea()
+float ItemManager::GetEfectiveArea(ITEM_ID id)
 {
-	
-	return Item_effective_area;
+	//各アイテムオブジェクトの描画
+	ITEM_LIST::iterator    it = m_Item.begin();
+	ITEM_LIST::iterator    end = m_Item.end();
+
+	float a;
+	while (it != end)
+	{
+		a = (*it)->GetEffectiveArea( id );
+		++it;
+	}
+	return a;
+}
+
+
+ITEM_ID ItemManager::GetItemID()
+{
+	//各アイテムオブジェクトの描画
+	ITEM_LIST::iterator    it = m_Item.begin();
+	ITEM_LIST::iterator    end = m_Item.end();
+
+									//アイテムの種類
+
+	while (it != end)
+	{
+		if ((*it)->GetCatchFlg() == true)
+		{
+			Item_id = (*it)->GetItemID();
+
+			return Item_id;
+
+		}
+		++it;
+	}
+	return ITEM_ID::DUMMY;
+}
+
+bool ItemManager::GetItemCheck()
+{
+	//各アイテムオブジェクトの描画
+	ITEM_LIST::iterator    it = m_Item.begin();
+	ITEM_LIST::iterator    end = m_Item.end();
+
+	//アイテムの種類
+	ITEM_STATE state;
+	while (it != end)
+	{
+		if ((*it)->GetCatchFlg() == true)
+		{
+			return true;
+		}
+		it++;
+	}
+	return false;
 }
 
 
