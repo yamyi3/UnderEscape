@@ -11,6 +11,11 @@
  *  Copyright (c) 2013-2023, Kazuya Maruyama. Shinya Kosugi. Toshihito ohashi. All rights reserved.
  */
 
+/*!
+ * @update      Yuya Mizuwaki
+ * @date         2025/8/27
+ */
+
 #pragma once
 
 #include <DxLib.h>
@@ -1148,6 +1153,15 @@ namespace vivid
      *  @param[in]  loop        ループ再生
      */
     void    PlaySound(const std::string& file_name, bool loop);
+
+    /*!
+     *  @brief      サウンド再生
+     *
+     *  @param[in]  file_name   ファイル名
+     *  @param[in]  loop        ループ再生
+     *  @param[in]  int         音量
+     */
+    void    PlaySound(const std::string& file_name, bool loop, int volume);
 
     /*!
      *  @brief      サウンド停止

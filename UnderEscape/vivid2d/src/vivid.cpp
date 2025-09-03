@@ -1,4 +1,4 @@
-
+ï»¿
 /*!
  *  @file       vivid.cpp
  *  @brief      Vivid2D Library
@@ -21,58 +21,59 @@
 #include <list>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 
-#pragma warning(disable: 4100)      // effekseer.h‚ÌŒx‰ñ”ğ s.kosugi
-#include <EffekseerForDXLib.h>      // effekseerƒ‰ƒCƒuƒ‰ƒŠ‚Ì“Ç‚İ‚İ s.kosugi
+#pragma warning(disable: 4100)      // effekseer.hã®è­¦å‘Šå›é¿ s.kosugi
+#include <EffekseerForDXLib.h>      // effekseerãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®èª­ã¿è¾¼ã¿ s.kosugi
 
  /*!
-  *  @brief      vivid–¼‘O‹óŠÔ
+  *  @brief      vividåå‰ç©ºé–“
   */
 namespace vivid
 {
     /*!
-     *  @brief      vivid::core–¼‘O‹óŠÔ
+     *  @brief      vivid::coreåå‰ç©ºé–“
      */
     namespace core
     {
-        static const int            g_window_width                  = WINDOW_WIDTH;                         //!< ƒEƒBƒ“ƒhƒE‚Ì‰¡•
-        static const int            g_window_height                 = WINDOW_HEIGHT;                        //!< ƒEƒBƒ“ƒhƒE‚Ìc•
-        static const char*          g_class_name                    = "vivid2D 2.8 with Effekseer";         //!< ƒNƒ‰ƒXƒl[ƒ€
-        static const int            g_color_bit                     = 32;                                   //!< ƒJƒ‰[ƒrƒbƒg
-        static const unsigned int   g_button_state_num              = 9;                                    //!< “ü—Í”»’è—pƒ{ƒ^ƒ“”
-        static const unsigned int   g_max_key_count                 = 256;                                  //!< ƒ{ƒ^ƒ“‚ÌÅ‘å”
-        static const float          g_one_millisecond               = 1000.0f;                              //!< 1ƒ~ƒŠ•b
-        static const float          g_max_delta_time                = 0.16f;                                //!< Å‘åƒfƒ‹ƒ^ƒ^ƒCƒ€
-        static const float          g_default_delta_time_scale      = 1.0f;                                 //!< ‰Šú‚Ìƒfƒ‹ƒ^ƒ^ƒCƒ€ƒXƒP[ƒ‹
-        static const int            g_default_frame_rate            = 60;                                   //!< ƒfƒtƒHƒ‹ƒg‚ÌƒtƒŒ[ƒ€ƒŒ[ƒg
-        static const int            g_calc_frame_count              = 60;                                   //!< •½‹Ï‚ğŒvZ‚·‚éƒtƒŒ[ƒ€‚Ì”
-        static const int            g_limit_cant_analog             = 30000;                                //!< ƒAƒiƒƒOƒXƒeƒBƒbƒN“ü—Í‚ÌŒÀŠE’l
-        static const int            g_max_trigger                   = 255;                                  //!< ƒgƒŠƒK[“ü—Í‚ÌÅ‘å’l
-        static const int            g_analog_dead_zone              = 15000;                                //!< ƒAƒiƒƒOƒXƒeƒBƒbƒN‚ÌŒü‚±‚¤”ÍˆÍ
-        HINSTANCE                   g_InstanceHandle                = NULL;                                 //!< ƒCƒ“ƒXƒ^ƒ“ƒXƒnƒ“ƒhƒ‹
-        DISPLAY_FUNC                g_DisplayFunction               = nullptr;                              //!< XV—pŠÖ”
-        int                         g_FrameRate                     = g_default_frame_rate;                 //!< ƒtƒŒ[ƒ€ƒŒ[ƒg
-        float                       g_Fps                           = 0.0f;                                 //!< Œ»İ‚ÌFPS
-        int                         g_FrameCount                    = 0;                                    //!< ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
-        int                         g_StartTime                     = 0;                                    //!< ƒtƒŒ[ƒ€Œv‘ªŠJnŠÔ
-        int                         g_PrevTime                      = 0;                                    //!< 1ƒtƒŒ[ƒ€‘O‚ÌŠÔ
-        float                       g_DeltaTime                     = 0.0f;                                 //!< ƒQ[ƒ€XV—pƒfƒ‹ƒ^ƒ^ƒCƒ€
-        float                       g_DeltaTimeScale                = g_default_delta_time_scale;           //!< ƒfƒ‹ƒ^ƒ^ƒCƒ€”{—¦
-        std::map<std::string, int>  g_TextureList;                                                          //!< ƒeƒNƒXƒ`ƒƒƒŠƒXƒg
-        std::map<std::string, int>  g_SoundList;                                                            //!< ƒTƒEƒ“ƒhƒŠƒXƒg
-        std::map<int, int>          g_FontList;                                                             //!< ƒtƒHƒ“ƒgƒŠƒXƒg
-        char                        g_KeyState[g_max_key_count]     = { 0 };                                //!< “ü—Íƒf[ƒ^
-        char                        g_PrevKeyState[g_max_key_count] = { 0 };                                //!< ‘O‰ñ‚Ì“ü—Íƒf[ƒ^
-        int                         g_MouseState                    = 0;                                    //!< ƒ}ƒEƒX‚Ì“ü—Íó‘Ô
-        int                         g_PrevMouseState                = 0;                                    //!< ‘O‚Ìƒ}ƒEƒX‚Ì“ü—Íó‘Ô
-        std::map<std::string, int>  g_EffekseerList;                                                        //!< ƒGƒtƒFƒNƒg“Ç‚İ‚İƒŠƒXƒg s.kosugi
-        std::list<PLAYEFFECT_DATA>  g_EffectPlayList;                                                       //!< ƒGƒtƒFƒNƒg‘SÄ¶ƒŠƒXƒg s.kosugi
-        bool                        g_UseEffectListFlag             = true;                                 //!< ƒGƒtƒFƒNƒgƒŠƒXƒg‚Ì‘SÄ¶‚ğs‚¤‚©‚Ç‚¤‚© s.kosugi
-        XINPUT_STATE                g_ControllerState[static_cast<int>(controller::DEVICE_ID::MAX)];        //!< ƒRƒ“ƒgƒ[ƒ‰[‚Ì“ü—Íó‘Ô
-        XINPUT_STATE                g_PrevControllerState[static_cast<int>(controller::DEVICE_ID::MAX)];    //!< 1ƒtƒŒ[ƒ€‘O‚Ì“ü—Íó‘Ô
+        static const int            g_window_width                  = WINDOW_WIDTH;                         //!< ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æ¨ªå¹…
+        static const int            g_window_height                 = WINDOW_HEIGHT;                        //!< ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç¸¦å¹…
+        static const char*          g_class_name                    = "vivid2D 2.8 with Effekseer";         //!< ã‚¯ãƒ©ã‚¹ãƒãƒ¼ãƒ 
+        static const int            g_color_bit                     = 32;                                   //!< ã‚«ãƒ©ãƒ¼ãƒ“ãƒƒãƒˆ
+        static const unsigned int   g_button_state_num              = 9;                                    //!< å…¥åŠ›åˆ¤å®šç”¨ãƒœã‚¿ãƒ³æ•°
+        static const unsigned int   g_max_key_count                 = 256;                                  //!< ãƒœã‚¿ãƒ³ã®æœ€å¤§æ•°
+        static const float          g_one_millisecond               = 1000.0f;                              //!< 1ãƒŸãƒªç§’
+        static const float          g_max_delta_time                = 0.16f;                                //!< æœ€å¤§ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ 
+        static const float          g_default_delta_time_scale      = 1.0f;                                 //!< åˆæœŸã®ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ ã‚¹ã‚±ãƒ¼ãƒ«
+        static const int            g_default_frame_rate            = 60;                                   //!< ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆ
+        static const int            g_calc_frame_count              = 60;                                   //!< å¹³å‡ã‚’è¨ˆç®—ã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ•°
+        static const int            g_limit_cant_analog             = 30000;                                //!< ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯å…¥åŠ›ã®é™ç•Œå€¤
+        static const int            g_max_trigger                   = 255;                                  //!< ãƒˆãƒªã‚¬ãƒ¼å…¥åŠ›ã®æœ€å¤§å€¤
+        static const int            g_analog_dead_zone              = 15000;                                //!< ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å‘ã“ã†ç¯„å›²
+        HINSTANCE                   g_InstanceHandle                = NULL;                                 //!< ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒãƒ³ãƒ‰ãƒ«
+        DISPLAY_FUNC                g_DisplayFunction               = nullptr;                              //!< æ›´æ–°ç”¨é–¢æ•°
+        int                         g_FrameRate                     = g_default_frame_rate;                 //!< ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆ
+        float                       g_Fps                           = 0.0f;                                 //!< ç¾åœ¨ã®FPS
+        int                         g_FrameCount                    = 0;                                    //!< ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆ
+        int                         g_StartTime                     = 0;                                    //!< ãƒ•ãƒ¬ãƒ¼ãƒ è¨ˆæ¸¬é–‹å§‹æ™‚é–“
+        int                         g_PrevTime                      = 0;                                    //!< 1ãƒ•ãƒ¬ãƒ¼ãƒ å‰ã®æ™‚é–“
+        float                       g_DeltaTime                     = 0.0f;                                 //!< ã‚²ãƒ¼ãƒ æ›´æ–°ç”¨ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ 
+        float                       g_DeltaTimeScale                = g_default_delta_time_scale;           //!< ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ å€ç‡
+        std::map<std::string, int>  g_TextureList;                                                          //!< ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒªã‚¹ãƒˆ
+        std::map<std::string, int>  g_SoundList;                                                            //!< ã‚µã‚¦ãƒ³ãƒ‰ãƒªã‚¹ãƒˆ
+        std::map<int, int>          g_FontList;                                                             //!< ãƒ•ã‚©ãƒ³ãƒˆãƒªã‚¹ãƒˆ
+        char                        g_KeyState[g_max_key_count]     = { 0 };                                //!< å…¥åŠ›ãƒ‡ãƒ¼ã‚¿
+        char                        g_PrevKeyState[g_max_key_count] = { 0 };                                //!< å‰å›ã®å…¥åŠ›ãƒ‡ãƒ¼ã‚¿
+        int                         g_MouseState                    = 0;                                    //!< ãƒã‚¦ã‚¹ã®å…¥åŠ›çŠ¶æ…‹
+        int                         g_PrevMouseState                = 0;                                    //!< å‰ã®ãƒã‚¦ã‚¹ã®å…¥åŠ›çŠ¶æ…‹
+        std::map<std::string, int>  g_EffekseerList;                                                        //!< ã‚¨ãƒ•ã‚§ã‚¯ãƒˆèª­ã¿è¾¼ã¿ãƒªã‚¹ãƒˆ s.kosugi
+        std::list<PLAYEFFECT_DATA>  g_EffectPlayList;                                                       //!< ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå…¨å†ç”Ÿãƒªã‚¹ãƒˆ s.kosugi
+        bool                        g_UseEffectListFlag             = true;                                 //!< ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãƒªã‚¹ãƒˆã®å…¨å†ç”Ÿã‚’è¡Œã†ã‹ã©ã†ã‹ s.kosugi
+        XINPUT_STATE                g_ControllerState[static_cast<int>(controller::DEVICE_ID::MAX)];        //!< ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å…¥åŠ›çŠ¶æ…‹
+        XINPUT_STATE                g_PrevControllerState[static_cast<int>(controller::DEVICE_ID::MAX)];    //!< 1ãƒ•ãƒ¬ãƒ¼ãƒ å‰ã®å…¥åŠ›çŠ¶æ…‹
 
 #ifdef VIVID_DEBUG
-        bool                        g_DebugShowFps                  = true;                                 //!< ƒfƒoƒbƒO—pFPS•\¦ƒtƒ‰ƒO
+        bool                        g_DebugShowFps                  = true;                                 //!< ãƒ‡ãƒãƒƒã‚°ç”¨FPSè¡¨ç¤ºãƒ•ãƒ©ã‚°
 #endif
     }
 };
@@ -81,7 +82,7 @@ const vivid::Vector2 vivid::Vector2::ZERO = Vector2(0.0f, 0.0f);
 const vivid::Vector2 vivid::Vector2::ONE  = Vector2(1.0f, 1.0f);
 
 /*
- *  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+ *  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  */
 vivid::Vector2::
 Vector2(void)
@@ -90,7 +91,7 @@ Vector2(void)
 }
 
 /*
- *  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+ *  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  */
 vivid::Vector2::
 Vector2(float x, float y)
@@ -99,7 +100,7 @@ Vector2(float x, float y)
 }
 
 /*
- *  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+ *  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  */
 vivid::Vector2::
 Vector2(const Vector2& v)
@@ -108,7 +109,7 @@ Vector2(const Vector2& v)
 }
 
 /*
- *  ƒfƒXƒgƒ‰ƒNƒ^
+ *  ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  */
 vivid::Vector2::
 ~Vector2(void)
@@ -116,7 +117,7 @@ vivid::Vector2::
 }
 
 /*
- *  ³‹K‰»
+ *  æ­£è¦åŒ–
  */
 vivid::Vector2
 vivid::Vector2::
@@ -126,7 +127,7 @@ Normalize(void)
 }
 
 /*
- *  ³‹K‰»
+ *  æ­£è¦åŒ–
  */
 vivid::Vector2
 vivid::Vector2::
@@ -143,7 +144,7 @@ Normalize(const Vector2& v)
 }
 
 /*
- *  ƒxƒNƒgƒ‹‚Ì‘å‚«‚³æ“¾
+ *  ãƒ™ã‚¯ãƒˆãƒ«ã®å¤§ãã•å–å¾—
  */
 float
 vivid::Vector2::
@@ -153,7 +154,7 @@ Length(void)
 }
 
 /*
- *  ƒxƒNƒgƒ‹‚Ì‘å‚«‚³æ“¾
+ *  ãƒ™ã‚¯ãƒˆãƒ«ã®å¤§ãã•å–å¾—
  */
 float
 vivid::Vector2::
@@ -163,7 +164,7 @@ Length(const Vector2& v)
 }
 
 /*
- *  “àÏ
+ *  å†…ç©
  */
 float
 vivid::Vector2::
@@ -173,7 +174,7 @@ Dot(const Vector2& vA, const Vector2& vB)
 }
 
 /*
- *  ŠOÏ
+ *  å¤–ç©
  */
 float
 vivid::Vector2::
@@ -183,7 +184,7 @@ Cross(const Vector2& vA, const Vector2& vB)
 }
 
 /*
- *  ƒxƒNƒgƒ‹‚Ì‰ñ“]
+ *  ãƒ™ã‚¯ãƒˆãƒ«ã®å›è»¢
  */
 vivid::Vector2
 vivid::Vector2::
@@ -200,7 +201,7 @@ Rotate(const Vector2& v, float angle)
 }
 
 /*
- *  ‘ã“ü‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  ä»£å…¥æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2&
 vivid::Vector2::
@@ -213,7 +214,7 @@ operator=(const Vector2& v)
 }
 
 /*
- *  ‰ÁZ‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  åŠ ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2&
 vivid::Vector2::
@@ -226,7 +227,7 @@ operator+=(const Vector2& v)
 }
 
 /*
- *  Œ¸Z‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  æ¸›ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2&
 vivid::Vector2::
@@ -239,7 +240,7 @@ operator-=(const Vector2& v)
 }
 
 /*
- *  æZ‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  ä¹—ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2&
 vivid::Vector2::
@@ -252,7 +253,7 @@ operator*=(float scalar)
 }
 
 /*
- *  “™‰¿‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  ç­‰ä¾¡æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 bool
 vivid::Vector2::
@@ -262,7 +263,7 @@ operator==(const Vector2& v) const
 }
 
 /*
- *  •s“™‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  ä¸ç­‰æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 bool
 vivid::Vector2::
@@ -272,7 +273,7 @@ operator!=(const Vector2& v) const
 }
 
 /*
- *  ³•„†‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  æ­£ç¬¦å·æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2
 vivid::operator+(const vivid::Vector2& v)
@@ -281,7 +282,7 @@ vivid::operator+(const vivid::Vector2& v)
 }
 
 /*
- *  •‰•„†‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  è² ç¬¦å·æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2
 vivid::operator-(const vivid::Vector2& v)
@@ -290,7 +291,7 @@ vivid::operator-(const vivid::Vector2& v)
 }
 
 /*
- *  ‰ÁZ‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  åŠ ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2
 vivid::operator+(const vivid::Vector2& vA, const vivid::Vector2& vB)
@@ -299,7 +300,7 @@ vivid::operator+(const vivid::Vector2& vA, const vivid::Vector2& vB)
 }
 
 /*
- *  Œ¸Z‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  æ¸›ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2
 vivid::operator-(const vivid::Vector2& vA, const vivid::Vector2& vB)
@@ -308,7 +309,7 @@ vivid::operator-(const vivid::Vector2& vA, const vivid::Vector2& vB)
 }
 
 /*
- *  æZ‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  ä¹—ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2
 vivid::operator*(const vivid::Vector2& vA, const vivid::Vector2& vB)
@@ -317,7 +318,7 @@ vivid::operator*(const vivid::Vector2& vA, const vivid::Vector2& vB)
 }
 
 /*
- *  æZ‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  ä¹—ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2
 vivid::operator*(const vivid::Vector2& v, float scalar)
@@ -326,7 +327,7 @@ vivid::operator*(const vivid::Vector2& v, float scalar)
 }
 
 /*
- *  æZ‰‰Zq‚ÌƒI[ƒo[ƒ[ƒh
+ *  ä¹—ç®—æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ­ãƒ¼ãƒ‰
  */
 vivid::Vector2
 vivid::operator*(float scalar, const vivid::Vector2& v)
@@ -335,7 +336,7 @@ vivid::operator*(float scalar, const vivid::Vector2& v)
 }
 
 /*
- *  ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+ *  ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
  */
 vivid::PLAYEFFECT_DATA::
 PLAYEFFECT_DATA(void)
@@ -346,156 +347,156 @@ PLAYEFFECT_DATA(void)
 using namespace vivid::core;
 
 /*
- * ‰Šú‰»
+ * åˆæœŸåŒ–
  */
 void
 vivid::
 Initialize(HINSTANCE hInst)
 {
-    // ƒCƒ“ƒXƒ^ƒ“ƒXƒnƒ“ƒhƒ‹
+    // ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒãƒ³ãƒ‰ãƒ«
     g_InstanceHandle = hInst;
 
-    // IME‚ğ‹Ö~‚·‚é
+    // IMEã‚’ç¦æ­¢ã™ã‚‹
     ImmDisableIME(0xffffffff);
 
-    // —”‚Ì‰Šú‰»
+    // ä¹±æ•°ã®åˆæœŸåŒ–
     srand((unsigned int)time(NULL));
 
-    // Log.txt‚ğ¶¬‚µ‚È‚¢
+    // Log.txtã‚’ç”Ÿæˆã—ãªã„
     SetOutApplicationLogValidFlag(FALSE);
 
-    // ƒEƒBƒ“ƒhƒE‚ª”ñƒAƒNƒeƒBƒu‚àXV‚·‚é
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒéã‚¢ã‚¯ãƒ†ã‚£ãƒ–æ™‚ã‚‚æ›´æ–°ã™ã‚‹
     SetAlwaysRunFlag(TRUE);
 
-    // ƒEƒBƒ“ƒhƒEƒeƒLƒXƒg‚Ì•ÏX
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ†ã‚­ã‚¹ãƒˆã®å¤‰æ›´
     SetMainWindowText(g_class_name);
 
-    // ƒoƒbƒNƒoƒbƒtƒ@ƒTƒCƒYw’è
+    // ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºæŒ‡å®š
     SetGraphMode(g_window_width, g_window_height, g_color_bit);
 
-    // ƒEƒBƒ“ƒhƒEƒTƒCƒYw’è
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºæŒ‡å®š
     SetWindowSize(g_window_width, g_window_height);
 
 #ifdef VIVID_DEBUG
-    // ƒEƒBƒ“ƒhƒEƒ‚[ƒh‚Å‹N“®
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰ã§èµ·å‹•
     ChangeWindowMode(TRUE);
 #else
-    // ƒtƒ‹ƒXƒNƒŠ[ƒ“ƒ‚[ƒh‚Å‹N“®
+    // ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ãƒ¢ãƒ¼ãƒ‰ã§èµ·å‹•
     ChangeWindowMode(FALSE);
 
-    // ƒQ[ƒ€‰æ–Ê‚Ì‰ğ‘œ“x‚É‡‚í‚¹‚Äƒtƒ‹ƒXƒNƒŠ[ƒ“‚É‚·‚é
+    // ã‚²ãƒ¼ãƒ ç”»é¢ã®è§£åƒåº¦ã«åˆã‚ã›ã¦ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã«ã™ã‚‹
     SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_NATIVE);
 #endif
 
-    // DirectX11‚Ìƒo[ƒWƒ‡ƒ“‚ğw’è‚·‚é
+    // DirectX11ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚’æŒ‡å®šã™ã‚‹
     if (SetUseDirect3DVersion(DX_DIRECT3D_11) == VIVID_DX_ERROR)
         return;
 
-    // DXƒ‰ƒCƒuƒ‰ƒŠ‰Šú‰»
+    // DXãƒ©ã‚¤ãƒ–ãƒ©ãƒªåˆæœŸåŒ–
     if (DxLib_Init() == VIVID_DX_ERROR)
         return;
 
-    // ƒoƒbƒNƒoƒbƒtƒ@‚É‘‚«‚Ş
+    // ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã«æ›¸ãè¾¼ã‚€
     SetDrawScreen(DX_SCREEN_BACK);
 
-    // ƒfƒtƒHƒ‹ƒgƒtƒHƒ“ƒg‚ğƒGƒbƒW•t‚«‚Éİ’è‚·‚é
+    // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ•ã‚©ãƒ³ãƒˆã‚’ã‚¨ãƒƒã‚¸ä»˜ãã«è¨­å®šã™ã‚‹
     ChangeFontType(DX_FONTTYPE_EDGE);
 
-    // “§‰ßFw’è(ƒ}ƒ[ƒ“ƒ^)
+    // é€éè‰²æŒ‡å®š(ãƒã‚¼ãƒ³ã‚¿)
     SetTransColor(0xff, 0x00, 0xff);
 
-    // ƒeƒNƒXƒ`ƒƒƒŠƒXƒg‚ğƒNƒŠƒA
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒªã‚¹ãƒˆã‚’ã‚¯ãƒªã‚¢
     g_TextureList.clear();
 
-    // ƒTƒEƒ“ƒhƒŠƒXƒg‚ğƒNƒŠƒA
+    // ã‚µã‚¦ãƒ³ãƒ‰ãƒªã‚¹ãƒˆã‚’ã‚¯ãƒªã‚¢
     g_SoundList.clear();
 
-    // ƒtƒHƒ“ƒgƒŠƒXƒg‚ğƒNƒŠƒA
+    // ãƒ•ã‚©ãƒ³ãƒˆãƒªã‚¹ãƒˆã‚’ã‚¯ãƒªã‚¢
     g_FontList.clear();
 
-    // ƒRƒ“ƒgƒ[ƒ‰[‚ÌƒXƒe[ƒg‚ğƒNƒŠƒA
+    // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ã‚¯ãƒªã‚¢
     ZeroMemory(g_ControllerState, sizeof(XINPUT_STATE) * static_cast<int>(controller::DEVICE_ID::MAX));
     ZeroMemory(g_PrevControllerState, sizeof(XINPUT_STATE) * static_cast<int>(controller::DEVICE_ID::MAX));
 
-    // ƒoƒCƒuƒŒ[ƒVƒ‡ƒ“‚ğg—p‚·‚é
+    // ãƒã‚¤ãƒ–ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’ä½¿ç”¨ã™ã‚‹
     SetUseJoypadVibrationFlag(TRUE);
 
-    // ƒGƒtƒFƒNƒVƒA‚Ì‰Šú‰» s.kosugi
+    // ã‚¨ãƒ•ã‚§ã‚¯ã‚·ã‚¢ã®åˆæœŸåŒ– s.kosugi
     effekseer::InitEffekseer();
 
-    // ƒGƒtƒFƒNƒgƒŠƒXƒg‚ğƒNƒŠƒA s.kosugi
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãƒªã‚¹ãƒˆã‚’ã‚¯ãƒªã‚¢ s.kosugi
     g_EffekseerList.clear();
     g_EffectPlayList.clear();
 }
 
 /*
- *  •`‰æŠÖ”“o˜^
+ *  æç”»é–¢æ•°ç™»éŒ²
  */
 void
 vivid::
 DisplayFunction(DISPLAY_FUNC display)
 {
-    // ŠÖ”ƒ|ƒCƒ“ƒ^‚ğ•Û‘¶
+    // é–¢æ•°ãƒã‚¤ãƒ³ã‚¿ã‚’ä¿å­˜
     g_DisplayFunction = display;
 }
 
 /*
- *  ƒƒCƒ“ƒ‹[ƒv
+ *  ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
  */
 void
 vivid::
 MainLoop(void)
 {
-    // Windows‚©‚ç‚Ì–½—ß‚ğˆ—
+    // Windowsã‹ã‚‰ã®å‘½ä»¤ã‚’å‡¦ç†
     while (ProcessMessage() != VIVID_DX_ERROR)
     {
-        // ƒtƒŒ[ƒ€ƒJƒEƒ“ƒgZo
+        // ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆç®—å‡º
         CalcFrameCount();
 
-        // “ü—Íˆ—XV
-        // ‘O‰ñ‚Ìƒf[ƒ^ƒRƒs[
+        // å…¥åŠ›å‡¦ç†æ›´æ–°
+        // å‰å›ã®ãƒ‡ãƒ¼ã‚¿ã‚³ãƒ”ãƒ¼
         memcpy(g_PrevKeyState, g_KeyState, g_max_key_count);
 
-        // Œ»İ‚Ì“ü—Íî•ñæ“¾
+        // ç¾åœ¨ã®å…¥åŠ›æƒ…å ±å–å¾—
         GetHitKeyStateAll(g_KeyState);
 
-        // ‘O‚ÌƒtƒŒ[ƒ€‚Ì“ü—Íó‘Ô‚ğ•Û‘¶
+        // å‰ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®å…¥åŠ›çŠ¶æ…‹ã‚’ä¿å­˜
         g_PrevMouseState = g_MouseState;
 
-        // ƒ}ƒEƒX‚Ì“ü—Íî•ñæ“¾
+        // ãƒã‚¦ã‚¹ã®å…¥åŠ›æƒ…å ±å–å¾—
         g_MouseState = GetMouseInput();
 
-        // Ú‘±‚³‚ê‚Ä‚¢‚é‘ä”•ª‚¾‚¯AƒRƒ“ƒgƒ[ƒ‰[‚Ì“ü—Íî•ñæ“¾
+        // æ¥ç¶šã•ã‚Œã¦ã„ã‚‹å°æ•°åˆ†ã ã‘ã€ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å…¥åŠ›æƒ…å ±å–å¾—
         for (int i = 0; i < controller::GetConnectCount(); ++i)
         {
-            // 1ƒtƒŒ[ƒ€‘O‚Ìó‘Ô‚ğ•Û‘¶
+            // 1ãƒ•ãƒ¬ãƒ¼ãƒ å‰ã®çŠ¶æ…‹ã‚’ä¿å­˜
             g_PrevControllerState[i] = g_ControllerState[i];
 
-            // Œ»İ‚Ì“ü—Íó‘Ô‚ğæ“¾
+            // ç¾åœ¨ã®å…¥åŠ›çŠ¶æ…‹ã‚’å–å¾—
             GetJoypadXInputState(i + DX_INPUT_PAD1, &g_ControllerState[i]);
         }
 
-        // ‰æ–Ê‚Ì”wŒiF‚ğİ’è
+        // ç”»é¢ã®èƒŒæ™¯è‰²ã‚’è¨­å®š
         SetBackgroundColor(0x80, 0x80, 0x80);
 
-        // ‰æ–Ê‚ÌƒNƒŠƒA
+        // ç”»é¢ã®ã‚¯ãƒªã‚¢
         ClearDrawScreen();
 
-        // XV/•`‰æ
+        // æ›´æ–°/æç”»
         g_DisplayFunction();
 
-        // effekseerƒ‰ƒCƒuƒ‰ƒŠ‚ÌXV  s.kosugi
+        // effekseerãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®æ›´æ–°  s.kosugi
         UpdateEffekseer2D();
-        // ƒGƒtƒFƒNƒg‚Ì•`‰æ  s.kosugi
+        // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æç”»  s.kosugi
         if (g_UseEffectListFlag)
             effekseer::DrawEffectList();
 
-        // ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚ÌB‰e
+        // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆã®æ’®å½±
         if (keyboard::Trigger(vivid::keyboard::KEY_ID::F9))
             ScreenShot();
 
 #ifdef VIVID_DEBUG
-        // FPS‚Ì•\¦/”ñ•\¦Ø‚è‘Ö‚¦
+        // FPSã®è¡¨ç¤º/éè¡¨ç¤ºåˆ‡ã‚Šæ›¿ãˆ
         if (keyboard::Trigger(vivid::keyboard::KEY_ID::F6))
             g_DebugShowFps = !g_DebugShowFps;
 
@@ -510,43 +511,43 @@ MainLoop(void)
             DrawString(x, g_window_height - GetFontSize(), fps.str().c_str(), 0xff00ff00, 0xff004000);
         }
 #endif
-        // ƒoƒbƒNƒoƒbƒtƒ@‚Ì“]‘—
+        // ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®è»¢é€
         ScreenFlip();
 
-        // ƒtƒŒ[ƒ€“¯Šú
+        // ãƒ•ãƒ¬ãƒ¼ãƒ åŒæœŸ
         FrameSync();
 
-        // EscƒL[‚ÅI—¹
+        // Escã‚­ãƒ¼ã§çµ‚äº†
         if (keyboard::Trigger(vivid::keyboard::KEY_ID::ESCAPE))
             break;
     }
 }
 
 /*
- *  ‰ğ•ú
+ *  è§£æ”¾
  */
 void
 vivid::
 Finalize(void)
 {
-    // ‚·‚×‚Ä‚ÌƒOƒ‰ƒtƒBƒbƒNƒX‚ğ‰ğ•ú
+    // ã™ã¹ã¦ã®ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚’è§£æ”¾
     InitGraph();
 
-    // ‚·‚×‚Ä‚ÌƒtƒHƒ“ƒg‚ğ‰ğ•ú‚·‚é
+    // ã™ã¹ã¦ã®ãƒ•ã‚©ãƒ³ãƒˆã‚’è§£æ”¾ã™ã‚‹
     InitFontToHandle();
 
-    // ‚·‚×‚Ä‚ÌƒTƒEƒ“ƒh‚ğ‰ğ•ú
+    // ã™ã¹ã¦ã®ã‚µã‚¦ãƒ³ãƒ‰ã‚’è§£æ”¾
     InitSoundMem();
 
-    // ƒGƒtƒFƒNƒVƒAƒ‰ƒCƒuƒ‰ƒŠ‚ÌI—¹ s.kosugi
+    // ã‚¨ãƒ•ã‚§ã‚¯ã‚·ã‚¢ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®çµ‚äº† s.kosugi
     Effkseer_End();
 
-    // DXƒ‰ƒCƒuƒ‰ƒŠ‰ğ•ú
+    // DXãƒ©ã‚¤ãƒ–ãƒ©ãƒªè§£æ”¾
     DxLib_End();
 }
 
 /*
- *  ƒEƒBƒ“ƒhƒE‚Ì‰¡•æ“¾
+ *  ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æ¨ªå¹…å–å¾—
  */
 int
 vivid::
@@ -556,7 +557,7 @@ GetWindowWidth(void)
 }
 
 /*
- *  ƒEƒBƒ“ƒhƒE‚Ìc•æ“¾
+ *  ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç¸¦å¹…å–å¾—
  */
 int
 vivid::
@@ -566,7 +567,7 @@ GetWindowHeight(void)
 }
 
 /*
- *  ƒfƒ‹ƒ^ƒ^ƒCƒ€æ“¾
+ *  ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ å–å¾—
  */
 float
 vivid::
@@ -576,7 +577,7 @@ GetDeltaTime(void)
 }
 
 /*
- *  ƒfƒ‹ƒ^ƒ^ƒCƒ€(”{—¦‚È‚µ)æ“¾
+ *  ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ (å€ç‡ãªã—)å–å¾—
  */
 float
 vivid::
@@ -586,7 +587,7 @@ GetUnscaledDeltaTime(void)
 }
 
 /*
- *  ƒfƒ‹ƒ^ƒ^ƒCƒ€”{—¦æ“¾
+ *  ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ å€ç‡å–å¾—
  */
 float
 vivid::
@@ -596,7 +597,7 @@ GetDeltaTimeScale(void)
 }
 
 /*
- *  ƒfƒ‹ƒ^ƒ^ƒCƒ€”{—¦İ’è
+ *  ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ å€ç‡è¨­å®š
  */
 void
 vivid::
@@ -606,7 +607,7 @@ SetDeltaTimeScale(float scale)
 }
 
 /*
- *  Œ»İ‚ÌFPSæ“¾
+ *  ç¾åœ¨ã®FPSå–å¾—
  */
 float
 vivid::
@@ -616,7 +617,7 @@ GetFPS(void)
 }
 
 /*
- *  ƒtƒŒ[ƒ€ƒŒ[ƒgİ’è
+ *  ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆè¨­å®š
  */
 void
 vivid::
@@ -626,30 +627,30 @@ SetFrameRate(int frame_rate)
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
  */
 void
 vivid::
 LoadTexture(const std::string& file_name)
 {
-    // ƒ[ƒhÏ‚İ‚ÌƒeƒNƒXƒ`ƒƒŒŸõ
+    // ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£æ¤œç´¢
     int texture = FindLoadedTexture(file_name);
 
-    // ƒeƒNƒXƒ`ƒƒ‚ªŒ©‚Â‚©‚Á‚½
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒè¦‹ã¤ã‹ã£ãŸ
     if (texture != VIVID_DX_ERROR)
         return;
 
-    // ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
     texture = LoadGraph(file_name.c_str());
 
-    VIVID_DX_ASSERT(texture, file_name + "‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½B");
+    VIVID_DX_ASSERT(texture, file_name + "ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
 
-    // ƒeƒNƒXƒ`ƒƒ‚ğ“o˜^
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ç™»éŒ²
     g_TextureList.insert(std::map<std::string, int>::value_type(file_name, texture));
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ•`‰æ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£æç”»
  */
 void
 vivid::
@@ -659,27 +660,27 @@ DrawTexture(const std::string& file_name, const Vector2& position)
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ•`‰æ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£æç”»
  */
 void
 vivid::
 DrawTexture(const std::string& file_name, const Vector2& position, unsigned int color)
 {
-    // ƒeƒNƒXƒ`ƒƒ‚ğŒŸõ
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æ¤œç´¢
     int texture = FindLoadedTexture(file_name);
 
-    // ƒeƒNƒXƒ`ƒƒ‚ª‚È‚¢‚¯‚ê‚Îƒ[ƒh‚·‚é
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒãªã„ã‘ã‚Œã°ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
     if (texture == VIVID_DX_ERROR)
     {
         LoadTexture(file_name);
 
-        // ƒ[ƒhÏ‚İ‚ÌƒeƒNƒXƒ`ƒƒ‚ğÄ“xŒŸõ
+        // ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å†åº¦æ¤œç´¢
         texture = FindLoadedTexture(file_name);
     }
 
     int width = 0, height = 0;
 
-    // ƒeƒNƒXƒ`ƒƒ‚ÌƒTƒCƒYæ“¾
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ã‚µã‚¤ã‚ºå–å¾—
     GetGraphSize(texture, &width, &height);
 
     vivid::Rect rect = { 0, 0, width, height };
@@ -688,7 +689,7 @@ DrawTexture(const std::string& file_name, const Vector2& position, unsigned int 
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ•`‰æ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£æç”»
  */
 void
 vivid::
@@ -701,7 +702,7 @@ DrawTexture(const std::string& file_name, const Vector2& position, unsigned int 
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ•`‰æ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£æç”»
  */
 void
 vivid::
@@ -711,7 +712,7 @@ DrawTexture(const std::string& file_name, const Vector2& position, unsigned int 
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ•`‰æ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£æç”»
  */
 void
 vivid::
@@ -723,7 +724,7 @@ DrawTexture(const std::string& file_name, const Vector2& position, unsigned int 
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ•`‰æ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£æç”»
  */
 void
 vivid::
@@ -733,16 +734,16 @@ DrawTexture(const std::string& file_name, const Vector2& position, unsigned int 
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ•`‰æ
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£æç”»
  */
 void
 vivid::
 DrawTexture(const std::string& file_name, const Vector2& position, unsigned int color, const Rect& rect, const Vector2& anchor, const Vector2& scale, float rotation, ALPHABLEND blend_mode)
 {
-    // ƒ[ƒhÏ‚İ‚ÌƒeƒNƒXƒ`ƒƒ‚ğŒŸõ
+    // ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æ¤œç´¢
     int texture = FindLoadedTexture(file_name);
 
-    // ƒeƒNƒXƒ`ƒƒ‚ª‚È‚¯‚ê‚Îƒ[ƒh‚·‚é
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒãªã‘ã‚Œã°ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
     if (texture == VIVID_DX_ERROR)
     {
         LoadTexture(file_name);
@@ -750,71 +751,71 @@ DrawTexture(const std::string& file_name, const Vector2& position, unsigned int 
         texture = FindLoadedTexture(file_name);
     }
 
-    // ŠŠ‚ç‚©‚É•`‰æ
+    // æ»‘ã‚‰ã‹ã«æç”»
     SetDrawMode(DX_DRAWMODE_BILINEAR);
 
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒhİ’è
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰è¨­å®š
     SetDrawBlendMode(static_cast<int>(blend_mode), ((color & 0xff000000) >> 24));
 
-    // ‹P“xİ’è
+    // è¼åº¦è¨­å®š
     SetDrawBright(((color & 0x00ff0000) >> 16), ((color & 0x0000ff00) >> 8), (color & 0x000000ff));
 
-    // •`‰æ
+    // æç”»
     DrawRectRotaGraph3F(position.x + anchor.x, position.y + anchor.y, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, anchor.x, anchor.y, scale.x, scale.y, rotation, texture, TRUE);
 
-    // ‹P“x‚ğƒfƒtƒHƒ‹ƒg‚É–ß‚·
+    // è¼åº¦ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã«æˆ»ã™
     SetDrawBright(0xff, 0xff, 0xff);
 
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒhƒ‚[ƒh‚ğƒfƒtƒHƒ‹ƒg‚É–ß‚·
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã«æˆ»ã™
     SetDrawBlendMode(static_cast<int>(vivid::ALPHABLEND::ALPHA), 0xff);
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ‚Ì•‚ğæ“¾
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å¹…ã‚’å–å¾—
  */
 int
 vivid::
 GetTextureWidth(const std::string& file_name)
 {
-    // ƒeƒNƒXƒ`ƒƒ‚ğŒŸõ
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æ¤œç´¢
     int texture = FindLoadedTexture(file_name);
 
-    // ƒeƒNƒXƒ`ƒƒ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
     if (texture == VIVID_DX_ERROR)
         return 0;
 
     int width = 0, height = 0;
 
-    // ƒOƒ‰ƒtƒBƒbƒNƒTƒCƒYæ“¾
+    // ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚µã‚¤ã‚ºå–å¾—
     GetGraphSize(texture, &width, &height);
 
     return width;
 }
 
 /*
- *  ƒeƒNƒXƒ`ƒƒ‚Ì‚‚³‚ğæ“¾
+ *  ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®é«˜ã•ã‚’å–å¾—
  */
 int
 vivid::
 GetTextureHeight(const std::string& file_name)
 {
-    // ƒeƒNƒXƒ`ƒƒ‚ğŒŸõ
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æ¤œç´¢
     int texture = FindLoadedTexture(file_name);
 
-    // ƒeƒNƒXƒ`ƒƒ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
     if (texture == VIVID_DX_ERROR)
         return 0;
 
     int width = 0, height = 0;
 
-    // ƒOƒ‰ƒtƒBƒbƒNƒTƒCƒYæ“¾
+    // ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚µã‚¤ã‚ºå–å¾—
     GetGraphSize(texture, &width, &height);
 
     return height;
 }
 
 /*
- *  ƒtƒHƒ“ƒg‚Ì¶¬
+ *  ãƒ•ã‚©ãƒ³ãƒˆã®ç”Ÿæˆ
  */
 void
 vivid::
@@ -824,30 +825,30 @@ CreateFont(int size)
 }
 
 /*
- *  ƒtƒHƒ“ƒg‚Ì¶¬
+ *  ãƒ•ã‚©ãƒ³ãƒˆã®ç”Ÿæˆ
  */
 void
 vivid::
 CreateFont(int size, int edge_size)
 {
-    // ƒtƒHƒ“ƒg‚ğŒŸõ
+    // ãƒ•ã‚©ãƒ³ãƒˆã‚’æ¤œç´¢
     int font = FindCreatedFont(size);
 
-    // ƒtƒHƒ“ƒg‚ªŒ©‚Â‚©‚Á‚½
+    // ãƒ•ã‚©ãƒ³ãƒˆãŒè¦‹ã¤ã‹ã£ãŸ
     if (font != VIVID_DX_ERROR)
         return;
 
-    // ƒtƒHƒ“ƒg¶¬
-    font = CreateFontToHandle("ƒƒCƒŠƒI", size, -1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, edge_size);
+    // ãƒ•ã‚©ãƒ³ãƒˆç”Ÿæˆ
+    font = CreateFontToHandle("ãƒ¡ã‚¤ãƒªã‚ª", size, -1, DX_FONTTYPE_ANTIALIASING_EDGE_8X8, -1, edge_size);
 
-    VIVID_DX_ASSERT(font, "ƒtƒHƒ“ƒg‚Ì¶¬‚É¸”s‚µ‚Ü‚µ‚½B");
+    VIVID_DX_ASSERT(font, "ãƒ•ã‚©ãƒ³ãƒˆã®ç”Ÿæˆã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
 
-    // ƒtƒHƒ“ƒg‚ğ“o˜^
+    // ãƒ•ã‚©ãƒ³ãƒˆã‚’ç™»éŒ²
     g_FontList.insert(std::map<int, int>::value_type(size, font));
 }
 
 /*
- *  ƒeƒLƒXƒg•`‰æ
+ *  ãƒ†ã‚­ã‚¹ãƒˆæç”»
  */
 void
 vivid::
@@ -857,7 +858,7 @@ DrawText(int size, const std::string& text, const Vector2& position)
 }
 
 /*
- *  ƒeƒLƒXƒg•`‰æ
+ *  ãƒ†ã‚­ã‚¹ãƒˆæç”»
  */
 void
 vivid::
@@ -867,7 +868,7 @@ DrawText(int size, const std::string& text, const Vector2& position, unsigned in
 }
 
 /*
- *  ƒeƒLƒXƒg•`‰æ
+ *  ãƒ†ã‚­ã‚¹ãƒˆæç”»
  */
 void
 vivid::
@@ -877,7 +878,7 @@ DrawText(int size, const std::string& text, const Vector2& position, unsigned in
 }
 
 /*
- *  ƒeƒLƒXƒg•`‰æ
+ *  ãƒ†ã‚­ã‚¹ãƒˆæç”»
  */
 void
 vivid::
@@ -887,16 +888,16 @@ DrawText(int size, const std::string& text, const Vector2& position, unsigned in
 }
 
 /*
- *  ƒeƒLƒXƒg•`‰æ
+ *  ãƒ†ã‚­ã‚¹ãƒˆæç”»
  */
 void
 vivid::
 DrawText(int size, const std::string& text, const Vector2& position, unsigned int color, unsigned int edge_color, ALPHABLEND blend_mode)
 {
-    // ƒtƒHƒ“ƒg‚ğŒŸõ
+    // ãƒ•ã‚©ãƒ³ãƒˆã‚’æ¤œç´¢
     int font = FindCreatedFont(size);
 
-    // ƒtƒHƒ“ƒg‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
+    // ãƒ•ã‚©ãƒ³ãƒˆãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
     if (font == VIVID_DX_ERROR)
     {
         CreateFont(size);
@@ -904,30 +905,30 @@ DrawText(int size, const std::string& text, const Vector2& position, unsigned in
         font = FindCreatedFont(size);
     }
 
-    // ŠŠ‚ç‚©‚É•`‰æ
+    // æ»‘ã‚‰ã‹ã«æç”»
     SetDrawMode(DX_DRAWMODE_BILINEAR);
 
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒhİ’è
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰è¨­å®š
     SetDrawBlendMode(static_cast<int>(blend_mode), (color & 0xff000000) >> 24);
 
-    // •¶š—ñ•`‰æ
+    // æ–‡å­—åˆ—æç”»
     DrawStringToHandle((int)position.x, (int)position.y, text.c_str(), color, font, edge_color);
 
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒhƒ‚[ƒh‚ğƒfƒtƒHƒ‹ƒg‚É–ß‚·
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã«æˆ»ã™
     SetDrawBlendMode(static_cast<int>(ALPHABLEND::ALPHA), 0xff);
 }
 
 /*
- *  •¶š—ñ‚Ì•‚ğæ“¾
+ *  æ–‡å­—åˆ—ã®å¹…ã‚’å–å¾—
  */
 int
 vivid::
 GetTextWidth(int size, const std::string& text)
 {
-    // ƒtƒHƒ“ƒg‚ğŒŸõ
+    // ãƒ•ã‚©ãƒ³ãƒˆã‚’æ¤œç´¢
     int font = FindCreatedFont(size);
 
-    // ƒtƒHƒ“ƒg‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½
+    // ãƒ•ã‚©ãƒ³ãƒˆãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸ
     if (font == VIVID_DX_ERROR)
         return 0;
 
@@ -935,23 +936,23 @@ GetTextWidth(int size, const std::string& text)
 }
 
 /*
- *  ƒ‰ƒCƒ“‚Ì•`‰æ
+ *  ãƒ©ã‚¤ãƒ³ã®æç”»
  */
 void
 vivid::
 DrawLine(const Vector2& start_pos, const Vector2& end_pos, unsigned int color, float thickness, ALPHABLEND blend_mode)
 {
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒhİ’è
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰è¨­å®š
     SetDrawBlendMode(static_cast<int>(blend_mode), (color & 0xff000000) >> 24);
 
     DxLib::DrawLineAA(start_pos.x, start_pos.y, end_pos.x, end_pos.y, color, thickness);
 
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒhƒ‚[ƒh‚ğƒfƒtƒHƒ‹ƒg‚É–ß‚·
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã«æˆ»ã™
     SetDrawBlendMode(static_cast<int>(ALPHABLEND::ALPHA), 0xff);
 }
 
 /*
- *  ƒ{ƒ^ƒ“”»’è
+ *  ãƒœã‚¿ãƒ³åˆ¤å®š
  */
 bool
 vivid::keyboard::
@@ -961,7 +962,7 @@ Button(vivid::keyboard::KEY_ID key)
 }
 
 /*
- *  ƒgƒŠƒK[”»’è
+ *  ãƒˆãƒªã‚¬ãƒ¼åˆ¤å®š
  */
 bool
 vivid::keyboard::
@@ -971,7 +972,7 @@ Trigger(vivid::keyboard::KEY_ID key)
 }
 
 /*
- *  ƒŠƒŠ[ƒX”»’è
+ *  ãƒªãƒªãƒ¼ã‚¹åˆ¤å®š
  */
 bool
 vivid::keyboard::
@@ -981,7 +982,7 @@ Released(vivid::keyboard::KEY_ID key)
 }
 
 /*
- *  ƒ{ƒ^ƒ“”»’è
+ *  ãƒœã‚¿ãƒ³åˆ¤å®š
  */
 bool
 vivid::mouse::
@@ -991,7 +992,7 @@ Button(vivid::mouse::BUTTON_ID button)
 }
 
 /*
- *  ƒgƒŠƒK[”»’è
+ *  ãƒˆãƒªã‚¬ãƒ¼åˆ¤å®š
  */
 bool
 vivid::mouse::
@@ -1001,7 +1002,7 @@ Trigger(vivid::mouse::BUTTON_ID button)
 }
 
 /*
- *  ƒŠƒŠ[ƒX”»’è
+ *  ãƒªãƒªãƒ¼ã‚¹åˆ¤å®š
  */
 bool
 vivid::mouse::
@@ -1011,7 +1012,7 @@ Released(vivid::mouse::BUTTON_ID button)
 }
 
 /*
- *  ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌˆÊ’uæ“¾
+ *  ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®å–å¾—
  */
 vivid::Point
 vivid::mouse::
@@ -1019,14 +1020,14 @@ GetCursorPos(void)
 {
     vivid::Point t;
 
-    // ƒJ[ƒ\ƒ‹ˆÊ’uæ“¾
+    // ã‚«ãƒ¼ã‚½ãƒ«ä½ç½®å–å¾—
     GetMousePoint(&t.x, &t.y);
 
     return t;
 }
 
 /*
- *  ƒ}ƒEƒXƒzƒC[ƒ‹’læ“¾
+ *  ãƒã‚¦ã‚¹ãƒ›ã‚¤ãƒ¼ãƒ«å€¤å–å¾—
  */
 int
 vivid::mouse::
@@ -1036,7 +1037,7 @@ GetWheel(void)
 }
 
 /*
- *  ƒ{ƒ^ƒ“”»’è
+ *  ãƒœã‚¿ãƒ³åˆ¤å®š
  */
 bool
 vivid::controller::
@@ -1046,7 +1047,7 @@ Button(vivid::controller::DEVICE_ID device, vivid::controller::BUTTON_ID button)
 }
 
 /*
- *  ƒgƒŠƒK[”»’è
+ *  ãƒˆãƒªã‚¬ãƒ¼åˆ¤å®š
  */
 bool
 vivid::controller::
@@ -1056,7 +1057,7 @@ Trigger(vivid::controller::DEVICE_ID device, vivid::controller::BUTTON_ID button
 }
 
 /*
- *  ƒŠƒŠ[ƒX”»’è
+ *  ãƒªãƒªãƒ¼ã‚¹åˆ¤å®š
  */
 bool
 vivid::controller::
@@ -1066,7 +1067,7 @@ Released(vivid::controller::DEVICE_ID device, vivid::controller::BUTTON_ID butto
 }
 
 /*
- *  ¶ƒAƒiƒƒOƒXƒeƒBƒbƒNæ“¾
+ *  å·¦ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯å–å¾—
  */
 vivid::Vector2
 vivid::controller::
@@ -1088,12 +1089,12 @@ GetAnalogStickLeft(vivid::controller::DEVICE_ID device)
     else if (y > 0.0f)
         ay = min((float)y, g_limit_cant_analog);
 
-    // Y²‚¾‚¯‚ğ”½“]
+    // Yè»¸ã ã‘ã‚’åè»¢
     return vivid::Vector2(ax, -ay) * ( 1.0f / (float)g_limit_cant_analog );
 }
 
 /*
- *  ‰EƒAƒiƒƒOƒXƒeƒBƒbƒNæ“¾
+ *  å³ã‚¢ãƒŠãƒ­ã‚°ã‚¹ãƒ†ã‚£ãƒƒã‚¯å–å¾—
  */
 vivid::Vector2
 vivid::controller::
@@ -1115,12 +1116,12 @@ GetAnalogStickRight(vivid::controller::DEVICE_ID device)
     else if (y > 0.0f)
         ay = min((float)y, g_limit_cant_analog);
 
-    // Y²‚¾‚¯‚ğ”½“]
+    // Yè»¸ã ã‘ã‚’åè»¢
     return vivid::Vector2(ax, -ay) * (1.0f / (float)g_limit_cant_analog);
 }
 
 /*
- *  ¶ƒgƒŠƒK[æ“¾
+ *  å·¦ãƒˆãƒªã‚¬ãƒ¼å–å¾—
  */
 float
 vivid::controller::
@@ -1130,7 +1131,7 @@ GetTriggerLeft(vivid::controller::DEVICE_ID device)
 }
 
 /*
- *  ‰EƒgƒŠƒK[æ“¾
+ *  å³ãƒˆãƒªã‚¬ãƒ¼å–å¾—
  */
 float
 vivid::controller::
@@ -1140,7 +1141,7 @@ GetTriggerRight(vivid::controller::DEVICE_ID device)
 }
 
 /*
- *  ƒoƒCƒuƒŒ[ƒVƒ‡ƒ“‚ÌŠJn
+ *  ãƒã‚¤ãƒ–ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã®é–‹å§‹
  */
 void
 vivid::controller::
@@ -1150,7 +1151,7 @@ StartVibration(vivid::controller::DEVICE_ID device, int power, float time)
 }
 
 /*
- *  Ú‘±”æ“¾
+ *  æ¥ç¶šæ•°å–å¾—
  */
 int
 vivid::controller::
@@ -1160,36 +1161,36 @@ GetConnectCount(void)
 }
 
 /*
- *  ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+ *  ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
  */
 void
 vivid::
 LoadSound(const std::string& file_name)
 {
-    // ƒ[ƒhÏ‚İ‚ÌƒTƒEƒ“ƒhŒŸõ
+    // ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ã‚µã‚¦ãƒ³ãƒ‰æ¤œç´¢
     int sound = FindLoadedSound(file_name);
 
-    // ƒTƒEƒ“ƒh‚ªŒ©‚Â‚©‚Á‚½
+    // ã‚µã‚¦ãƒ³ãƒ‰ãŒè¦‹ã¤ã‹ã£ãŸ
     if (sound != VIVID_DX_ERROR)
         return;
 
-    // ƒTƒEƒ“ƒh‚Ì“Ç‚İ‚İ
+    // ã‚µã‚¦ãƒ³ãƒ‰ã®èª­ã¿è¾¼ã¿
     sound = LoadSoundMem(file_name.c_str());
 
-    VIVID_DX_ASSERT(sound, file_name + "‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½B");
+    VIVID_DX_ASSERT(sound, file_name + "ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
 
-    // ƒTƒEƒ“ƒh‚ğ“o˜^
+    // ã‚µã‚¦ãƒ³ãƒ‰ã‚’ç™»éŒ²
     g_SoundList.insert(std::map<std::string, int>::value_type(file_name, sound));
 }
 
 /*
- *  ƒTƒEƒ“ƒhÄ¶
+ *  ã‚µã‚¦ãƒ³ãƒ‰å†ç”Ÿ
  */
 void
 vivid::
 PlaySound(const std::string& file_name, bool loop)
 {
-    // ƒ[ƒhÏ‚İ‚ÌƒTƒEƒ“ƒhŒŸõ
+    // ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ã‚µã‚¦ãƒ³ãƒ‰æ¤œç´¢
     int sound = FindLoadedSound(file_name);
 
     if (sound == VIVID_DX_ERROR)
@@ -1198,14 +1199,30 @@ PlaySound(const std::string& file_name, bool loop)
     PlaySoundMem(sound, (loop ? DX_PLAYTYPE_LOOP : DX_PLAYTYPE_BACK));
 }
 
+void
+vivid::
+PlaySound(const std::string& file_name, bool loop, int volume)
+{
+    // ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ã‚µã‚¦ãƒ³ãƒ‰æ¤œç´¢
+        int sound = FindLoadedSound(file_name);
+
+    if (sound == VIVID_DX_ERROR)
+        return;
+
+    ChangeVolumeSoundMem(volume, sound);
+
+
+    PlaySoundMem(sound, (loop ? DX_PLAYTYPE_LOOP : DX_PLAYTYPE_BACK));
+}
+
 /*
- *  ƒTƒEƒ“ƒh’â~
+ *  ã‚µã‚¦ãƒ³ãƒ‰åœæ­¢
  */
 void
 vivid::
 StopSound(const std::string& file_name)
 {
-    // ƒ[ƒhÏ‚İ‚ÌƒTƒEƒ“ƒhŒŸõ
+    // ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ã‚µã‚¦ãƒ³ãƒ‰æ¤œç´¢
     int sound = FindLoadedSound(file_name);
 
     if (sound == VIVID_DX_ERROR)
@@ -1215,24 +1232,24 @@ StopSound(const std::string& file_name)
 }
 
 /*
- *  XV‚·‚éƒtƒŒ[ƒ€ƒJƒEƒ“ƒg‚ÌŒvZ
+ *  æ›´æ–°ã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆã®è¨ˆç®—
  */
 void
 vivid::core::
 CalcFrameCount(void)
 {
-    // Œ»İ‚ÌŠÔ‚ğæ“¾
+    // ç¾åœ¨ã®æ™‚é–“ã‚’å–å¾—
     int now_time = GetNowCount();
 
-    // ŒvZŠJn
+    // è¨ˆç®—é–‹å§‹æ™‚
     if (g_FrameCount == 0)
     {
         g_StartTime = now_time;
     }
-    // w’è‚³‚ê‚½ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
+    // æŒ‡å®šã•ã‚ŒãŸãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆæ™‚
     else if (g_FrameCount == g_calc_frame_count)
     {
-        // ƒtƒŒ[ƒ€‚Ì•½‹Ï‚ğZo‚µ‚ÄFPS‚ğ‹‚ß‚é
+        // ãƒ•ãƒ¬ãƒ¼ãƒ ã®å¹³å‡ã‚’ç®—å‡ºã—ã¦FPSã‚’æ±‚ã‚ã‚‹
         g_Fps = g_one_millisecond / ((now_time - g_StartTime) / (float)g_calc_frame_count);
 
         g_FrameCount = 0;
@@ -1240,43 +1257,43 @@ CalcFrameCount(void)
         g_StartTime = now_time;
     }
 
-    // ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg‚ğXV
+    // ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆã‚’æ›´æ–°
     ++g_FrameCount;
 
-    // ‘O‚Ìˆ—‚Æ‚ÌŠÔ‚Ì·
+    // å‰ã®å‡¦ç†ã¨ã®æ™‚é–“ã®å·®
     int sub_time = now_time - g_PrevTime;
 
-    // ƒfƒ‹ƒ^ƒ^ƒCƒ€‚ğZo
+    // ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ ã‚’ç®—å‡º
     g_DeltaTime = (float)sub_time / g_one_millisecond;
 
-    // Å‘åƒfƒ‹ƒ^ƒ^ƒCƒ€‚Å§ŒÀ‚·‚é
+    // æœ€å¤§ãƒ‡ãƒ«ã‚¿ã‚¿ã‚¤ãƒ ã§åˆ¶é™ã™ã‚‹
     if (g_DeltaTime > g_max_delta_time)
         g_DeltaTime = g_max_delta_time;
 
-    // ¡‚ÌŠÔ‚ğ•Û‘¶
+    // ä»Šã®æ™‚é–“ã‚’ä¿å­˜
     g_PrevTime = now_time;
 }
 
 /*
- *  XVƒtƒŒ[ƒ€‚Ì‘Ò‹@ˆ—
+ *  æ›´æ–°ãƒ•ãƒ¬ãƒ¼ãƒ ã®å¾…æ©Ÿå‡¦ç†
  */
 void
 vivid::core::
 FrameSync(void)
 {
-    // ¡‚ÆƒtƒŒ[ƒ€Œv‘ªŠJn‚Ì·‚ğZo
+    // ä»Šã¨ãƒ•ãƒ¬ãƒ¼ãƒ è¨ˆæ¸¬é–‹å§‹æ™‚ã®å·®ã‚’ç®—å‡º
     int tookTime = GetNowCount() - g_StartTime;
 
-    // ‘Ò‹@ŠÔ‚ğZo
+    // å¾…æ©Ÿæ™‚é–“ã‚’ç®—å‡º
     int waitTime = g_FrameCount * (int)g_one_millisecond / g_FrameRate - tookTime;
 
-    // ‘Ò‹@ŠÔ‚ª‚ ‚ê‚Î‚»‚Ì•ª‘Ò‚Á‚Ä“¯Šú‚·‚é
+    // å¾…æ©Ÿæ™‚é–“ãŒã‚ã‚Œã°ãã®åˆ†å¾…ã£ã¦åŒæœŸã™ã‚‹
     if (waitTime > 0)
         WaitTimer(waitTime);
 }
 
 /*
- *  ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚ÌB‰e
+ *  ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆã®æ’®å½±
  */
 void
 vivid::core::
@@ -1284,27 +1301,27 @@ ScreenShot(void)
 {
     DATEDATA dd;
 
-    // Œ»İ‚ÌŠÔæ“¾
+    // ç¾åœ¨ã®æ™‚é–“å–å¾—
     GetDateTime(&dd);
 
-    // ƒtƒHƒ‹ƒ_‚Ì—L–³ƒ`ƒFƒbƒN
-    // ‚È‚¯‚ê‚Îì¬
+    // ãƒ•ã‚©ãƒ«ãƒ€ã®æœ‰ç„¡ãƒã‚§ãƒƒã‚¯
+    // ãªã‘ã‚Œã°ä½œæˆ
     if (!PathIsDirectory("capture"))
         CreateDirectory("capture", NULL);
 
-    // “ú•t‚ğƒtƒ@ƒCƒ‹–¼‚É‚·‚é
+    // æ—¥ä»˜ã‚’ãƒ•ã‚¡ã‚¤ãƒ«åã«ã™ã‚‹
     std::string file_name = "capture\\";
 
     file_name += std::to_string(dd.Year) + std::to_string(dd.Mon) + std::to_string(dd.Day) + "_";
 
     file_name += std::to_string(dd.Hour) + std::to_string(dd.Min) + std::to_string(dd.Sec) + ".bmp";
 
-    // ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚Ì‘‚«o‚µ
+    // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆã®æ›¸ãå‡ºã—
     SaveDrawScreenToBMP(0, 0, g_window_width, g_window_height, file_name.c_str());
 }
 
 /*
- *  ƒAƒT[ƒgˆ—
+ *  ã‚¢ã‚µãƒ¼ãƒˆå‡¦ç†
  */
 void
 vivid::core::
@@ -1312,41 +1329,41 @@ Assert(bool result, const std::string& message, const std::string& file, int lin
 {
     if (result) return;
 
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒhİ’è
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰è¨­å®š
     SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0xee);
 
-    // ”wŒi•`‰æ
+    // èƒŒæ™¯æç”»
     DrawBox(0, 0, g_window_width, g_window_height, 0xff000000, TRUE);
 
-    // ƒAƒ‹ƒtƒ@ƒuƒŒƒ“ƒh‚ğ–ß‚·
+    // ã‚¢ãƒ«ãƒ•ã‚¡ãƒ–ãƒ¬ãƒ³ãƒ‰ã‚’æˆ»ã™
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-    // •`‰æƒƒbƒZ[ƒW‚Ìì¬
+    // æç”»ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ä½œæˆ
     std::string t = "[ASSERT] " + message + "\n[ FILE ] " + file.substr(file.rfind("\\") + 1) + "\n[ LINE ] " + std::to_string(line);
 
-    // ƒGƒ‰[ƒƒbƒZ[ƒW‚Ì•`‰æ
+    // ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®æç”»
     DrawString(0, 0, t.c_str(), 0xff00ff00, 0xff004000);
 
-    // ‰æ–Ê‚ğXV
+    // ç”»é¢ã‚’æ›´æ–°
     ScreenFlip();
 
-    // ƒƒbƒZ[ƒW‚ğŒŸ’m
+    // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’æ¤œçŸ¥
     while (ProcessMessage() != VIVID_DX_ERROR)
     {
-        // EscƒL[‚ÅI—¹
+        // Escã‚­ãƒ¼ã§çµ‚äº†
         if (CheckHitKey(KEY_INPUT_ESCAPE) == TRUE)
             break;
     }
 
-    // ƒ‰ƒCƒuƒ‰ƒŠ‚Ì‰ğ•ú
+    // ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®è§£æ”¾
     Finalize();
 
-    // ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌI—¹
+    // ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®çµ‚äº†
     exit(-1);
 }
 
 /*
- *  ƒ[ƒhÏ‚İ‚ÌƒeƒNƒXƒ`ƒƒŒŸõ
+ *  ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£æ¤œç´¢
  */
 int
 vivid::core::
@@ -1354,7 +1371,7 @@ FindLoadedTexture(const std::string& file_name)
 {
     int  texture = VIVID_UNUSED_HANDLE;
 
-    // ƒeƒNƒXƒ`ƒƒƒŠƒXƒg‚ª‹ó‚Å‚È‚¢
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒªã‚¹ãƒˆãŒç©ºã§ãªã„
     if (!g_TextureList.empty())
     {
         std::map<std::string, int>::iterator it = g_TextureList.begin();
@@ -1362,10 +1379,10 @@ FindLoadedTexture(const std::string& file_name)
 
         for (; it != end; ++it)
         {
-            // ˆê’v‚·‚éƒtƒ@ƒCƒ‹–¼‚ª‚ ‚é‚©ŒŸõ
+            // ä¸€è‡´ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åãŒã‚ã‚‹ã‹æ¤œç´¢
             if (it->first == file_name)
             {
-                // “¯‚¶‚à‚Ì‚ª‚ ‚ê‚Î“Ç‚İ‚İÏ‚İ‚ÌƒeƒNƒXƒ`ƒƒ‚ğ“o˜^
+                // åŒã˜ã‚‚ã®ãŒã‚ã‚Œã°èª­ã¿è¾¼ã¿æ¸ˆã¿ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ç™»éŒ²
                 texture = it->second;
 
                 break;
@@ -1377,7 +1394,7 @@ FindLoadedTexture(const std::string& file_name)
 }
 
 /*
- *  ƒ[ƒhÏ‚İ‚ÌƒTƒEƒ“ƒhŒŸõ
+ *  ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã®ã‚µã‚¦ãƒ³ãƒ‰æ¤œç´¢
  */
 int
 vivid::core::
@@ -1385,7 +1402,7 @@ FindLoadedSound(const std::string& file_name)
 {
     int sound = VIVID_UNUSED_HANDLE;
 
-    // ƒTƒEƒ“ƒhƒŠƒXƒg‚ª‹ó‚Å‚È‚¢
+    // ã‚µã‚¦ãƒ³ãƒ‰ãƒªã‚¹ãƒˆãŒç©ºã§ãªã„
     if (!g_SoundList.empty())
     {
         std::map<std::string, int>::iterator it = g_SoundList.begin();
@@ -1393,10 +1410,10 @@ FindLoadedSound(const std::string& file_name)
 
         for (; it != end; ++it)
         {
-            // ˆê’v‚·‚éƒtƒ@ƒCƒ‹–¼‚ª‚ ‚é‚©ŒŸõ
+            // ä¸€è‡´ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åãŒã‚ã‚‹ã‹æ¤œç´¢
             if (it->first == file_name)
             {
-                // “¯‚¶‚à‚Ì‚ª‚ ‚ê‚Î“Ç‚İ‚İÏ‚İ‚ÌƒTƒEƒ“ƒh‚ğ“o˜^
+                // åŒã˜ã‚‚ã®ãŒã‚ã‚Œã°èª­ã¿è¾¼ã¿æ¸ˆã¿ã®ã‚µã‚¦ãƒ³ãƒ‰ã‚’ç™»éŒ²
                 sound = it->second;
 
                 break;
@@ -1408,7 +1425,7 @@ FindLoadedSound(const std::string& file_name)
 }
 
 /*
- *  ¶¬Ï‚İ‚ÌƒtƒHƒ“ƒgŒŸõ
+ *  ç”Ÿæˆæ¸ˆã¿ã®ãƒ•ã‚©ãƒ³ãƒˆæ¤œç´¢
  */
 int
 vivid::core::
@@ -1416,7 +1433,7 @@ FindCreatedFont(int size)
 {
     int font = VIVID_UNUSED_HANDLE;
 
-    // ƒtƒHƒ“ƒgƒŠƒXƒg‚ª‹ó‚Å‚È‚¢
+    // ãƒ•ã‚©ãƒ³ãƒˆãƒªã‚¹ãƒˆãŒç©ºã§ãªã„
     if (!g_FontList.empty())
     {
         std::map<int, int>::iterator it = g_FontList.begin();
@@ -1424,10 +1441,10 @@ FindCreatedFont(int size)
 
         for (; it != end; ++it)
         {
-            // ˆê’v‚·‚éƒtƒHƒ“ƒg‚ª‚ ‚é‚©ŒŸõ
+            // ä¸€è‡´ã™ã‚‹ãƒ•ã‚©ãƒ³ãƒˆãŒã‚ã‚‹ã‹æ¤œç´¢
             if (it->first == size)
             {
-                // “¯‚¶‚à‚Ì‚ª‚ ‚ê‚Î¶¬Ï‚İ‚ÌƒtƒHƒ“ƒg‚ğ“o˜^
+                // åŒã˜ã‚‚ã®ãŒã‚ã‚Œã°ç”Ÿæˆæ¸ˆã¿ã®ãƒ•ã‚©ãƒ³ãƒˆã‚’ç™»éŒ²
                 font = it->second;
 
                 break;
@@ -1438,12 +1455,12 @@ FindCreatedFont(int size)
     return font;
 }
 /*!
- *  @brief      vivid–¼‘O‹óŠÔ
+ *  @brief      vividåå‰ç©ºé–“
  */
 namespace vivid
 {
     /*!
-     *  @brief      vivid::effekseer–¼‘O‹óŠÔ
+     *  @brief      vivid::effekseeråå‰ç©ºé–“
      */
     namespace effekseer
     {
@@ -1451,64 +1468,64 @@ namespace vivid
     }
 }
 /*
- *  ƒGƒtƒFƒNƒVƒAƒ‰ƒCƒuƒ‰ƒŠ‚Ì‰Šú‰»
+ *  ã‚¨ãƒ•ã‚§ã‚¯ã‚·ã‚¢ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®åˆæœŸåŒ–
  *  s.kosugi
  */
 int vivid::effekseer::InitEffekseer(void)
 {
-    // Effekseer‚ğ‰Šú‰»‚·‚éB
-    // ˆø”‚É‚Í‰æ–Ê‚É•\¦‚·‚éÅ‘åƒp[ƒeƒBƒNƒ‹”‚ğİ’è‚·‚éB
+    // Effekseerã‚’åˆæœŸåŒ–ã™ã‚‹ã€‚
+    // å¼•æ•°ã«ã¯ç”»é¢ã«è¡¨ç¤ºã™ã‚‹æœ€å¤§ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ•°ã‚’è¨­å®šã™ã‚‹ã€‚
     if (Effkseer_Init(8000) == -1)
     {
         return -1;
     }
 
-    // ƒtƒ‹ƒXƒNƒŠ[ƒ“ƒEƒCƒ“ƒhƒE‚ÌØ‚è‘Ö‚¦‚ÅƒŠƒ\[ƒX‚ªÁ‚¦‚é‚Ì‚ğ–h‚®B
-    // Effekseer‚ğg—p‚·‚éê‡‚Í•K‚¸İ’è‚·‚éB
+    // ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®åˆ‡ã‚Šæ›¿ãˆã§ãƒªã‚½ãƒ¼ã‚¹ãŒæ¶ˆãˆã‚‹ã®ã‚’é˜²ãã€‚
+    // Effekseerã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯å¿…ãšè¨­å®šã™ã‚‹ã€‚
     SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
 
-    // DXƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒfƒoƒCƒXƒƒXƒg‚µ‚½‚ÌƒR[ƒ‹ƒoƒbƒN‚ğİ’è‚·‚éB
-    // ƒEƒCƒ“ƒhƒE‚Æƒtƒ‹ƒXƒNƒŠ[ƒ“‚ÌØ‚è‘Ö‚¦‚ª”­¶‚·‚éê‡‚Í•K‚¸Às‚·‚éB
-    // ‚½‚¾‚µADirectX11‚ğg—p‚·‚éê‡‚ÍÀs‚·‚é•K—v‚Í‚È‚¢B
+    // DXãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ãƒ‡ãƒã‚¤ã‚¹ãƒ­ã‚¹ãƒˆã—ãŸæ™‚ã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã‚’è¨­å®šã™ã‚‹ã€‚
+    // ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã¨ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆãŒç™ºç”Ÿã™ã‚‹å ´åˆã¯å¿…ãšå®Ÿè¡Œã™ã‚‹ã€‚
+    // ãŸã ã—ã€DirectX11ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯å®Ÿè¡Œã™ã‚‹å¿…è¦ã¯ãªã„ã€‚
     Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
-    // Effekseer‚É2D•`‰æ‚Ìİ’è‚ğ‚·‚éB
+    // Effekseerã«2Dæç”»ã®è¨­å®šã‚’ã™ã‚‹ã€‚
     Effekseer_Set2DSetting(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    // Zƒoƒbƒtƒ@‚ğ—LŒø‚É‚·‚éB
-    // Effekseer‚ğg—p‚·‚éê‡A2DƒQ[ƒ€‚Å‚àZƒoƒbƒtƒ@‚ğg—p‚·‚éB
+    // Zãƒãƒƒãƒ•ã‚¡ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã€‚
+    // Effekseerã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã€2Dã‚²ãƒ¼ãƒ ã§ã‚‚Zãƒãƒƒãƒ•ã‚¡ã‚’ä½¿ç”¨ã™ã‚‹ã€‚
     SetUseZBuffer3D(TRUE);
 
-    // Zƒoƒbƒtƒ@‚Ö‚Ì‘‚«‚İ‚ğ—LŒø‚É‚·‚éB
-    // Effekseer‚ğg—p‚·‚éê‡A2DƒQ[ƒ€‚Å‚àZƒoƒbƒtƒ@‚ğg—p‚·‚éB
+    // Zãƒãƒƒãƒ•ã‚¡ã¸ã®æ›¸ãè¾¼ã¿ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã€‚
+    // Effekseerã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã€2Dã‚²ãƒ¼ãƒ ã§ã‚‚Zãƒãƒƒãƒ•ã‚¡ã‚’ä½¿ç”¨ã™ã‚‹ã€‚
     SetWriteZBuffer3D(TRUE);
 
     return 0;
 }
 
 /*
- *  ƒGƒtƒFƒNƒg“Ç‚İ‚İ
+ *  ã‚¨ãƒ•ã‚§ã‚¯ãƒˆèª­ã¿è¾¼ã¿
  *  s.kosugi
  */
 int vivid::effekseer::LoadEffect(const std::string& file_name)
 {
-    // “Ç‚İ‚İÏ‚İ
+    // èª­ã¿è¾¼ã¿æ¸ˆã¿
     if (g_EffekseerList.end() != g_EffekseerList.find(file_name))
         return 0;
 
     int handle = LoadEffekseerEffect(file_name.c_str());
 
-    // “Ç‚İ‚İ¸”s
+    // èª­ã¿è¾¼ã¿å¤±æ•—
     if (-1 == handle) return -1;
 
-    // “Ç‚İ‚İÏ‚İƒŠƒXƒg‚É’Ç‰Á
+    // èª­ã¿è¾¼ã¿æ¸ˆã¿ãƒªã‚¹ãƒˆã«è¿½åŠ 
     g_EffekseerList[file_name] = handle;
 
     return 0;
 }
 
 /*
- *  ƒGƒtƒFƒNƒgÄ¶ŠJn
+ *  ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿé–‹å§‹
  *  s.kosugi
  */
 int vivid::effekseer::StartEffect(const std::string& file_name, const vivid::Vector2& pos)
@@ -1516,38 +1533,38 @@ int vivid::effekseer::StartEffect(const std::string& file_name, const vivid::Vec
     return StartEffect(file_name,pos, g_DefaultEffectScale);
 }
 /*
- *  ƒGƒtƒFƒNƒgÄ¶ŠJn
+ *  ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿé–‹å§‹
  *  s.kosugi
  */
 int vivid::effekseer::StartEffect(const std::string& file_name, const vivid::Vector2& pos,const float scale)
 {
-    // ƒGƒtƒFƒNƒg“Ç‚İ‚İ
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆèª­ã¿è¾¼ã¿
     if (-1 == LoadEffect(file_name))
         return -1;
     int PlayHandle = PlayEffekseer2DEffect(g_EffekseerList[file_name]);
 
-    // ƒGƒtƒFƒNƒg‚ÌŠg‘å—¦‚ğw’è
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æ‹¡å¤§ç‡ã‚’æŒ‡å®š
     SetScalePlayingEffekseer2DEffect(PlayHandle, scale, scale, scale);
 
     PLAYEFFECT_DATA effect;
     effect.handle = PlayHandle;
     effect.pos = pos;
-    // ƒGƒtƒFƒNƒgÄ¶ƒŠƒXƒg‚É’Ç‰Á
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿãƒªã‚¹ãƒˆã«è¿½åŠ 
     g_EffectPlayList.push_back(effect);
 
     return PlayHandle;
 }
 /*
- *  ƒGƒtƒFƒNƒg•`‰æ
+ *  ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæç”»
  *  s.kosugi
  */
 bool vivid::effekseer::DrawEffect(const int handle, const vivid::Vector2& pos)
 {
     if (IsEffekseer2DEffectPlaying(handle)) return false;
 
-    // ƒGƒtƒFƒNƒg‚ÌˆÊ’u‚ğ•ÏX‚·‚é
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ä½ç½®ã‚’å¤‰æ›´ã™ã‚‹
     SetPosPlayingEffekseer2DEffect(handle, pos.x, pos.y, 0.0f);
-    // ƒGƒtƒFƒNƒg‚ğ•`‰æ‚·‚é
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’æç”»ã™ã‚‹
     DrawEffekseer2D_Begin();
     DrawEffekseer2D_Draw(handle);
     DrawEffekseer2D_End();
@@ -1555,7 +1572,7 @@ bool vivid::effekseer::DrawEffect(const int handle, const vivid::Vector2& pos)
     return true;
 }
 /*
- *  ƒGƒtƒFƒNƒgÄ¶I—¹ƒ`ƒFƒbƒN
+ *  ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿçµ‚äº†ãƒã‚§ãƒƒã‚¯
  *  s.kosugi
  */
 bool vivid::effekseer::IsEffectPlaying(const int handle)
@@ -1564,7 +1581,7 @@ bool vivid::effekseer::IsEffectPlaying(const int handle)
     return true;
 }
 /*
- *  Ä¶ƒŠƒXƒg‚©‚çƒGƒtƒFƒNƒg‘S•`‰æ
+ *  å†ç”Ÿãƒªã‚¹ãƒˆã‹ã‚‰ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå…¨æç”»
  *  s.kosugi
  */
 void vivid::effekseer::DrawEffectList(void)
@@ -1577,7 +1594,7 @@ void vivid::effekseer::DrawEffectList(void)
         PLAYEFFECT_DATA effect = (PLAYEFFECT_DATA)(*it);
         if (!DrawEffect(effect.handle, effect.pos))
         {
-            // ƒGƒtƒFƒNƒgÄ¶I—¹Ï‚İ‚Ì‚½‚ßíœ
+            // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿçµ‚äº†æ¸ˆã¿ã®ãŸã‚å‰Šé™¤
             it = g_EffectPlayList.erase(it);
             continue;
         }
@@ -1585,7 +1602,7 @@ void vivid::effekseer::DrawEffectList(void)
     }
 }
 /*
-*  ƒGƒtƒFƒNƒgƒŠƒXƒg‚©‚ç‘S•`‰æ‚ğ‚·‚é‚©‚Ç‚¤‚©
+*  ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãƒªã‚¹ãƒˆã‹ã‚‰å…¨æç”»ã‚’ã™ã‚‹ã‹ã©ã†ã‹
 *  s.kosugi
 */
 void vivid::effekseer::SetUseEffectListFlag(bool flag)
