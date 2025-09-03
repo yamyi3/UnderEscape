@@ -1,6 +1,6 @@
 #pragma once
 #include "vivid.h"
-#include "enemy_status_id.h"
+#include "enemy_id.h"
 
 class Enemy
 {
@@ -49,7 +49,7 @@ private:
 	static const int e_visibility_height_size;
 
 	static const int e_width_size;					//エネミーの横のドット数
-	static const int e_height_size;                 //エネミーの縦;;;;のドット数
+	static const int e_height_size;                 //エネミーの縦のドット数
 
 	static const int mark_width_size;		//!の横のドット数
 	static const int mark_height_size;		//!の縦のドット数
