@@ -387,7 +387,7 @@ void Character::ControllerControl(void)
 		chara_state = CHARA_STATE::WAIT;
 
 	//Aボタンを長押しでダッシュする
-	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A))
+	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::RIGHT_SHOULDER))
 	{
 		ch_speed = dash_speed;
 		if (m_LandingFlag)
@@ -861,7 +861,7 @@ void Character::StaminaDraw(void)
 	namespace controller = vivid::controller;
 
 	//ダッシュボタンを押している間は描画フラグをtrueにして描画カウンタをリセットする
-	if ((keyboard::Button(keyboard::KEY_ID::LSHIFT)) || (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A)))
+	if ((keyboard::Button(keyboard::KEY_ID::LSHIFT)) || (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::RIGHT_SHOULDER)))
 	{
 		c_stamina_draw = true;
 		c_stamina_draw_count = 0;
