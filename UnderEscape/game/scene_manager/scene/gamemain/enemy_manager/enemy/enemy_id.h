@@ -1,4 +1,9 @@
 #pragma once
+enum class ENEMY_ID
+{
+	SPIDER_ROBO,
+	CREATURE,
+};
 enum class eSTATUS									//エネミーの状態の種類
 {
 	Stop,		//停止
