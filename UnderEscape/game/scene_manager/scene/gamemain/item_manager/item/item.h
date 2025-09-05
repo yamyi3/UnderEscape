@@ -7,7 +7,7 @@ class Item
 {
 public:
     // コンストラクタ 
-    Item(ITEM_ID id,ITEM_STATE state, float width, float heght,float radius);
+    Item(ITEM_ID id, ITEM_STATE state, float width, float heght, float radius);
 
     // デストラクタ 
     virtual ~Item(void);
@@ -15,7 +15,7 @@ public:
     // 初期化 
     virtual void    Initialize(const vivid::Vector2& position);
     // 更新 
-    virtual void    Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight,bool check);
+    virtual void    Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight, bool check, bool priority);
 
     // 描画 
     virtual void    Draw(void);
@@ -23,8 +23,8 @@ public:
     // 解放 
     virtual void    Finalize(void);
 
-	// アイテムの保持
-    void CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight,bool check);
+    // アイテムの保持
+    void CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight, bool check, bool priority);
 
     // 位置の取得 
     vivid::Vector2  GetPosition(void);
@@ -70,28 +70,30 @@ public:
     //アイテムの当たり判定
     void WallCheck();
 
-	//アイテムの効果が有効かどうかを取得
-   bool GetItemActive() { return m_Active; }
-	
-   //アイテムの効果範囲を取得
-   float GetEffectiveArea(ITEM_ID);
-    
-   ITEM_STATE GetItemState() { return m_ItemState; }
+    //アイテムの効果が有効かどうかを取得
+    bool GetItemActive() { return m_Active; }
+
+    //アイテムの効果範囲を取得
+    float GetEffectiveArea() { return m_Area; }
+
+    ITEM_STATE GetItemState() { return m_ItemState; }
     //アイテムのIDを取得
-	ITEM_ID GetItemID() { return m_GetItemID; } 
+    ITEM_ID GetItemID() { return m_GetItemID; }
 
-	ITEM_STATE GetState() { return m_ItemState; }
+    ITEM_STATE GetState() { return m_ItemState; }
 
-	bool GetCatchFlg() { return catchFlg; }
+    bool GetCatchFlg() { return catchFlg; }
 
     bool IsActive() const { return m_ActiveFlag; }
 
     void Destroy() { m_ActiveFlag = false; }
+
+    float GetPriority() const { return item_priority; }
 protected:
 
     //プレイヤーが持っている状態の処理
     virtual void GetMove(vivid::Vector2 cPos, float cWidth, float cHeight);
- 
+
     //プレイヤーが投げた後の処理(マウス）
     virtual void UseMove(vivid::Vector2);
 
@@ -104,26 +106,32 @@ protected:
     vivid::Vector2              m_Velocity;         //!< 速度 
     unsigned int                m_Color;            //!< 色 
     vivid::Vector2              m_Anchor;           //!< 基準点 
+    vivid::Rect                 m_Effect_Rect;      //!< アイテム効果範囲表示 
+    vivid::Vector2              m_Effect_Scale;            //!< 拡大率 
+    vivid::Vector2              m_Effect_Anchor;            //!< 拡大率 
+    unsigned int                m_Effect_Color;				//アイテム効果範囲の色
+
     vivid::Rect                 m_Rect;             //!< 読み込み範囲 
+
     vivid::Vector2              m_Scale;            //!< 拡大率 
     float                       m_Rotation;         //!< 回転値 
     bool                        m_ActiveFlag;       //!< アクティブフラグ 
     ITEM_ID                     m_ItemID;  	        //!< アイテムのID
     ITEM_ID                     m_GetItemID;  	        //!< アイテムのID
 
-	ITEM_STATE				    m_ItemState;        //!< アイテムの状態
+    ITEM_STATE				    m_ItemState;        //!< アイテムの状態
     bool                        catchFlg;			//アイテム取得の判断フラグ
-	vivid::Vector2              iPos;				//アイテムオブジェクトの座標
-	vivid::Vector2              iCenter;			//アイテムオブジェクトの中心点
-	static const float          throw_speed;		//アイテムオブジェクトの投げる速度
-	float                       item_fall;			//アイテムオブジェクトの落下速度
-	unsigned int                iColor;				//アイテムオブジェクトの色
-	bool						ceiling_wall;	    //天井と壁の判定フラグ
-	bool 					    left_right_wall;	//左右の壁の判定フラグ
-	bool                        ground_wall;		//床の判定フラグ
-	bool 					    m_Active;           //!< 使用フラグ
-	float                       m_Area;             //!< アイテムの有効範囲
+    vivid::Vector2              iPos;				//アイテムオブジェクトの座標
+    vivid::Vector2              iCenter;			//アイテムオブジェクトの中心点
+    static const float          throw_speed;		//アイテムオブジェクトの投げる速度
+    float                       item_fall;			//アイテムオブジェクトの落下速度
+    unsigned int                iColor;				//アイテムオブジェクトの色
+    bool						ceiling_wall;	    //天井と壁の判定フラグ
+    bool 					    left_right_wall;	//左右の壁の判定フラグ
+    bool                        ground_wall;		//床の判定フラグ
+    bool 					    m_Active;           //!< 使用フラグ
+    float                       m_Area;             //!< アイテムの有効範囲
     int                         item_active_time;	//アイテムの効果時間	
-    bool item_check;
-
+    int number_of_times;		  //アイテムの効果回数
+    float					   item_priority;         //アイテムまでの距離
 };

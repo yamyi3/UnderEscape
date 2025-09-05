@@ -11,16 +11,25 @@ ItemManager& ItemManager::GetInstance()
 
 void ItemManager::Initialize()
 {
-	
+
 }
 
-void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight,   float rHeight)
+void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight)
 {
 	ITEM_LIST::iterator it = m_Item.begin();
 	ITEM_LIST::iterator end = m_Item.end();
+	ITEM_LIST::iterator priority = it;
 	bool check = GetItemCheck();
-	while (it != end)
+	float c;
+	while (it != end && priority != end)
 	{
+		//if ((*priority)->GetPriority() <= (*it)->GetPriority())
+		//{
+		//}
+		//else
+		//{
+		//	priority = it;
+		//}
 		//不活性なデータの消去
 		if (!(*it)->IsActive())
 		{
@@ -32,8 +41,9 @@ void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight,   flo
 
 			continue;
 		}
+		////(*priority)->Update(cPos, cWidth, cHeight, rHeight, check, true);
+		(*it)->Update(cPos, cWidth, cHeight, rHeight, check, true);
 
-		(*it)->Update( cPos,  cWidth,  cHeight,  rHeight, check);
 		++it;
 	}
 }
@@ -85,7 +95,7 @@ void ItemManager::CreateItem(vivid::Vector2 position, ITEM_ID id)
 	default:
 		break;
 	}
-	
+
 	if (!item)return;
 
 	item->Initialize(position);
@@ -95,72 +105,23 @@ void ItemManager::CreateItem(vivid::Vector2 position, ITEM_ID id)
 
 bool ItemManager::GetItemActiveFlag()
 {
-	//各アイテムオブジェクトの描画
-	ITEM_LIST::iterator    it = m_Item.begin();
-	ITEM_LIST::iterator    end = m_Item.end();
-
-	bool Active = false;
-	while (it != end)
-	{
-		Active=(*it)->GetItemActive();
-
-		++it;
-	}
-	return Active;
-
+	return active;
 }
 
 vivid::Vector2 ItemManager::GetItemPos()
 {
-	//各アイテムオブジェクトの描画
-	ITEM_LIST::iterator    it = m_Item.begin();
-	ITEM_LIST::iterator    end = m_Item.end();
-
-	vivid::Vector2 Pos(0.0f, 0.0f);
-	while (it != end)
-	{
-		Pos = (*it)->GetItemPos();
-		++it;
-	}
-	return Pos;
+	return position;
 }
 
-float ItemManager::GetEfectiveArea(ITEM_ID id)
+float ItemManager::GetEfectiveArea()
 {
-	//各アイテムオブジェクトの描画
-	ITEM_LIST::iterator    it = m_Item.begin();
-	ITEM_LIST::iterator    end = m_Item.end();
-
-	float a;
-	while (it != end)
-	{
-		a = (*it)->GetEffectiveArea( id );
-		++it;
-	}
-	return a;
+	return effective_area;
 }
 
 
 ITEM_ID ItemManager::GetItemID()
 {
-	//各アイテムオブジェクトの描画
-	ITEM_LIST::iterator    it = m_Item.begin();
-	ITEM_LIST::iterator    end = m_Item.end();
-
-									//アイテムの種類
-
-	while (it != end)
-	{
-		if ((*it)->GetCatchFlg() == true)
-		{
-			Item_id = (*it)->GetItemID();
-
-			return Item_id;
-
-		}
-		++it;
-	}
-	return ITEM_ID::DUMMY;
+	return Item_id;
 }
 
 bool ItemManager::GetItemCheck()
@@ -169,14 +130,27 @@ bool ItemManager::GetItemCheck()
 	ITEM_LIST::iterator    it = m_Item.begin();
 	ITEM_LIST::iterator    end = m_Item.end();
 
-	//アイテムの種類
-	ITEM_STATE state;
+	//アイテムの所持判別
 	while (it != end)
 	{
+
 		if ((*it)->GetCatchFlg() == true)
 		{
+			position = (*it)->GetItemPos();
+			active = (*it)->GetItemActive();
+			Item_id = (*it)->GetItemID();
+			effective_area = (*it)->GetEffectiveArea();
 			return true;
 		}
+		else
+		{
+			position = vivid::Vector2(0.0f, 0.0f);
+			active = false;
+			Item_id = ITEM_ID::DUMMY;
+			effective_area = 0;
+		}
+
+
 		it++;
 	}
 	return false;
