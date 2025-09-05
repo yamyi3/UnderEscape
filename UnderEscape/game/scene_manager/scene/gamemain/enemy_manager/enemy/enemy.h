@@ -5,17 +5,18 @@
 class Enemy
 {
 public:
-	Enemy(void);
+	Enemy::Enemy(int w_size = 128, int h_size = 98, float speed = 4.0f, float chase_speed = 6.0f,
+		float jump_height = 250.0f, float jump_upspeed = 3.0f, float jump_downspeed = 100.0f, float circle_radius = 200.0f);
 	~Enemy(void) = default;
 
-	void Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground);//初期化
-	void Initialize(vivid::Vector2 pos, float L, float R, float vector);//初期化
-	void Initialize(vivid::Vector2 pos, float L, float R);//初期化
-	void Initialize(vivid::Vector2 pos);//初期化
-	void Initialize(void);
-	void Update(void);
-	void Draw(vivid::Vector2 scroll);
-	void Finalize(void);
+	virtual void Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground);//初期化
+	virtual void Initialize(vivid::Vector2 pos, float L, float R, float vector);//初期化
+	virtual void Initialize(vivid::Vector2 pos, float L, float R);//初期化
+	virtual void Initialize(vivid::Vector2 pos);//初期化
+	virtual void Initialize(void);
+	virtual void Update(void);
+	virtual void Draw(vivid::Vector2 scroll);
+	virtual void Finalize(void);
 
 	vivid::Vector2 GetEnemyPos(void);
 
@@ -44,27 +45,28 @@ public:
 	);
 	void player_check(bool shielding);	//敵の索敵範囲内に自キャラがいると追いかけられる
 
-private:
+
+protected:
 	static const int e_visibility_width_size;
 	static const int e_visibility_height_size;
 
-	static const int e_width_size;					//エネミーの横のドット数
-	static const int e_height_size;                 //エネミーの縦のドット数
+	int e_width_size;					//エネミーの横のドット数
+	int e_height_size;                 //エネミーの縦のドット数
 
 	static const int mark_width_size;		//!の横のドット数
 	static const int mark_height_size;		//!の縦のドット数
 
-	static const float eSpeed;						//エネミーの巡回中の移動速度
-	static const float eChaseSpeed;					//エネミーのプレイヤー追跡中の移動速度
+	float eSpeed;						//エネミーの巡回中の移動速度
+	float eChaseSpeed;					//エネミーのプレイヤー追跡中の移動速度
 	static const int Source_End_Range;				//警戒座標とのｘ軸の差がこの数値より短くなったら追跡を終了する。
 	static const int Vigilance_time;				//追跡目標地点到達後の待機フレーム数
 
 	static const int Surprised_time;				//追跡開始前の停止フレーム数
-	static const float enemy_jump_height;			//ジャンプの高さ
-	static const float enemy_jump_upspeed;			//ジャンプの上昇スピード
-	static const float enemy_jump_downspeed;		//落下スピード(上昇スピードの何％か)
+	float enemy_jump_height;			//ジャンプの高さ
+	float enemy_jump_upspeed;			//ジャンプの上昇スピード
+	float enemy_jump_downspeed;		//落下スピード(上昇スピードの何％か)
 
-	static const float		eCircleRadius;
+	float		eCircleRadius;			//視界範囲
 
 	vivid::Vector2 ePos;				//エネミーの描画に使用するポジション
 	vivid::Rect eRect;						//エネミーの画像範囲
@@ -98,14 +100,14 @@ private:
 	bool m_ActiveFlag;	//アクティブフラグ
 
 	std::string enemy_sight = "data\\敵視界.png";
-	std::string enemy_picture_name[(int)eSTATUS::MAX]	//エネミーの画像のファイル名
-		= {
-	"data\\敵機\\蜘蛛型\\待機.png" ,	//Stop			//待機
-	"data\\敵機\\蜘蛛型\\左移動.png" ,	//Wandering		//徘徊
-	"data\\敵機\\蜘蛛型\\左追跡.png" ,	//Chase			//追跡
-	"data\\敵機\\蜘蛛型\\待機.png",		//Vigilance		//警戒
-	"data\\敵機\\蜘蛛型\\待機.png" ,	//Surprised		//スタン
-	"data\\敵機\\蜘蛛型\\捕獲モーション.png" };	//Kill			//メメントモリ
+	//std::string enemy_picture_name[(int)eSTATUS::MAX]	//エネミーの画像のファイル名
+	//	= {
+	//"data\\敵機\\蜘蛛型\\待機.png" ,	//Stop			//待機
+	//"data\\敵機\\蜘蛛型\\左移動.png" ,	//Wandering		//徘徊
+	//"data\\敵機\\蜘蛛型\\左追跡.png" ,	//Chase			//追跡
+	//"data\\敵機\\蜘蛛型\\待機.png",		//Vigilance		//警戒
+	//"data\\敵機\\蜘蛛型\\待機.png" ,	//Surprised		//スタン
+	//"data\\敵機\\蜘蛛型\\捕獲モーション.png" };	//Kill
 	int AnimationTimer;
 	static const int animation_change_time;
 	int AnimationFrame;

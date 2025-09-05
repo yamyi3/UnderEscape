@@ -8,37 +8,40 @@
 const int Enemy::e_visibility_width_size = 400;
 const int Enemy::e_visibility_height_size = 400;
 
-const int Enemy::e_width_size = 128;						//エネミーの横のドット数
-const int Enemy::e_height_size = 98;                       //エネミーの縦;;;;のドット数
 
 const int Enemy::mark_width_size = 32;		//!の横のドット数
 const int Enemy::mark_height_size = 32;      //!の縦のドット数
 
-const float Enemy::eSpeed = 4;						//エネミーの巡回中の移動速度
-const float Enemy::eChaseSpeed = 6;					//エネミーのプレイヤー追跡中の移動速度
 const int Enemy::Source_End_Range = 4;				//警戒座標とのｘ軸の差がこの数値より短くなったら追跡を終了する。
 const int Enemy::Vigilance_time = 150;				//追跡目標地点到達後の待機フレーム数
 
 const int Enemy::Surprised_time = 30;				//追跡開始前の停止フレーム数
-const float Enemy::enemy_jump_height = 250.0f;		//ジャンプの高さ
-const float Enemy::enemy_jump_upspeed = 3.0f;		//ジャンプの上昇スピード
-const float Enemy::enemy_jump_downspeed = 100.0f;	//落下スピード(上昇スピードの何％か)
 
 const int Enemy::turn_around_ct = 10;
 
 const int Enemy::animation_change_time = 5;
 
-const float Enemy::eCircleRadius = 200.0f;
 
-Enemy::Enemy(void)
-	: ePos(300.0f, 500.0f)
+
+
+Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,
+	float jump_height,float jump_upspeed,float jump_downspeed,float circle_radius)
+	: e_width_size(w_size)
+	, e_height_size(h_size)
+	, eSpeed(speed)
+	, eChaseSpeed(chase_speed)
+	, enemy_jump_height(jump_height)
+	, enemy_jump_upspeed(jump_upspeed)
+	, enemy_jump_downspeed(jump_downspeed)
+	, eCircleRadius(circle_radius)
+	, ePos(300.0f, 500.0f)
 	, eAnchor(e_width_size / 2.0f, e_height_size / 2.0f)
 	, eScale(1.0f, 1.0f)
 	, markPos(0.0f, 0.0f)
 	, markAnchor(mark_width_size / 2.0f, mark_height_size / 2.0f)
 	, markScale(1.0, 1.0)
 	, gravity(100)
-	, eGround(600.0f)
+	, eGround(60000.0f)
 	, eVector(1)
 	, Sight_Check_Timer(10)
 	, Vigilance_Timer(0)
@@ -82,26 +85,21 @@ void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector, float
 	AnimationTimer = 0;
 	AnimationFrame = 0;
 
-	AnimationMaxFrame[(int)eSTATUS::Stop] = 16;
-	AnimationMaxFrame[(int)eSTATUS::Wandering] = 8;
-	AnimationMaxFrame[(int)eSTATUS::Chase] = 8;
-	AnimationMaxFrame[(int)eSTATUS::Vigilance] = 16;
-	AnimationMaxFrame[(int)eSTATUS::Surprised] = 16;
-	AnimationMaxFrame[(int)eSTATUS::Kill] = 8;
+
 }
 
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R, float vector)
 {
-	Initialize(pos, L, R, vector, 600.0f);
+	Initialize(pos, L, R, vector, 60000.0f);
 }
 
 void Enemy::Initialize(vivid::Vector2 pos, float L, float R)
 {
-	Initialize(pos, L, R, 1, 600.0f);
+	Initialize(pos, L, R, 1, 60000.0f);
 }
 void Enemy::Initialize(vivid::Vector2 pos)
 {
-	Initialize(pos, pos.x, pos.x, 1, 600.0f);
+	Initialize(pos, pos.x, pos.x, 1, 60000.0f);
 }
 void Enemy::Initialize(void)
 {
@@ -296,44 +294,7 @@ void Enemy::Update(void)
 
 void Enemy::Draw(vivid::Vector2 scroll)
 {
-	AnimationTimer++;
-	if (AnimationTimer >= animation_change_time)
-	{
-		AnimationTimer -= animation_change_time;
-		++AnimationFrame %= AnimationMaxFrame[(int)eStatus];
-	}
 
-
-	eScale.x = abs(eScale.x) * eVector;
-
-#ifdef _DEBUG
-	vivid::DrawTexture(enemy_sight, { ePos.x - e_visibility_width_size / 2 - scroll.x,ePos.y - e_visibility_height_size / 2 - scroll.y }, 0x6fffffff);
-#endif // DEBUG
-
-
-
-	vivid::Rect eRect;						//エネミーの画像範囲
-
-	eRect.top = 0;
-	eRect.bottom = e_height_size;
-	eRect.left = (AnimationFrame % AnimationMaxFrame[(int)eStatus]) * e_width_size;
-	eRect.right = eRect.left + e_width_size;
-
-	vivid::DrawTexture(enemy_picture_name[(int)eStatus], { ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y }, 0xffffffff, eRect, eAnchor, eScale);
-	if (eStatus == eSTATUS::Surprised)
-	{
-		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//!の画像範囲
-		markPos = { ePos.x - (mark_width_size / 2),(ePos.y - eAnchor.y - mark_height_size - (eScale.y * e_height_size / 10)) };
-		markScale = { abs(eScale.x) ,abs(eScale.y) };
-		vivid::DrawTexture("data\\exclamation_mark.png", markPos - scroll, 0xffffffff, markRect, markAnchor, markScale);
-	}
-	if (eStatus == eSTATUS::Vigilance)
-	{
-		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//?の画像範囲
-		markPos = { ePos.x - (mark_width_size / 2),(ePos.y - eAnchor.y - mark_height_size - (eScale.y * e_height_size / 10)) };
-		markScale = { abs(eScale.x) ,abs(eScale.y) };
-		vivid::DrawTexture("data\\question_mark.png", markPos - scroll, 0xffffffff, markRect, markAnchor, markScale);
-	}
 
 }
 
