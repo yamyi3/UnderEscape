@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="game_object\sound_manager\sound_manager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\character\character.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy\creature\creature.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy\spider_robo\spider_robo.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="game_object\game_object.h" />
     <ClInclude Include="game_object\sound_manager\sound_manager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\character\character.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\creature\creature.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy_id.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\spider_robo\spider_robo.h" />
