@@ -72,7 +72,7 @@ void SpiderRobo::Draw(vivid::Vector2 scroll)
 	eRect.left = (AnimationFrame % AnimationMaxFrame[(int)eStatus]) * e_width_size;
 	eRect.right = eRect.left + e_width_size;
 
-	vivid::DrawTexture(enemy_picture_name[(int)eStatus], { ePos.x - (e_width_size / 2) - scroll.x,ePos.y - (e_height_size / 2) - scroll.y }, 0xffffffff, eRect, eAnchor, eScale);
+	vivid::DrawTexture(enemy_picture_name[(int)eStatus], { ePos.x - eAnchor.x - scroll.x,ePos.y - eAnchor.y - scroll.y }, 0xffffffff, eRect, eAnchor, eScale);
 	if (eStatus == eSTATUS::Surprised)
 	{
 		vivid::Rect markRect = { 0,0,mark_height_size,mark_width_size };						//!‚Ì‰æ‘œ”ÍˆÍ
