@@ -1,5 +1,6 @@
 #include "enemy_manager.h"
 #include "..\character\character.h"
+#include "enemy/spider_robo/spider_robo.h"
 
 EnemyManager& EnemyManager::GetInstance()
 {
@@ -68,7 +69,7 @@ void EnemyManager::Finalize()
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vector, float ground)
 {
 	Enemy* enemy = nullptr;
-	enemy = new Enemy();
+	enemy = new SpiderRobo();
 	if (!enemy)return;
 	enemy->Initialize(pos, L, R, vector, ground);
 
@@ -78,7 +79,7 @@ void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vec
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vector)
 {
 	Enemy* enemy = nullptr;
-	enemy = new Enemy();
+	enemy = new SpiderRobo();
 	if (!enemy)return;
 	enemy->Initialize(pos, L, R, vector);
 
@@ -88,7 +89,7 @@ void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vec
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R)
 {
 	Enemy* enemy = nullptr;
-	enemy = new Enemy();
+	enemy = new SpiderRobo();
 	if (!enemy)return;
 	enemy->Initialize(pos, L, R);
 
@@ -98,7 +99,7 @@ void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R)
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos)
 {
 	Enemy* enemy = nullptr;
-	enemy = new Enemy();
+	enemy = new SpiderRobo();
 	if (!enemy)return;
 	enemy->Initialize(pos);
 
@@ -108,7 +109,7 @@ void EnemyManager::GenerateEnemy(vivid::Vector2 pos)
 void EnemyManager::GenerateEnemy()
 {
 	Enemy* enemy = nullptr;
-	enemy = new Enemy();
+	enemy = new SpiderRobo();
 	if (!enemy)return;
 	enemy->Initialize();
 
