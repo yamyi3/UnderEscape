@@ -72,9 +72,9 @@ void Character::Initialize(vivid::Vector2 rPos)
 void Character::Update(void)
 {
 	//自機のキーボード操作
-	//KeyboardControl();
+	KeyboardControl();
 	//自機のコントローラー操作
-	ControllerControl();
+	//ControllerControl();
 	//画面端の判定
 	CheckWindow();
 	//クールタイムの処理

@@ -250,29 +250,30 @@ void Enemy::Update(void)
 	}
 
 	//地面
-	if (ePos.y + e_height_size - eAnchor.y > Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size))
+	if (ePos.y > Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size, eAnchor))
 	{
-		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size) - e_height_size + eAnchor.y;
+		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size, eAnchor);
 	}
 	bool TurnAroundFlg = false;
 	TurnAroundtimer++;
+
+	//天井
+	if (ePos.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size, eAnchor))
+	{
+		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size, eAnchor);
+	}	
 	//左
 	ePos.x += e_Velocity.x;
-	if (ePos.x - eAnchor.x < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1)
+	if (ePos.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size, eAnchor))
 	{
-		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size) - eAnchor.x;
+		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size, eAnchor);
 		TurnAroundFlg = true;
 	}
 	//右
-	if (ePos.x + e_width_size - eAnchor.x > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == 1)
+	if (ePos.x > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size, eAnchor))
 	{
-		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size) - e_width_size + eAnchor.x;
+		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size, eAnchor);
 		TurnAroundFlg = true;
-	}
-	//天井
-	if (ePos.y - eAnchor.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size))
-	{
-		ePos.y = Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size) + eAnchor.y;
 	}
 	if (TurnAroundFlg && TurnAroundtimer >= 10)
 	{

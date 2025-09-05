@@ -278,8 +278,9 @@ void Stage::ScrollStage(void)
 	//}
 }
 
-float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
+float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor)
 {
+	pos -= anchor;
 	int WidthXNum = width / g_map_chip_size + 1;
 	int Y = (pos.y + height) / g_map_chip_size;
 	if (Y < 1)Y = 1;
@@ -297,11 +298,12 @@ float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
 			RoundY = WY;
 		n++;
 	} while (n <= WidthXNum);
-	return RoundY * g_map_chip_size;
+	return RoundY * g_map_chip_size+anchor.y;
 }
 
-float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
+float Stage::GetRWall(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor)
 {
+	pos -= anchor;
 	int HeightYNum = height / g_map_chip_size + 1;
 	int RWallX = g_map_chip_count_width;
 	int X = (pos.x + width) / g_map_chip_size;
@@ -321,11 +323,12 @@ float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
 	} while (n <= HeightYNum);
 
 
-	return RWallX * g_map_chip_size - 1;
+	return RWallX * g_map_chip_size - 1 - anchor.x;
 }
 
-float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
+float Stage::GetLWall(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor)
 {
+	pos -= anchor;
 	int HeightYNum = height / g_map_chip_size + 1;
 	int LWallX = 0;
 	int X = (pos.x) / g_map_chip_size;
@@ -344,11 +347,12 @@ float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
 		n++;
 	} while (n <= HeightYNum);
 
-	return (LWallX + 1) * g_map_chip_size;
+	return (LWallX + 1) * g_map_chip_size + anchor.x;
 }
 
-float Stage::GetCeiling(vivid::Vector2 pos, float width, float height)
+float Stage::GetCeiling(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor)
 {
+	pos -= anchor;
 	int WidthXNum = width / g_map_chip_size + 1;
 	int Y = (pos.y) / g_map_chip_size;
 	int CeilingY = 0;
@@ -365,7 +369,27 @@ float Stage::GetCeiling(vivid::Vector2 pos, float width, float height)
 			CeilingY = WY;
 		n++;
 	} while (n <= WidthXNum);
-	return (CeilingY + 1) * g_map_chip_size;
+	return (CeilingY + 1) * g_map_chip_size + anchor.y;
+}
+
+float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height)
+{
+	return GetRoundHeight(pos, width, height, { 0,0 });
+}
+
+float Stage::GetRWall(vivid::Vector2 pos, float width, float height)
+{
+	return GetRWall(pos, width, height, { 0,0 });
+}
+
+float Stage::GetLWall(vivid::Vector2 pos, float width, float height)
+{
+	return GetLWall(pos, width, height, { 0,0 });
+}
+
+float Stage::GetCeiling(vivid::Vector2 pos, float width, float height)
+{
+	return GetCeiling(pos, width, height, { 0,0 });
 }
 
 bool Stage::CheckHitWallPlayer(const vivid::Vector2& pos, int height, int width)

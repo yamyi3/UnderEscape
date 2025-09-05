@@ -38,6 +38,11 @@ public:
 
 	//ínñ ÇÃçÇÇ≥ÇÃéÊìæ
 
+	float GetRoundHeight(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor);
+	float GetRWall(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor);
+	float GetLWall(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor);
+	float GetCeiling(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor);
+
 	float GetRoundHeight(vivid::Vector2 pos, float width, float height);
 	float GetRWall(vivid::Vector2 pos, float width, float height);
 	float GetLWall(vivid::Vector2 pos, float width, float height);
