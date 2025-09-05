@@ -108,6 +108,12 @@ public:
 	//スクロールの値を返す変数
 	vivid::Vector2 GetScroll() { return Scroll; }
 
+	//階段更新
+	void StairsUpData();
+	//階段
+	void Stairs();
+	//フェード色取得用
+	unsigned int GetCoverColor();
 private:
 
 	//スクロール用の変数
@@ -226,6 +232,15 @@ private:
 	bool cShielding;					//遮蔽に入っているか判定するフラグ
 	CHARA_STATE chara_state;			//自機の状態
 	CHARA_SKILL chara_skill;			//スキルの使用状態
+
+	//階段用
+	static const int stairs_fade_speed;
+	static const int fade_time;
+	bool StairsFlg;
+	bool StairsFadeFlg;
+	vivid::Vector2 StairsPos;
+	unsigned int CoverColor;
+	int FadeTimer;
 
 	//->インスタンスの生成
 	Character(void) = default;

@@ -35,6 +35,9 @@ bool		Character::found_flag			= true;		//発見される状態か判断するフラグ(透明化時
 const float Character::scroll_width_space = 850;
 const float Character::scroll_height_space = 300;
 
+const int Character::stairs_fade_speed = 10;
+const int Character::fade_time = 10;
+
 Character& Character::GetInstance(void)
 {
 	static Character	instance;
@@ -67,26 +70,39 @@ void Character::Initialize(vivid::Vector2 rPos)
 	c_stamina_draw_count = 0;
 
 	Scroll = { 0.0f, 0.0f };
+
+	StairsFlg = false;
+	StairsPos = { 0,0 };
+	CoverColor = 0x00ffffff;
+	StairsFadeFlg = false;
+	FadeTimer = 0;
 }
 
 void Character::Update(void)
 {
-	//自機のキーボード操作
-	KeyboardControl();
-	//自機のコントローラー操作
-	//ControllerControl();
+	if (StairsFlg==0)
+	{
+		//自機のキーボード操作
+		KeyboardControl();
+		//自機のコントローラー操作
+		//ControllerControl();
+		//クールタイムの処理
+		CoolTime();
+		//アニメーションの更新
+		UpdateAnimation();
+		//スタミナの描画切り替え
+		StaminaDraw();
+	}
+	if (StairsFlg)
+	{
+		StairsUpData();
+	}
 	//画面端の判定
 	CheckWindow();
-	//クールタイムの処理
-	CoolTime();
 	//ステージとの当たり判定
-	StageHit();
-	//アニメーションの更新
-	UpdateAnimation();
+	StageHit();	
 	//スクロールの更新
 	Scroll_Update();
-	//スタミナの描画切り替え
-	StaminaDraw();
 }
 
 //描画
@@ -123,7 +139,8 @@ void Character::Draw(void)
 	//スタミナ描画フラグがtrueの時にのみスタミナゲージを描画する
 	if (c_stamina_draw)
 		vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
-
+	
+	vivid::DrawTexture("data\\Title_背景.png", { 0.0f,0.0f }, CoverColor);
 	//デバッグモードの時に各必要情報を表示
 #ifdef _DEBUG
 	switch (chara_skill)
@@ -362,6 +379,11 @@ void Character::KeyboardControl(void)
 
 	//移動に慣性をつける
 	m_Velocity.x *= m_friction;
+
+	if (keyboard::Trigger(keyboard::KEY_ID::W))
+	{
+		Stairs();
+	}
 }
 
 void Character::ControllerControl(void)
@@ -485,6 +507,11 @@ void Character::ControllerControl(void)
 
 	//移動に慣性をつける
 	m_Velocity.x *= m_friction;
+
+	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::UP))
+	{
+		Stairs();
+	}
 }
 
 //地面との当たり判定
@@ -901,4 +928,51 @@ void Character::Scroll_Update()
 		Scroll.y = cPos.y - scroll_height_space;
 	if (Scroll.y < 0)
 		Scroll.y = 0;
+}
+
+void Character::StairsUpData()
+{
+	bool wflg=false;
+	if (StairsFadeFlg)
+	{
+		int alpha = (CoverColor & 0xff000000) >> 24;
+		alpha += stairs_fade_speed;
+		if (alpha > 0xff)
+		{
+			alpha = 0xff;
+			cPos = StairsPos;
+			Scroll = cPos - vivid::Vector2{ vivid::WINDOW_WIDTH / 2, vivid::WINDOW_HEIGHT / 2 } + c_anchor;
+			Scroll.y -= vivid::WINDOW_HEIGHT / 6;
+			StairsFadeFlg = false;
+		}
+		CoverColor = (alpha << 24) | (CoverColor & 0x00ffffff);
+	}
+	else if (++FadeTimer>=fade_time)
+	{
+		wflg = true;
+	}
+	if(wflg)
+	{
+		int alpha = (CoverColor & 0xff000000) >> 24;
+		alpha -= stairs_fade_speed;
+		if (alpha < 0)
+		{
+			alpha = 0;
+			StairsFlg = false;
+		}
+		CoverColor = (alpha << 24) | (CoverColor & 0x00ffffff);
+	}
+
+}
+
+void Character::Stairs()
+{
+	if (Stage::GetInstance().GetStairsFlg(cPos))
+	{
+		StairsFlg = true;
+		StairsPos = Stage::GetInstance().GetStairs(cPos);
+		StairsPos.y = StairsPos.y + Stage::GetInstance().GetMapChipSize() - ch_height;
+		StairsFadeFlg = true;
+		FadeTimer = 0;
+	}
 }

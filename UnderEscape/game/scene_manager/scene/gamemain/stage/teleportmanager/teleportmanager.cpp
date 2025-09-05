@@ -2,6 +2,8 @@
 #include "..\..\stage\stage.h"
 #include <iostream>
 #include <vector>
+#include <sstream>
+#include <fstream>
 TeleportManager::TeleportManager()
 {
 }
@@ -30,8 +32,14 @@ void TeleportManager::Initialize(const int tp_stairs_count)
 
 		m_Teleport.push_back(teleport);
 	}
-    //ファイル操作
 
+
+
+
+
+
+
+    // ファイル読み込み
     FILE* fp = nullptr;
     // ファイルを開く 
     fopen_s(&fp, "data\\TP.csv", "r");
@@ -40,28 +48,33 @@ void TeleportManager::Initialize(const int tp_stairs_count)
     int size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
     // サイズ分だけ入れ物を用意する(一時的なデータ) 
-    char* buf = new char[size];
+    char* buf = new char[size + 1];   // +1 は文字列終端用
     // データ(CSVファイル内の文字列)を読み込む 
     fread(buf, size, 1, fp);
+    buf[size] = '\0';                 // 文字列終端を付与
     // ファイルを閉じる
     fclose(fp);
 
-    //データ解析
-
-        // データのサイズ分繰り返し 
-    for (int i = 0, k = 0; i < size; ++i)
-    {
-        // 文字の0～tp_set_countであれば数値に変換する 
-        if (buf[i] >= '0' && buf[i] <= '0'+ tp_set_count)
-        {
-            char t = buf[i];
-            g_Map[k / g_map_chip_count_width][k % g_map_chip_count_width] =
-                (unsigned char)atoi(&t);
-            ++k;
-        }
-    }
+    // CSV解析
+    std::string data(buf);
     // 一時的なデータを削除 
     delete[] buf;
+
+    std::stringstream ss(data);
+    int k = 0;
+    int value;
+
+    while (ss >> value) {
+        // 配列に代入（2次元→1次元に直して格納）
+        g_Map[k / g_map_chip_count_width][k % g_map_chip_count_width] =
+            value;
+        ++k;
+
+        // 区切り文字が来たら読み飛ばす
+        if (ss.peek() == ',' || ss.peek() == '\n') {
+            ss.ignore();
+        }
+    }
 
 
     for (int y = 0; y < g_map_chip_count_height; y++)
