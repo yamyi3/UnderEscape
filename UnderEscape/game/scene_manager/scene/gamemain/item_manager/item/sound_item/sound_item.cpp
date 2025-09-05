@@ -6,7 +6,7 @@ const int SoundItem::max_item_time = 10;
 
 
 SoundItem::SoundItem()
-	: Item(ITEM_ID::SOUND_ITEM, ITEM_STATE::PLACE,item_width,item_height,item_radius)
+	: Item(ITEM_ID::SOUND_ITEM, ITEM_STATE::PLACE, item_width, item_height, item_radius)
 
 	, Xspeed(50.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
 	, Yspeed(50.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
@@ -20,19 +20,25 @@ SoundItem::~SoundItem()
 
 void SoundItem::Initialize(vivid::Vector2 position)
 {
-	iPos.x = position.x-item_width;
+	iPos.x = position.x - item_width;
 	iPos.y = position.y - item_height;
 	iColor = 0xffffffff;
 	iCenter.x = (iPos.x + item_width) / 2;
 	iCenter.y = (iPos.y + item_height) / 2;
 	m_Area = 500.0f;
-	item_active_time = 1;
+	m_Effect_Scale = { m_Area / 32, m_Area / 32 };
+
 }
 
 
 void SoundItem::Draw(void)
 {
 	vivid::DrawTexture("data\\ball.png", iPos - Character::GetInstance().GetScroll(), iColor);
+	if (m_Active == true)
+	{
+		vivid::DrawTexture("data\\ball.png", iPos - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,32,32 }, vivid::Vector2{ 16.0f,16.0f }, vivid::Vector2{ 15.625f,15.625f });
+	}
+
 }
 
 
@@ -43,9 +49,9 @@ void SoundItem::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
 	{
 		m_ItemState = ITEM_STATE::USE;
 
-		Mouse.x = (vivid::mouse::GetCursorPos().x)+ Character::GetInstance().GetScroll().x - cPos.x;
+		Mouse.x = (vivid::mouse::GetCursorPos().x) + Character::GetInstance().GetScroll().x - cPos.x;
 		Mouse.y = cPos.y - (vivid::mouse::GetCursorPos().y + Character::GetInstance().GetScroll().y);
-		
+
 	}
 
 	if (catchFlg)
@@ -67,44 +73,46 @@ void SoundItem::UseMove(vivid::Vector2 c_pos)
 		//catchFlg = false;
 
 
-		m_Velocity.y = -(Mouse.y / Yspeed);
-		m_Velocity.x = (Mouse.x / Xspeed);
-		//壁に触れたらその場で自由落下
-		
+	m_Velocity.y = -(Mouse.y / Yspeed);
+	m_Velocity.x = (Mouse.x / Xspeed);
+	//壁に触れたらその場で自由落下
 
-		if (ground_wall == false)
+
+	if (ground_wall == false)
+	{
+
+		iColor = 0xff00ffff;
+		if (ceiling_wall == false)
 		{
-
-			iColor = 0xff00ffff;
-			if (ceiling_wall == false)
-			{
-				iPos.y += m_Velocity.y + (item_fall * Ga);
-			}else 
-			{
-				iPos.y += (item_fall * Ga);
-			}
+			iPos.y += m_Velocity.y + (item_fall * Ga);
 		}
 		else
 		{
-			m_Active = true;
-			if (item_active_time++ > max_item_time)
-			{
-				m_ItemState = ITEM_STATE::PLACE;
-				item_active_time = 0;
-				m_Active = false;
-				iColor = 0xffffffff;
-				catchFlg = false;
-
-			}
+			iPos.y += (item_fall * Ga);
+		}
+	}
+	else
+	{
+		m_Active = true;
+		if (item_active_time++ > max_item_time)
+		{
+			m_ItemState = ITEM_STATE::PLACE;
+			item_active_time = 0;
+			m_Active = false;
+			iColor = 0xffffffff;
+			catchFlg = false;
 
 		}
 
-		if (ceiling_wall == false && left_right_wall == false && ground_wall == false)
-		{
-			iPos.x += m_Velocity.x;
-		}else
-			ceiling_wall = true;
-		Ga += 0.981;
+	}
+
+	if (ceiling_wall == false && left_right_wall == false && ground_wall == false)
+	{
+		iPos.x += m_Velocity.x;
+	}
+	else
+		ceiling_wall = true;
+	Ga += 0.981;
 }
 
 

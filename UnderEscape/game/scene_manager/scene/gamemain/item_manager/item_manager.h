@@ -18,20 +18,22 @@ public:
 	// 開放
 	void Finalize();
 	// アイテムの生成
-	void CreateItem(vivid::Vector2 position,ITEM_ID id);
+	void CreateItem(vivid::Vector2 position, ITEM_ID id);
 	//アイテムのアクティブフラグを取得
-	bool GetItemActiveFlag();	
+	bool GetItemActiveFlag();
 	//アイテムの位置を取得
 	vivid::Vector2 GetItemPos();
 	//アイテムの有効範囲を取得
-	float GetEfectiveArea(ITEM_ID);
+	float GetEfectiveArea();
 	//ITEM_IDを取得
 	ITEM_ID GetItemID();
 	//ITEM_STATEを取得
 	bool GetItemCheck();
 private:
-
-	ITEM_ID Item_id;
+	float 				effective_area; //アイテムの有効範囲
+	bool				active;		//アイテムのアクティブフラグ
+	vivid::Vector2		position;	//アイテムの位置
+	ITEM_ID				Item_id;		//アイテムのID
 	using ITEM_LIST = std::list<Item*>;
 	ITEM_LIST m_Item;										// アイテムのリスト
 	ItemManager() = default;								// コンストラクタ

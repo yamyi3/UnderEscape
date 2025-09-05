@@ -18,9 +18,9 @@ public:
 	//プレイヤーが投げた後の処理(マウス）
 	void UseMove(vivid::Vector2);
 
-	float GetEffectiveArea() 
-	{ 
-		return m_Area; 
+	float GetEffectiveArea()
+	{
+		return m_Area;
 	}
 
 private:
@@ -33,6 +33,6 @@ private:
 	static const float item_width;		//アイテムオブジェクトの幅
 	static const float item_radius;		//アイテムオブジェクトの幅	
 	static const int	max_item_time;		//アイテムの効果時間	
-	
+	static const int	max_number_of_times;	//アイテムの使用回数
 };
 

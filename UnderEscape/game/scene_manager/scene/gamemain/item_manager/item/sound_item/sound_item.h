@@ -19,10 +19,10 @@ public:
 	void UseMove(vivid::Vector2);
 
 private:
-	float Xspeed ;						//飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
-	float Yspeed	;					//飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
+	float Xspeed;						//飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
+	float Yspeed;					//飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	vivid::Vector2 Mouse;				//自キャラからのマウスの座標
-	
+
 	static const float item_height;		//アイテムオブジェクトの高さ
 	static const float item_width;		//アイテムオブジェクトの幅
 	static const float item_radius;		//アイテムオブジェクトの幅	
