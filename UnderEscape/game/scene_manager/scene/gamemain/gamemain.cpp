@@ -1,4 +1,5 @@
 #include "gamemain.h"
+#include "vivid.h"
 
 #include "character/character.h"
 #include "enemy_manager/enemy_manager.h"
@@ -63,7 +64,7 @@ void GameMainScene::Update(void)
     Character::GetInstance().Update();
     Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight()));
     Character::GetInstance().CheckHit({0,0},0, 0,
-    EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
+    EnemyManager::GetInstance().CheckSearchPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
 
     ItemManager::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
         Stage::GetInstance().GetRoundHeight({ 150,300 }, 15, 15));
@@ -84,6 +85,8 @@ void GameMainScene::Draw(void)
     
     ItemManager::GetInstance().Draw();
 
+    //if (Character::GetInstance().GetCoverColor() >= 0x1000000)
+        //vivid::DrawTexture("data\\Title_背景.png", { 0.0f,0.0f }, Character::GetInstance().GetCoverColor());
     if (pause_menu == true)
     {
         DrawPause();
