@@ -116,7 +116,32 @@ void EnemyManager::GenerateEnemy()
 	m_Enemy.push_back(enemy);
 }
 
-bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width,bool shielding)
+bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width, bool shielding)
+{
+	bool HitPlayerFlg = false;
+	bool invisible = Character::GetInstance().GetFound();
+
+	ENEMY_LIST::iterator it = m_Enemy.begin();
+	ENEMY_LIST::iterator end = m_Enemy.end();
+
+	if (invisible)
+	while (it != end)
+	{
+		Enemy* enemy = (*it);
+
+		if ((*it)->CheckHitPlayer(center_pos, height, width, shielding))
+		{
+			HitPlayerFlg = true;
+			(*it)->input_player_pos(center_pos);
+			(*it)->player_check(shielding);
+		}
+
+		++it;
+	}
+	return HitPlayerFlg;
+}
+
+bool EnemyManager::CheckSearchPlayer(const vivid::Vector2& center_pos, int height, int width,bool shielding)
 {
 	bool HitPlayerFlg = false;
 
@@ -127,7 +152,7 @@ bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, 
 	{
 		Enemy* enemy = (*it);
 
-		if ((*it)->CheckHitPlayer(center_pos, height, width))
+		if ((*it)->CheckSearchPlayer(center_pos, height, width))
 		{
 			HitPlayerFlg = true;
 			(*it)->input_player_pos(center_pos);

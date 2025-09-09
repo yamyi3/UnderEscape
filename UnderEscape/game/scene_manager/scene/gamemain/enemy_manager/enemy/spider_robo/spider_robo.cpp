@@ -53,7 +53,13 @@ void SpiderRobo::Draw(vivid::Vector2 scroll)
 	if (AnimationTimer >= animation_change_time)
 	{
 		AnimationTimer -= animation_change_time;
-		++AnimationFrame %= AnimationMaxFrame[(int)eStatus];
+		++AnimationFrame;
+		if (eStatus==eSTATUS::Kill&&AnimationFrame>= AnimationMaxFrame[(int)eStatus])
+		{
+			AnimationFrame = AnimationMaxFrame[(int)eStatus] - 1;
+		}
+		else
+		AnimationFrame %= AnimationMaxFrame[(int)eStatus];
 	}
 
 

@@ -19,12 +19,12 @@ Creature::~Creature(void)
 void Creature::Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground)
 {
 	Enemy::Initialize(pos, L, R, vector, ground);
-	AnimationMaxFrame[(int)eSTATUS::Stop] = 16;
-	AnimationMaxFrame[(int)eSTATUS::Wandering] = 8;
-	AnimationMaxFrame[(int)eSTATUS::Chase] = 8;
-	AnimationMaxFrame[(int)eSTATUS::Vigilance] = 16;
-	AnimationMaxFrame[(int)eSTATUS::Surprised] = 16;
-	AnimationMaxFrame[(int)eSTATUS::Kill] = 8;
+	AnimationMaxFrame[(int)eSTATUS::Stop] = 8;
+	AnimationMaxFrame[(int)eSTATUS::Wandering] = 10;
+	AnimationMaxFrame[(int)eSTATUS::Chase] = 7;
+	AnimationMaxFrame[(int)eSTATUS::Vigilance] = 8;
+	AnimationMaxFrame[(int)eSTATUS::Surprised] = 8;
+	AnimationMaxFrame[(int)eSTATUS::Kill] = 6;
 }
 
 void Creature::Initialize(vivid::Vector2 pos, float L, float R, float vector)

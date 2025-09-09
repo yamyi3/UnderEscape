@@ -29,7 +29,7 @@ private:
     "data\\“G‹@\\’wåŒ^\\¶’ÇÕ.png" ,	//Chase			//’ÇÕ
     "data\\“G‹@\\’wåŒ^\\‘Ò‹@.png",		//Vigilance		//Œx‰ú
     "data\\“G‹@\\’wåŒ^\\‘Ò‹@.png" ,	//Surprised		//ƒXƒ^ƒ“
-    "data\\“G‹@\\’wåŒ^\\•ßŠlƒ‚[ƒVƒ‡ƒ“.png" };	//Kill
+    "data\\“G‹@\\’wåŒ^\\‰E•ßŠlƒ‚[ƒVƒ‡ƒ“.png" };	//Kill
 
     static const int    m_width;            //!< • 
     static const int    m_height;           //!< ‚‚³ 	
