@@ -248,11 +248,9 @@ void Enemy::Update(void)
 	default:
 		break;
 	}
-	//jpflg = 0;
 	//地面
 	if (ePos.y > Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size, eAnchor))
 	{
-		jpflg = 1;
 		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size, eAnchor);
 	}
 	bool TurnAroundFlg = false;
@@ -282,7 +280,7 @@ void Enemy::Update(void)
 			TurnAroundFlg = true;
 		}
 	}
-	if (TurnAroundFlg && TurnAroundtimer >= 10)
+	if (TurnAroundFlg && TurnAroundtimer >= 20)
 	{
 		eVector *= -1;
 		TurnAroundtimer = 0;
@@ -294,6 +292,7 @@ void Enemy::Update(void)
 		jump();
 	}
 
+	jpflg = 0;
 	ePos = Gravity(ePos, eGround, e_height_size, eAnchor, enemy_jump_height, enemy_jump_upspeed, enemy_jump_downspeed);
 
 	eCircleCenterPos.x = ePos.x - e_width_size / 2/* + eCircleRadius*/;
@@ -427,10 +426,10 @@ bool Enemy::e_wool_jump()
 	case eSTATUS::Stop:
 		break;
 	case eSTATUS::Wandering:
-		if (((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size)
+		if (((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size, eAnchor)
 			&& eVector == -1)
 			&& ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() > Lwall) ||
-			((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size)
+			((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size, eAnchor)
 				&& eVector == 1)
 				&& ePos.x - eAnchor.x + e_width_size + Stage::GetInstance().GetMapChipSize() < Rwall))
 		{
