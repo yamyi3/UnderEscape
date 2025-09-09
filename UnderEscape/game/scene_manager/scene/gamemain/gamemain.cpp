@@ -5,6 +5,7 @@
 #include "stage/stage.h"
 #include"item_manager/item_manager.h"
 #include"../../scene_manager.h"
+#include "../../../game_object/game_object.h"
 
 //Gameobject gameobject;
 
@@ -24,7 +25,7 @@ void GameMainScene::Initialize(void)
     EnemyManager::GetInstance().Initialize();
     EnemyManager::GetInstance().GenerateEnemy({ 300.0f, 700.0f }, 300.0f, 500.0f, 1, 700);
     EnemyManager::GetInstance().GenerateEnemy({ 1000.0f, 700.0f }, 1000.0f, 1200.0f, 1, 700);
-    
+    COption::GetInstance().Initialize();
     
     ItemManager::GetInstance().Initialize();
 
@@ -48,7 +49,7 @@ void GameMainScene::Initialize(void)
 void GameMainScene::Update(void)
 {
     Pause();
-    if (pause_menu==false&&vivid::mouse::Trigger(vivid::mouse::BUTTON_ID::LEFT))
+    if (pause_menu==false && vivid::mouse::Trigger(vivid::mouse::BUTTON_ID::LEFT))
     {
         vivid::Point mpos = vivid::mouse::GetCursorPos();
         vivid::Vector2 mopos;
@@ -63,10 +64,6 @@ void GameMainScene::Update(void)
     Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight()));
     Character::GetInstance().CheckHit({0,0},0, 0,
     EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
-
-   
-
-    
 
     ItemManager::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
         Stage::GetInstance().GetRoundHeight({ 150,300 }, 15, 15));
@@ -91,6 +88,21 @@ void GameMainScene::Draw(void)
     {
         DrawPause();
     }
+    if (COption::GetInstance().GetOptionFlg() == true)
+    {
+        COption::GetInstance().Draw();
+    }
+
+#ifdef _DEBUG
+    if (COption::GetInstance().GetOptionFlg() == true)
+        vivid::DrawText(40, "OptionFlag_ON", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 400)), 0.0f), 0xff00ffff);
+    if (COption::GetInstance().GetOptionFlg() == false)
+        vivid::DrawText(40, "OptionFlag_OFF", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 400)), 0.0f), 0xff00ffff);
+    if (COption::GetInstance().GetSoundMenuFlg() == true)
+        vivid::DrawText(40, "SoundMenuFlag_ON", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 450)), 40.0f), 0xff00ffff);
+    if (COption::GetInstance().GetSoundMenuFlg() == false)
+        vivid::DrawText(40, "SoundMenuFlag_OFF", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 450)), 40.0f), 0xff00ffff);
+#endif
 }
 
 void GameMainScene::Finalize(void)
@@ -98,7 +110,8 @@ void GameMainScene::Finalize(void)
     Character::GetInstance().Finalize();
     EnemyManager::GetInstance().Finalize();
     Stage::GetInstance().Finalize();
-    
+    COption::GetInstance().Finalize();
+
     ItemManager::GetInstance().Finalize();
 }
 void GameMainScene::Pause()
@@ -120,6 +133,8 @@ void GameMainScene::Pause()
         }
         menu_cursor = 0;
         pause_menu = false;
+
+        COption::GetInstance().EndOption();
     }
 }
 
@@ -127,51 +142,63 @@ void GameMainScene::PauseMenu()
 {
     namespace controller = vivid::controller;
 
-    if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A))
+    //オプションを起動していなかったら動作する
+    if (COption::GetInstance().GetOptionFlg() == false)
     {
-        menu_color[menu_cursor] = color_list[1];
-
-        switch (menu_cursor)
+        if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A))
         {
-        case 0:
-            break;
-        case 1:
-            SceneManager::GetInstance().ChangeScene(SCENE_ID::TITLE);
-            break;
-        case 2:
-            pause_menu = false;
-            for (int i = 0; i < 3; i++)
+            menu_color[menu_cursor] = color_list[1];
+
+            switch (menu_cursor)
             {
-                menu_color[i] = color_list[0];
-                if (i == 0)
+            case 0:
+                //オプションフラグをtrueにする
+                COption::GetInstance().StartOption();
+                break;
+            case 1:
+                //タイトルに戻る
+                SceneManager::GetInstance().ChangeScene(SCENE_ID::TITLE);
+                break;
+            case 2:
+                pause_menu = false;
+                for (int i = 0; i < 3; i++)
                 {
-                    menu_color[i] = color_list[2];
+                    menu_color[i] = color_list[0];
+                    if (i == 0)
+                    {
+                        menu_color[i] = color_list[2];
+                    }
                 }
+                menu_cursor = 0;
+                break;
             }
-            menu_cursor = 0;
-            break;
-        }   
-    }
-    //十字キー上を押したらメニューの選択カーソルがひとつ上に移動する(一番上の場合はその場を維持)
-    if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::UP))
-    {
-        if (menu_cursor > 0)
+        }
+        //十字キー上を押したらメニューの選択カーソルがひとつ上に移動する(一番上の場合はその場を維持)
+        if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::UP))
         {
-            menu_color[menu_cursor] = color_list[0];
-            menu_cursor -= 1;
-            menu_color[menu_cursor] = color_list[2];
+            if (menu_cursor > 0)
+            {
+                menu_color[menu_cursor] = color_list[0];
+                menu_cursor -= 1;
+                menu_color[menu_cursor] = color_list[2];
+            }
+        }
+
+        //十字キー下を押したらメニューの選択カーソルがひとつ下に移動する(一番下の場合はその場を維持)
+        if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::DOWN))
+        {
+            if (0 <= menu_cursor && menu_cursor < 2)
+            {
+                menu_color[menu_cursor] = color_list[0];
+                menu_cursor += 1;
+                menu_color[menu_cursor] = color_list[2];
+            }
         }
     }
 
-    //十字キー下を押したらメニューの選択カーソルがひとつ下に移動する(一番下の場合はその場を維持)
-    if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::DOWN))
+    if (COption::GetInstance().GetOptionFlg() == true)
     {
-        if (0 <= menu_cursor && menu_cursor < 2)
-        {
-            menu_color[menu_cursor] = color_list[0];
-            menu_cursor += 1;
-            menu_color[menu_cursor] = color_list[2];
-        }
+        COption::GetInstance().Update();
     }
 }
 
@@ -184,3 +211,4 @@ void GameMainScene::DrawPause()
         vivid::DrawText(font_size, menu_list[i], menu_pos[i], menu_color[i]);
     }
 }
+
