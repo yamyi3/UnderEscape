@@ -19,11 +19,12 @@ public:
 	void Pause();			//ポーズに以降する処理
 	void PauseMenu(void);	//ポーズメニューの動作
 	void DrawPause(void);	//ポーズメニューの描画
+
 private:
 
 	//自機移動と壁移動の切り替え座標
 	vivid::Vector2	change_pos;
-	//ポーズメニューの切り替え[true]の場合は止まる[false]の場合は動く
+	//ポーズメニューの切り替え[true]の場合はポーズメニューが起動、[false]の場合はポーズメニューは開いていない
 	bool pause_menu;
 
 	vivid::Vector2	frame_pos;		//ポーズメニューのフレームの座標

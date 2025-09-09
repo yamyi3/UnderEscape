@@ -10,6 +10,8 @@ enum class OPTION_LIST
 	MAX,
 };
 
+
+
 class COption
 {
 public:
@@ -40,13 +42,45 @@ public:
 	//サウンドメニューの動作処理
 	void SoundMenu(void);
 
+	//音量調整
+	void ChangeSound(int);
+
+	//サウンドメニューの描画処理
+	void DrawSoundMenu(void);
+
+	//オプションフラグをgamemainからtrueにする
+	void StartOption(void);
+
+	//オプションを閉じる(データ以外初期化する)
+	void EndOption(void);
+
+	//オプションフラグの取得
+	bool GetOptionFlg(void) { return m_OptionMenu; }
+	//サウンドメニューフラグの取得
+	bool GetSoundMenuFlg(void) { return m_SoundMenu; }
+
 private:
-	//->サウンド関係
+	bool				m_OptionMenu;		//オプションが起動されているか判断する(trueで起動)
+	static const float	m_FrameWidth;		//メニューフレームの幅
+	static const float	m_FrameHeight;		//メニューフレームの高さ
+	vivid::Vector2		m_FramePos;			//ポーズメニューのフレームの座標
+	vivid::Vector2		m_MenuPos[3];		//各メニューの座標
+	static const int	m_FontSize;			//メニューのフォントサイズ
+	int					m_MenuCursor;	//現在選択しているメニューの記憶
+
+	//->コントローラー操作画面
+	bool				m_ControllerMenu;	//コントローラーメニューの起動判断フラグ
+	//<-コントローラー操作画面
+
+	//->サウンドメニュー関係
+	int					m_ButtonCount;		//ボタンを押し続けている時のカウンタ
+	bool				m_SEMenu;			//BGMのボリューム調整メニューフラグ
+	bool				m_BGMMenu;			//BGMのボリューム調整メニューフラグ
+	bool				m_SoundMenu;		//サウンドメニューの起動判断フラグ
 	static const int	m_MaxVolume;		//ユーザー視点の最大音量
 	int					m_Volume[2];		//ユーザー設定の任意音量(規定値は最大値)
-	vivid::Vector2		m_VolumeFramePos;	//ポーズメニューのフレームの座標
 	vivid::Vector2		m_VolumeMenuPos[3];	//各メニューの座標
-	static const int	m_FontSize;			//メニューのフォントサイズ
+	unsigned int		m_VolumeColor[3];	//メニューの色
 	std::string			m_VolumeMenuList[3]	//各メニューの表示内容
 	{
 		"SE",
@@ -54,7 +88,7 @@ private:
 		"閉じる"
 	};
 	int					m_SoundMenuCursor;	//現在選択しているメニューの記憶
-	//<-サウンド関係
+	//<-サウンドメニュー関係
 
 	//メニューの一覧(表示用)
 	std::string			m_MenuList[3]
@@ -63,8 +97,6 @@ private:
 		"音量調整",
 		"閉じる"
 	};
-
-	int					m_MenuCursor;	//現在選択しているメニューの記憶
 
 	unsigned int	m_ColorList[3]	//メニューの色リスト
 	{
