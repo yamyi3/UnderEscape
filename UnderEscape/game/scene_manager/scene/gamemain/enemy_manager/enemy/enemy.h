@@ -24,7 +24,8 @@ public:
 
 	vivid::Vector2	GetCircleCenterPos(void);
 
-	bool CheckHitPlayer(const vivid::Vector2& center_c_pos, int c_height, int c_width);
+	bool CheckHitPlayer(const vivid::Vector2& center_c_pos, int c_height, int c_width ,bool shielding);
+	bool CheckSearchPlayer(const vivid::Vector2& center_c_pos, int c_height, int c_width);
 
 	bool IsActive(void)const { return m_ActiveFlag; }
 	void Destroy(void) { m_ActiveFlag = false; }
@@ -100,14 +101,6 @@ protected:
 	bool m_ActiveFlag;	//ƒAƒNƒeƒBƒuƒtƒ‰ƒO
 
 	std::string enemy_sight = "data\\“G‹ŠE.png";
-	//std::string enemy_picture_name[(int)eSTATUS::MAX]	//ƒGƒlƒ~[‚Ì‰æ‘œ‚Ìƒtƒ@ƒCƒ‹–¼
-	//	= {
-	//"data\\“G‹@\\’wåŒ^\\‘Ò‹@.png" ,	//Stop			//‘Ò‹@
-	//"data\\“G‹@\\’wåŒ^\\¶ˆÚ“®.png" ,	//Wandering		//œpœj
-	//"data\\“G‹@\\’wåŒ^\\¶’ÇÕ.png" ,	//Chase			//’ÇÕ
-	//"data\\“G‹@\\’wåŒ^\\‘Ò‹@.png",		//Vigilance		//Œx‰ú
-	//"data\\“G‹@\\’wåŒ^\\‘Ò‹@.png" ,	//Surprised		//ƒXƒ^ƒ“
-	//"data\\“G‹@\\’wåŒ^\\•ßŠlƒ‚[ƒVƒ‡ƒ“.png" };	//Kill
 	int AnimationTimer;
 	static const int animation_change_time;
 	int AnimationFrame;

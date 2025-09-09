@@ -248,14 +248,15 @@ void Enemy::Update(void)
 	default:
 		break;
 	}
-
+	//jpflg = 0;
 	//地面
 	if (ePos.y > Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size, eAnchor))
 	{
+		jpflg = 1;
 		ePos.y = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size, eAnchor);
 	}
 	bool TurnAroundFlg = false;
-	TurnAroundtimer++;
+	
 
 	//天井
 	if (ePos.y < Stage::GetInstance().GetCeiling(ePos, e_width_size, e_height_size, eAnchor))
@@ -267,13 +268,19 @@ void Enemy::Update(void)
 	if (ePos.x < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size, eAnchor))
 	{
 		ePos.x = Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size, eAnchor);
-		TurnAroundFlg = true;
+		if (eVector == -1) {
+			TurnAroundtimer++;
+			TurnAroundFlg = true;
+		}
 	}
 	//右
 	if (ePos.x > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size, eAnchor))
 	{
 		ePos.x = Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size, eAnchor);
-		TurnAroundFlg = true;
+		if (eVector == 1) {
+			TurnAroundtimer++;
+			TurnAroundFlg = true;
+		}
 	}
 	if (TurnAroundFlg && TurnAroundtimer >= 10)
 	{
@@ -318,7 +325,28 @@ vivid::Vector2 Enemy::GetCircleCenterPos(void)
 	return eCircleCenterPos;
 }
 
-bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width)
+bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width, bool shielding)
+{
+	vivid::Vector2 Ch_Pos;
+	Ch_Pos.x = cPos.x + c_width / 2;
+	Ch_Pos.y = cPos.y;
+	if (Ch_Pos.y <= ePos.y + e_height_size
+		&& Ch_Pos.y + c_height >= ePos.y
+		&& Ch_Pos.x <= ePos.x + e_width_size
+		&& Ch_Pos.x + c_width >= ePos.x
+		&& shielding==false)
+	{
+		if (eStatus != eSTATUS::Kill)
+		{
+			eStatus = eSTATUS::Kill;
+			AnimationFrame = 0;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Enemy::CheckSearchPlayer(const vivid::Vector2& cPos, int c_height, int c_width)
 {
 
 	//点と矩形の判定その1(横長)
@@ -394,11 +422,42 @@ bool Enemy::e_wool_jump()
 	//	WallTouchFlg = false;
 	//	return 1;
 	//}
-	if (((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == -1) && ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() > Lwall) ||
-		((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size) && eVector == 1) && ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() < Rwall))
+	switch (eStatus)
 	{
-		return 1;
+	case eSTATUS::Stop:
+		break;
+	case eSTATUS::Wandering:
+		if (((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size)
+			&& eVector == -1)
+			&& ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() > Lwall) ||
+			((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size)
+				&& eVector == 1)
+				&& ePos.x - eAnchor.x + e_width_size + Stage::GetInstance().GetMapChipSize() < Rwall))
+		{
+			return 1;
+		}
+		break;
+	case eSTATUS::Chase:
+		if ((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize()/10 < Stage::GetInstance().GetLWall(ePos - eAnchor, e_width_size, e_height_size)
+			&& eVector == -1) ||
+			(ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize()/10 > Stage::GetInstance().GetRWall(ePos - eAnchor, e_width_size, e_height_size)
+				&& eVector == 1))
+		{
+			return 1;
+		}
+		break;
+	case eSTATUS::Vigilance:
+		break;
+	case eSTATUS::Surprised:
+		break;
+	case eSTATUS::Kill:
+		break;
+	case eSTATUS::MAX:
+		break;
+	default:
+		break;
 	}
+
 
 	return 0;
 }

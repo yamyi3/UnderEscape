@@ -22,7 +22,8 @@ public:
 	void GenerateEnemy(vivid::Vector2 pos);
 	void GenerateEnemy();
 
-	bool CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width,bool shielding);
+	bool CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width, bool shielding);
+	bool CheckSearchPlayer(const vivid::Vector2& center_pos, int height, int width,bool shielding);
 	void sound_sensor(vivid::Vector2 sound_source, float sound_size);	//‰¹‚Ì”»’è
 
 
