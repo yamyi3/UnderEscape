@@ -25,7 +25,7 @@ public:
 private:
 	vivid::Vector2 TpPos[2];
 	static const int TpCount;
-	static const std::string teleport_picture_name;
+	std::string* teleport_picture_name;
 
 	vivid::Vector2 tp_Scale;
 	float tp_WidthSize;					//階段の横のドット数
