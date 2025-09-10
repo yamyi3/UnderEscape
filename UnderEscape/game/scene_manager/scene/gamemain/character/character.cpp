@@ -472,6 +472,11 @@ void Character::ControllerControl(void)
 
 		CheckMoveState();
 	}
+	//十字上トリガーで階段処理
+	if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::UP))
+	{
+		Stairs();
+	}
 
 	//Bボタンを押すとジャンプをする
 	if ((controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::B)) && m_LandingFlag)
@@ -513,11 +518,6 @@ void Character::ControllerControl(void)
 
 	//移動に慣性をつける
 	m_Velocity.x *= m_friction;
-
-	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::UP))
-	{
-		Stairs();
-	}
 }
 
 //地面との当たり判定
