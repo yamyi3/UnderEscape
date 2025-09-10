@@ -23,6 +23,15 @@ enum class CHARA_SKILL
 	MAX,
 };
 
+enum class CHARA_CONDITION
+{
+	NORMAL,
+	ANIMAL,
+	MONSTER,
+
+	MAX,
+};
+
 //自機クラス
 class Character
 {
@@ -125,8 +134,10 @@ private:
 
 	//->描画関係
 	//->自機関係
+	static const float limit_width;					//最終変化状態の幅
+	static const float nomal_width;					//それ以外の状態の幅
 	vivid::Vector2 cPos;							//自機の座標
-	static const float ch_width;					//自機の幅
+	static float ch_width;							//自機の幅
 	static const float ch_height;					//自機の高さ
 	static unsigned int color;						//自機の色
 	int	c_anime_frame;								//アニメーションの更新
@@ -153,17 +164,11 @@ private:
 			"data\\自機\\獣化状態\\獣化前しゃがみ歩き.png",			//しゃがみ歩き
 			"data\\自機\\獣化状態\\獣化前ジャンプ.png"				//ジャンプ
 		},
-		//透明化状態
+		//スキル使用過多状態
 		{
-			//"data\\自機\\透明化状態\\透明化前待機.png",				//待機
-			//"data\\自機\\透明化状態\\透明化前歩行.png",				//歩行
-			//"data\\自機\\透明化状態\\透明化前走り.png",				//ダッシュ
-			//"data\\自機\\透明化状態\\透明化前しゃがみ待機.png",		//しゃがみ待機
-			//"data\\自機\\透明化状態\\透明化前しゃがみ歩き.png",		//しゃがみ歩き
-			//"data\\自機\\透明化状態\\透明化前ジャンプ.png"			//ジャンプ
-			"data\\自機\\通常状態\\前待機スプレッド.png",			//待機
-			"data\\自機\\通常状態\\前歩きスプレッド.png",			//歩行
-			"data\\自機\\通常状態\\前走りスプレッド.png",			//ダッシュ
+			"data\\自機\\最終状態\\前待機.png",			//待機
+			"data\\自機\\最終状態\\前歩行.png",			//歩行
+			"data\\自機\\最終状態\\前走り.png",			//ダッシュ
 			"data\\自機\\通常状態\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
 			"data\\自機\\通常状態\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
 			"data\\自機\\通常状態\\前ジャンプスプレッド.png"		//ジャンプ
@@ -216,6 +221,8 @@ private:
 	//<-スタミナ関係
 
 	//->スキル関係
+	int					m_SkillConunt;		//スキルの使用回数
+	static const int	m_SkillReference[2];//スキル使用回数による状態変化の基準値
 	static const int	activation_time;	//スキルの発動後の効果時間
 	bool				skill_active_flag;	//スキルのアクティブフラグ
 	int					active_count;		//スキル発動中のカウンタ
@@ -232,6 +239,7 @@ private:
 	bool cShielding;					//遮蔽に入っているか判定するフラグ
 	CHARA_STATE chara_state;			//自機の状態
 	CHARA_SKILL chara_skill;			//スキルの使用状態
+	CHARA_CONDITION	chara_condition;	//自機のスキル使用回数による状態
 
 	//階段用
 	static const int stairs_fade_speed;
