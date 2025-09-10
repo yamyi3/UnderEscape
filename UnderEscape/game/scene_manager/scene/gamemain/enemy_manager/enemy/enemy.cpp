@@ -24,8 +24,7 @@ const int Enemy::animation_change_time = 5;
 
 
 
-Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,
-	float jump_height,float jump_upspeed,float jump_downspeed,float circle_radius)
+Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,float jump_height,float jump_upspeed,float jump_downspeed,float circle_radius, bool viewing_angle)
 	: e_width_size(w_size)
 	, e_height_size(h_size)
 	, eSpeed(speed)
@@ -34,6 +33,7 @@ Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,
 	, enemy_jump_upspeed(jump_upspeed)
 	, enemy_jump_downspeed(jump_downspeed)
 	, eCircleRadius(circle_radius)
+	, ViewingAngle(viewing_angle)
 	, ePos(300.0f, 500.0f)
 	, eAnchor(e_width_size / 2.0f, e_height_size / 2.0f)
 	, eScale(1.0f, 1.0f)
@@ -348,6 +348,8 @@ bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width
 bool Enemy::CheckSearchPlayer(const vivid::Vector2& cPos, int c_height, int c_width)
 {
 
+	if (ViewingAngle && ((eVector == -1 && cPos.x > ePos.x) || (eVector == 1 && cPos.x < ePos.x)))
+		return false;
 	//点と矩形の判定その1(横長)
 	bool result_h = ePos.x > cPos.x - eCircleRadius
 		&& ePos.x < cPos.x + c_width + eCircleRadius
@@ -388,10 +390,7 @@ bool Enemy::CheckSearchPlayer(const vivid::Vector2& cPos, int c_height, int c_wi
 		return true;
 	}
 	//当たっていない場合はfalseを返す
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 //音の判定

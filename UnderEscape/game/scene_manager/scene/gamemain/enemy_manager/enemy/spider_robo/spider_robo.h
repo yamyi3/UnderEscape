@@ -39,5 +39,6 @@ private:
     static const float  m_jump_height;
     static const float  m_jump_upspeed;
     static const float  m_jump_downspeed;
+    static const bool   viewing_angle;
 
 };

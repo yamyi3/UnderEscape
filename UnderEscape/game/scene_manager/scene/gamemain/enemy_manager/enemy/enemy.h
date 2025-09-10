@@ -5,8 +5,7 @@
 class Enemy
 {
 public:
-	Enemy::Enemy(int w_size = 128, int h_size = 98, float speed = 4.0f, float chase_speed = 6.0f,
-		float jump_height = 250.0f, float jump_upspeed = 3.0f, float jump_downspeed = 100.0f, float circle_radius = 200.0f);
+	Enemy::Enemy(int w_size, int h_size, float speed, float chase_speed,float jump_height, float jump_upspeed, float jump_downspeed, float circle_radius ,bool viewing_angle);
 	~Enemy(void) = default;
 
 	virtual void Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground);//初期化
@@ -99,6 +98,13 @@ protected:
 	float WallTouchPosX;	//壁に触れた時の位置
 
 	bool m_ActiveFlag;	//アクティブフラグ
+
+	/*
+	エネミーの視野角用
+	true	::前方のみ
+	false	::全方位
+	*/
+	bool ViewingAngle;
 
 	std::string enemy_sight = "data\\敵視界.png";
 	int AnimationTimer;
