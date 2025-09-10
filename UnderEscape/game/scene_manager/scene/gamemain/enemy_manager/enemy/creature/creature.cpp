@@ -7,8 +7,9 @@ const float  Creature::m_chase_move_speed = 6;       //!< ˆÚ“®‘¬“x
 const float  Creature::m_jump_height = 250.0f;
 const float  Creature::m_jump_upspeed = 3.0f;
 const float  Creature::m_jump_downspeed = 100.0f;
+const bool   Creature::viewing_angle = 1;
 Creature::Creature(void)
-	:Enemy(m_width, m_height, m_move_speed, m_chase_move_speed, m_jump_height, m_jump_upspeed, m_jump_downspeed, m_circle_radius)
+	:Enemy(m_width, m_height, m_move_speed, m_chase_move_speed, m_jump_height, m_jump_upspeed, m_jump_downspeed, m_circle_radius, viewing_angle)
 {
 }
 

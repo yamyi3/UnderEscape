@@ -70,7 +70,8 @@ void EnemyManager::Finalize()
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vector, float ground)
 {
 	Enemy* enemy = nullptr;
-	enemy = new SpiderRobo();
+	//enemy = new SpiderRobo();
+	enemy = new Creature();
 	if (!enemy)return;
 	enemy->Initialize(pos, L, R, vector, ground);
 
@@ -79,42 +80,22 @@ void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vec
 
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R, float vector)
 {
-	Enemy* enemy = nullptr;
-	enemy = new SpiderRobo();
-	if (!enemy)return;
-	enemy->Initialize(pos, L, R, vector);
-
-	m_Enemy.push_back(enemy);
+	GenerateEnemy(pos, L, R, vector, 60000.0f);
 }
 
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos, float L, float R)
 {
-	Enemy* enemy = nullptr;
-	enemy = new SpiderRobo();
-	if (!enemy)return;
-	enemy->Initialize(pos, L, R);
-
-	m_Enemy.push_back(enemy);
+	GenerateEnemy(pos, L, R, 1, 60000.0f);
 }
 
 void EnemyManager::GenerateEnemy(vivid::Vector2 pos)
 {
-	Enemy* enemy = nullptr;
-	enemy = new SpiderRobo();
-	if (!enemy)return;
-	enemy->Initialize(pos);
-
-	m_Enemy.push_back(enemy);
+	GenerateEnemy(pos, pos.x, pos.x, 1, 60000.0f);
 }
 
 void EnemyManager::GenerateEnemy()
 {
-	Enemy* enemy = nullptr;
-	enemy = new SpiderRobo();
-	if (!enemy)return;
-	enemy->Initialize();
-
-	m_Enemy.push_back(enemy);
+	GenerateEnemy({ 300.0f, 500.0f }, 300.0f, 60000.0f);
 }
 
 bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width, bool shielding)

@@ -24,12 +24,12 @@ public:
 private:
     std::string enemy_picture_name[(int)eSTATUS::MAX]	//蜘蛛ロボの画像のファイル名
         = {
-    "data\\敵機\\怪物\\左待機.png" ,	//Stop			//待機
-    "data\\敵機\\怪物\\左移動.png" ,	//Wandering		//徘徊
-    "data\\敵機\\怪物\\左追跡.png" ,	//Chase			//追跡
-    "data\\敵機\\怪物\\左待機.png",		//Vigilance		//警戒
-    "data\\敵機\\怪物\\左待機.png" ,	//Surprised		//スタン
-    "data\\敵機\\怪物\\左捕獲モーション.png" };	//Kill
+    "data\\敵機\\怪物\\右待機.png" ,	//Stop			//待機
+    "data\\敵機\\怪物\\右歩行.png" ,	//Wandering		//徘徊
+    "data\\敵機\\怪物\\右追跡.png" ,	//Chase			//追跡
+    "data\\敵機\\怪物\\右待機.png",		//Vigilance		//警戒
+    "data\\敵機\\怪物\\右待機.png" ,	//Surprised		//スタン
+    "data\\敵機\\怪物\\右捕獲モーション.png" };	//Kill
 
     static const int    m_width;            //!< 幅 
     static const int    m_height;           //!< 高さ 	
@@ -39,5 +39,6 @@ private:
     static const float  m_jump_height;
     static const float  m_jump_upspeed;
     static const float  m_jump_downspeed;
+    static const bool   viewing_angle;
 
 };
