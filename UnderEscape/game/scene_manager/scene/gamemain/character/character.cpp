@@ -9,14 +9,17 @@ bool	Character::cCatch = false;
 bool	Character::cAlive = true;
 CHARA_SKILL chara_skill = CHARA_SKILL::NORMAL;
 
-const float Character::ch_width		 = 72.0f;			//自機の幅
+const float Character::limit_width	 = 100.0f;			//最終変化の幅
+const float Character::nomal_width	 = 72.0f;				//通常状態の幅
+float		Character::ch_width		 = 72.0f;				//自機の幅
 const float Character::ch_height	 = 180.0f;			//自機の高さ
 const float Character::walk_speed	 = 1.2f;			//自機の通常移動速度
 const float Character::dash_speed	 = 2.4f;			//自機のダッシュ時の移動速度
 const float Character::sneak_speed	 = 0.6f;			//自機の歩行時の移動速度
 const float Character::fatigue_speed = 0.3f;			//自機の疲労時の移動速度
 
-int			Character::skill_memory			= 1;
+const int	Character::m_SkillReference[2]	= {3, 5};	//スキル使用回数による状態変化の基準値
+int			Character::skill_memory			= 1;		//選択状態のスキルの記憶
 const int	Character::skill_cool_time		= 300;		//スキルのクールタイムの最大数(60フレーム換算5秒)
 const int	Character::activation_time		= 300;		//スキルの効果時間(60フレーム換算5秒)
 const int	Character::stamina_width		= 76;		//スタミナ現在の1つあたりの幅
@@ -50,6 +53,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	accelerator = vivid::Vector2::ZERO;
 	cPos = {100.0f, rPos.y - ch_height};
 	chara_state = CHARA_STATE::WAIT;
+	chara_condition = CHARA_CONDITION::NORMAL;
 
 	c_anchor	= {ch_width / 2,ch_height / 2 };
 	c_scale		= {  1.0f,1.0f };
@@ -76,6 +80,8 @@ void Character::Initialize(vivid::Vector2 rPos)
 	CoverColor = 0x00ffffff;
 	StairsFadeFlg = false;
 	FadeTimer = 0;
+
+	m_SkillConunt = 0;
 }
 
 void Character::Update(void)
@@ -135,7 +141,7 @@ void Character::Draw(void)
 	//<-スタミナのrect更新
 
 	//自機の描画
-	vivid::DrawTexture(c_image[(int)chara_skill][(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
+	vivid::DrawTexture(c_image[(int)chara_condition][(int)chara_state], cPos - Scroll, color, c_rect, c_anchor, c_scale);
 	//スタミナ描画フラグがtrueの時にのみスタミナゲージを描画する
 	if (c_stamina_draw)
 		vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
@@ -695,22 +701,40 @@ void Character::UpdateAnimation(void)
 	switch (chara_state)
 	{
 	case CHARA_STATE::WAIT:
-		c_change_anime_frame = 12;
+		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
+			c_change_anime_frame = 12;
+		if (chara_condition == CHARA_CONDITION::MONSTER)
+			c_change_anime_frame = 12;
 		break;
 	case CHARA_STATE::WALK:
-		c_change_anime_frame = 18;
+		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
+			c_change_anime_frame = 18;
+		if (chara_condition == CHARA_CONDITION::MONSTER)
+			c_change_anime_frame = 14;
 		break;
 	case CHARA_STATE::RUN:
-		c_change_anime_frame = 9;
+		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
+			c_change_anime_frame = 9;
+		if (chara_condition == CHARA_CONDITION::MONSTER)
+			c_change_anime_frame = 9;
 		break;
 	case CHARA_STATE::SNEAKWAIT:
-		c_change_anime_frame = 12;
+		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
+			c_change_anime_frame = 12;
+		if (chara_condition == CHARA_CONDITION::MONSTER)
+			c_change_anime_frame = 12;
 		break;
 	case CHARA_STATE::SNEAKWALK:
-		c_change_anime_frame = 15;
+		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
+			c_change_anime_frame = 15;
+		if (chara_condition == CHARA_CONDITION::MONSTER)
+			c_change_anime_frame = 15;
 		break;
 	case CHARA_STATE::JUMP:
-		c_change_anime_frame = 8;
+		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
+			c_change_anime_frame = 8;
+		if (chara_condition == CHARA_CONDITION::MONSTER)
+			c_change_anime_frame = 8;
 		break;
 	}
 
@@ -810,6 +834,10 @@ void Character::SkillMove(void)
 	//スキルのアクティブフラグがtrueの時に処理を行う
 	if (skill_active_flag)
 	{
+		if (active_count == 0)
+		{
+			m_SkillConunt++;
+		}
 		active_count++;
 		if (active_count < activation_time)
 		{
@@ -824,6 +852,17 @@ void Character::SkillMove(void)
 				color = 0x44ffffff;
 				found_flag = false;
 				break;
+			}
+			//自機の描画の変化
+			if (m_SkillConunt < m_SkillReference[0])
+			{
+				chara_condition = CHARA_CONDITION::ANIMAL;
+				ch_width = nomal_width;
+			}
+			else
+			{
+				chara_condition = CHARA_CONDITION::MONSTER;
+				ch_width = limit_width;
 			}
 		}
 		//タイマーが規定値を超えたら各数値をリセットする
@@ -845,6 +884,23 @@ void Character::SkillMove(void)
 			active_count = 0;
 			skill_active_flag = false;
 			skill_cool_flag = true;
+			
+
+			if (m_SkillConunt < m_SkillReference[0])
+			{
+				chara_condition = CHARA_CONDITION::NORMAL;
+				ch_width = nomal_width;
+			}
+			else if (m_SkillConunt < m_SkillReference[1])
+			{
+				chara_condition = CHARA_CONDITION::ANIMAL;
+				ch_width = nomal_width;
+			}
+			else
+			{
+				chara_condition = CHARA_CONDITION::MONSTER;
+				ch_width = limit_width;
+			}
 		}
 	}
 }

@@ -1199,6 +1199,10 @@ PlaySound(const std::string& file_name, bool loop)
     PlaySoundMem(sound, (loop ? DX_PLAYTYPE_LOOP : DX_PLAYTYPE_BACK));
 }
 
+/*
+ *  音量調整オプション搭載
+ *  サウンド再生
+ */
 void
 vivid::
 PlaySound(const std::string& file_name, bool loop, int volume)
@@ -1208,7 +1212,7 @@ PlaySound(const std::string& file_name, bool loop, int volume)
 
     if (sound == VIVID_DX_ERROR)
         return;
-
+    //音量の登録
     ChangeVolumeSoundMem(volume, sound);
 
 
