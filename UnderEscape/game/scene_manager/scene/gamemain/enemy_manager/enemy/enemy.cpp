@@ -285,7 +285,7 @@ void Enemy::Update(void)
 		eVector *= -1;
 		TurnAroundtimer = 0;
 	}
-	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size);
+	eGround = Stage::GetInstance().GetRoundHeight(ePos, e_width_size, e_height_size, eAnchor);
 
 	if (e_wool_jump())
 	{
@@ -426,10 +426,10 @@ bool Enemy::e_wool_jump()
 	case eSTATUS::Stop:
 		break;
 	case eSTATUS::Wandering:
-		if (((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size, eAnchor)
+		if (((ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize()/2 < Stage::GetInstance().GetLWall(ePos, e_width_size, e_height_size, eAnchor)
 			&& eVector == -1)
 			&& ePos.x - eAnchor.x - Stage::GetInstance().GetMapChipSize() > Lwall) ||
-			((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize() > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size, eAnchor)
+			((ePos.x + e_width_size - eAnchor.x + Stage::GetInstance().GetMapChipSize()/2 > Stage::GetInstance().GetRWall(ePos, e_width_size, e_height_size, eAnchor)
 				&& eVector == 1)
 				&& ePos.x - eAnchor.x + e_width_size + Stage::GetInstance().GetMapChipSize() < Rwall))
 		{
