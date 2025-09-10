@@ -3,13 +3,13 @@
 #include "..\..\..\stage\stage.h"
 
 const int Teleport::TpCount = 2;
-const std::string Teleport::teleport_picture_name="data\\box.png";
 
 Teleport::Teleport()
 	:tp_Scale{1,1}
 	, tp_WidthSize(100)
-	,tp_HeightSize(100)
-	, tp_color(0xff2222ff)
+	, tp_HeightSize(200)
+	, tp_color(0xffffffff)
+	, teleport_picture_name(nullptr)
 {
 }
 
@@ -30,6 +30,14 @@ void Teleport::Initialize(vivid::Vector2 pos1, vivid::Vector2 pos2)
 	ch_height = Character::GetInstance().GetCharaHeight();
 	ch_width = Character::GetInstance().GetCharaWidth();
 	map_chip_size = Stage::GetInstance().GetMapChipSize();
+	if (!teleport_picture_name)
+		teleport_picture_name = new std::string[TpCount];
+	for (int i = 0; i < TpCount; i++)
+		if (i % 2 == 0)
+			teleport_picture_name[i] = "data\\”wŒi—Þ\\‚­‚¾‚èŠK’i.jpg";
+		else
+			teleport_picture_name[i] = "data\\”wŒi—Þ\\‚Ì‚Ú‚èŠK’i.jpg";
+
 }
 
 void Teleport::Update(void)
@@ -40,10 +48,11 @@ void Teleport::Draw(vivid::Vector2 scroll)
 {
 	for (int i = 0; i < TpCount; i++)
 	{
-		if (vivid::WINDOW_WIDTH > TpPos[i].x - scroll.x && TpPos[i].x - scroll.x + tp_WidthSize > 0)
+		vivid::Vector2 DrawPos = TpPos[i] + vivid::Vector2{ 0.0f, (float)Stage::GetInstance().GetMapChipSize() } - vivid::Vector2{0.0f, tp_HeightSize};
+		if (vivid::WINDOW_WIDTH > DrawPos.x - scroll.x && DrawPos.x - scroll.x + tp_WidthSize > 0)
 		{
 			vivid::Rect rect = { 0,0,tp_WidthSize,tp_HeightSize };
-			vivid::DrawTexture(teleport_picture_name, TpPos[i] - scroll, tp_color, rect, { 0,0 }, tp_Scale);
+			vivid::DrawTexture(teleport_picture_name[i], DrawPos - scroll, tp_color, rect, {0,0}, tp_Scale);
 		}
 	}
 }
