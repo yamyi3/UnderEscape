@@ -66,7 +66,8 @@ private:
 	vivid::Vector2		m_FramePos;			//ポーズメニューのフレームの座標
 	vivid::Vector2		m_MenuPos[3];		//各メニューの座標
 	static const int	m_FontSize;			//メニューのフォントサイズ
-	int					m_MenuCursor;	//現在選択しているメニューの記憶
+	int					m_MenuCursor;		//現在選択しているメニューの記憶
+	bool				m_TriggerAButton;	//Aボタンのトリガー
 
 	//->コントローラー操作画面
 	bool				m_ControllerMenu;	//コントローラーメニューの起動判断フラグ
