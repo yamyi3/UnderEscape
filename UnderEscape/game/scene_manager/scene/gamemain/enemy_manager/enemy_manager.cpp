@@ -1,6 +1,7 @@
 #include "enemy_manager.h"
 #include "..\character\character.h"
 #include "enemy/spider_robo/spider_robo.h"
+#include "enemy/creature/creature.h"
 
 EnemyManager& EnemyManager::GetInstance()
 {

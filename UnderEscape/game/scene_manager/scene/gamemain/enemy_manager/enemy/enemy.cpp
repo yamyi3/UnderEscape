@@ -482,9 +482,9 @@ vivid::Vector2 Enemy::Gravity(vivid::Vector2 pos = { 0.0f,0.0f }, float yuka = 6
 		if (gravity <= 100 - (0.5 * downspeed))
 			gravity = 100 - (0.5 * downspeed);
 	}
-	if (pos.y > yuka - (CharacterVSize - anchor.y))
+	if (pos.y > yuka - (CharacterVSize))
 	{
-		pos.y = yuka - (CharacterVSize - anchor.y);
+		pos.y = yuka - (CharacterVSize);
 		jpflg = 1;
 		//if (WallTouchFlg)
 		//{
