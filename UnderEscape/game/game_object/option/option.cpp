@@ -20,6 +20,7 @@ void COption::Initialize(void)
 	m_OptionMenu = false;
 	m_SEMenu = false;
 	m_BGMMenu = false;
+	m_TriggerAButton = false;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -38,11 +39,11 @@ void COption::Update(void)
 {
 	namespace controller = vivid::controller;
 
-	if (m_SoundMenu == false)
+	if (m_SoundMenu == false && m_ControllerMenu == false)
 	{
-		if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A))
+		if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A) && m_TriggerAButton == false)
 		{
-			m_MenuColor[m_MenuCursor] = m_ColorList[1];
+			m_TriggerAButton = true;
 
 			switch (m_MenuCursor)
 			{
@@ -93,6 +94,7 @@ void COption::Update(void)
 	{
 		SoundMenu();
 	}
+	m_TriggerAButton = false;
 }
 
 void COption::Draw(void)
@@ -123,8 +125,9 @@ void COption::SetVolume(void)
 
 void COption::ControllerMenu(void)
 {
-	if (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::A))
+	if (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::A) && m_TriggerAButton == false)
 	{
+		m_TriggerAButton = true;
 		m_ControllerMenu = false;
 	}
 }
@@ -137,9 +140,9 @@ void COption::SoundMenu(void)
 	if (m_BGMMenu == false && m_SEMenu == false)
 	{
 
-		if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A))
+		if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A) && m_TriggerAButton == false)
 		{
-			m_MenuColor[m_SoundMenuCursor] = m_ColorList[1];
+			m_TriggerAButton = true;
 
 			switch (m_SoundMenuCursor)
 			{
@@ -147,16 +150,18 @@ void COption::SoundMenu(void)
 				if (m_SEMenu == false)
 				{
 					m_BGMMenu = true;
+					m_VolumeColor[m_SoundMenuCursor] = m_ColorList[1];
 				}
 				break;
 			case 1:
 				if (m_BGMMenu == false)
 				{
 					m_SEMenu = true;
+					m_VolumeColor[m_SoundMenuCursor] = m_ColorList[1];
 				}
 				break;
 			case 2:
-				m_SoundMenu = false;
+				
 				for (int i = 0; i < 3; ++i)
 				{
 					m_VolumeColor[i] = m_ColorList[0];
@@ -166,6 +171,7 @@ void COption::SoundMenu(void)
 					}
 				}
 				m_SoundMenuCursor = 0;
+				m_SoundMenu = false;
 				break;
 			}
 		}
@@ -267,6 +273,7 @@ void COption::ChangeSound(int cursor)
 			m_SEMenu = false;
 			break;
 		}
+		m_VolumeColor[cursor] = m_ColorList[2];
 	}
 }
 

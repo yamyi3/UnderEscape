@@ -150,7 +150,6 @@ void GameMainScene::PauseMenu()
     {
         if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::A))
         {
-            menu_color[menu_cursor] = color_list[1];
 
             switch (menu_cursor)
             {
