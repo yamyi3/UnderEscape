@@ -4,11 +4,11 @@
 #include "../item.h"
 
 
-class FlashItem : public Item
+class CFlashItem : public CItem
 {
 public:
-	FlashItem();
-	~FlashItem();
+	CFlashItem(void);
+	~CFlashItem(void);
 	//初期化
 	void Initialize(vivid::Vector2 position);
 	//描画
@@ -16,23 +16,20 @@ public:
 	//プレイヤーが持っている状態の処理
 	void GetMove(vivid::Vector2, float, float);
 	//プレイヤーが投げた後の処理(マウス）
-	void UseMove(vivid::Vector2);
+	void UseMove();
 
-	float GetEffectiveArea()
-	{
-		return m_Area;
-	}
+	void SetOrbitPosition(vivid::Vector2 position, vivid::Vector2 c_pos);
 
 private:
-	float Xspeed;						//飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
-	float Yspeed;						//飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
-	vivid::Vector2 Mouse;				//自キャラからのマウスの座標
-	bool Flash_State;					//閃光の状態
+	float m_X_Speed;						//飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
+	float m_Y_Speed;						//飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
+	vivid::Vector2 m_Mouse_Pos;				//自キャラからのマウスの座標
 
-	static const float item_height;		//アイテムオブジェクトの高さ
-	static const float item_width;		//アイテムオブジェクトの幅
-	static const float item_radius;		//アイテムオブジェクトの幅	
-	static const int	max_item_time;		//アイテムの効果時間	
-	static const int	max_number_of_times;	//アイテムの使用回数
+	static const float m_height;			//アイテムオブジェクトの高さ
+	static const float m_width;				//アイテムオブジェクトの幅
+	static const float m_radius;			//アイテムオブジェクトの幅	
+	static const int	m_max_time;			//アイテムの効果時間	
+	static const int	m_number_of_times;	//アイテムの効果時間	
+	static const float m_effect_area;		//アイテム効果範囲
 };
 

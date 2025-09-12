@@ -2,6 +2,7 @@
 #include<list>
 #include <iostream>
 #include <vector>
+#include"../item_manager/item/item_id.h"
 #include "enemy_sheet_id.h"
 #include "enemy/enemy.h"
 #include "vivid.h"
@@ -13,7 +14,7 @@ public:
 	// ‰Šú‰»
 	void Initialize();
 	// XV
-	void Update();
+	void Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area);
 	// •`‰æ
 	void Draw();
 	// ŠJ•ú

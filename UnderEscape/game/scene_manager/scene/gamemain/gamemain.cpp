@@ -60,7 +60,7 @@ void GameMainScene::Update(void)
             EnemyManager::GetInstance().sound_sensor(mopos, 300);
         }
         CTimer::GetInstance().Update();
-        EnemyManager::GetInstance().Update();
+        EnemyManager::GetInstance().Update(ItemManager::GetInstance().GetItemID(), ItemManager::GetInstance().GetItemPos(), ItemManager::GetInstance().GetItemActiveFlag(), ItemManager::GetInstance().GetEfectiveArea());
         Character::GetInstance().Update();
         Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight()));
         Character::GetInstance().CheckHit({ 0,0 }, 0, 0,

@@ -1,7 +1,7 @@
 #pragma once
 #include "vivid.h"
 #include "enemy_id.h"
-
+#include "../../item_manager/item/item_id.h"
 class Enemy
 {
 public:
@@ -13,7 +13,7 @@ public:
 	virtual void Initialize(vivid::Vector2 pos, float L, float R);//‰Šú‰»
 	virtual void Initialize(vivid::Vector2 pos);//‰Šú‰»
 	virtual void Initialize(void);
-	virtual void Update(void);
+	virtual void Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area);
 	virtual void Draw(vivid::Vector2 scroll);
 	virtual void Finalize(void);
 

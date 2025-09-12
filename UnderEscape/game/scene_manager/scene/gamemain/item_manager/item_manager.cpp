@@ -18,18 +18,15 @@ void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float
 {
 	ITEM_LIST::iterator it = m_Item.begin();
 	ITEM_LIST::iterator end = m_Item.end();
+
 	ITEM_LIST::iterator priority = it;
 	bool check = GetItemCheck();
-	float c;
-	while (it != end && priority != end)
+
+
+	while (it != end)
 	{
-		//if ((*priority)->GetPriority() <= (*it)->GetPriority())
-		//{
-		//}
-		//else
-		//{
-		//	priority = it;
-		//}
+		(*it)->Update(cPos, cWidth, cHeight, rHeight);
+
 		//不活性なデータの消去
 		if (!(*it)->IsActive())
 		{
@@ -41,11 +38,18 @@ void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float
 
 			continue;
 		}
-		////(*priority)->Update(cPos, cWidth, cHeight, rHeight, check, true);
-		(*it)->Update(cPos, cWidth, cHeight, rHeight, check, true);
 
 		++it;
 	}
+
+	// 拾う・使う
+	bool is_pick_up = vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F);
+	bool is_throw = vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C);
+	bool is_place = vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::V);
+
+	if (is_pick_up) PickupItem(vivid::Vector2(cPos.x + cWidth / 2.0f, cPos.y + cHeight / 2.0f));
+	if (is_throw)	ThrowItem();
+	if (is_place)PlaceItem(cPos);
 }
 
 
@@ -82,14 +86,14 @@ void ItemManager::Finalize()
 
 void ItemManager::CreateItem(vivid::Vector2 position, ITEM_ID id)
 {
-	Item* item = nullptr;
+	CItem* item = nullptr;
 
 	switch (id)
 	{
-	case ITEM_ID::SOUND_ITEM:	item = new SoundItem();
+	case ITEM_ID::SOUND_ITEM:	item = new CSoundItem();
 		//Item_effective_area = item->GetEffectiveArea();
 		break;
-	case ITEM_ID::FLASH_ITEM:	item = new FlashItem();
+	case ITEM_ID::FLASH_ITEM:	item = new CFlashItem();
 		//Item_effective_area = item->GetEffectiveArea();
 		break;
 	default:
@@ -154,6 +158,64 @@ bool ItemManager::GetItemCheck()
 		it++;
 	}
 	return false;
+}
+
+
+void ItemManager::PickupItem(const vivid::Vector2& center_pos)
+{
+	if (m_CatchItem) return;
+
+	ITEM_LIST::iterator it = m_Item.begin();
+	ITEM_LIST::iterator end = m_Item.end();
+
+	CItem* item = nullptr;
+	float length = FLT_MAX;
+
+	while (it != end)
+	{
+		if ((*it)->CanPickUp())
+		{
+			vivid::Vector2 v = center_pos - (*it)->GetCenterPosition();
+
+			if (length > v.Length())
+			{
+				m_CatchItem = (*it);
+
+				length = v.Length();
+			}
+		}
+
+		++it;
+	}
+
+	if (m_CatchItem != nullptr)
+		m_CatchItem->Found();
+
+	return;
+}
+
+void ItemManager::ThrowItem(void)
+{
+	if (m_CatchItem == nullptr) return;
+
+	m_CatchItem->Thrown();
+
+	m_CatchItem = nullptr;
+}
+
+void ItemManager::PlaceItem(const vivid::Vector2& c_pos)
+{
+	if (m_CatchItem == nullptr) return;
+
+	m_CatchItem->Place(c_pos);
+
+	m_CatchItem = nullptr;
+
+}
+
+ItemManager::ItemManager()
+	: m_CatchItem(nullptr)
+{
 }
 
 

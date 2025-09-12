@@ -2,8 +2,6 @@
 
 #include "enemy.h"
 #include "..\..\stage\stage.h"
-#include"..\..\item_manager\item_manager.h"
-#include"..\..\item_manager\item\item.h"
 
 const int Enemy::e_visibility_width_size = 400;
 const int Enemy::e_visibility_height_size = 400;
@@ -106,57 +104,34 @@ void Enemy::Initialize(void)
 	Enemy::Initialize({ 300.0f, 500.0f }, 300.0f, 600.0f);
 }
 
-void Enemy::Update(void)
+void Enemy::Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area)
 {
-	if (ItemManager::GetInstance().GetItemID() == ITEM_ID::FLASH_ITEM)
+	switch (id)
 	{
-		item_pos = ItemManager::GetInstance().GetItemPos();
+	case ITEM_ID::FLASH_ITEM:	//閃光弾
+		item_pos = pos;
 		item_pos.x = abs((item_pos.x) - ePos.x);										//アイテムとエネミーの横の距離
 		item_pos.y = abs((item_pos.y) - ePos.y);										//アイテムとエネミーの縦の距離
-		if (ItemManager::GetInstance().GetItemActiveFlag() == true)		//平方根で距離を求め比べる 300は効果範囲
+		if (active)		//平方根で距離を求め比べる 300は効果範囲
 		{
-			if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= 300)
+			if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= effect_area)
 			{
 				Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
 				Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
 				eStatus = eSTATUS::Surprised;
 			}
 		}
-	}
-	if (ItemManager::GetInstance().GetItemID() == ITEM_ID::SOUND_ITEM)
-	{
-		if (ItemManager::GetInstance().GetItemActiveFlag() == true)
+
+		break;
+	case ITEM_ID::SOUND_ITEM:	//音爆弾
+		if (active == true)
 		{
-			sound_sensor(ItemManager::GetInstance().GetItemPos(), 500);
+			sound_sensor(pos, effect_area);
 		}
+		break;
+	default:
+		break;
 	}
-
-	//switch (ItemManager::GetInstance().GetItemID())
-	//{
-	//case ITEM_ID::FLASH_ITEM:	//閃光弾
-	//	item_pos = ItemManager::GetInstance().GetItemPos();
-	//	item_pos.x = abs((item_pos.x) - ePos.x);										//アイテムとエネミーの横の距離
-	//	item_pos.y = abs((item_pos.y) - ePos.y);										//アイテムとエネミーの縦の距離
-	//	if (ItemManager::GetInstance().GetItemActiveFlag() == true)		//平方根で距離を求め比べる 300は効果範囲
-	//	{
-	//		if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= 300)
-	//		{
-	//			Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
-	//			Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
-	//			eStatus = eSTATUS::Surprised;
-	//		}
-	//	}
-
-	//	break;
-	//case ITEM_ID::SOUND_ITEM:	//音爆弾
-	//	if (ItemManager::GetInstance().GetItemActiveFlag() == true)		
-	//	{
-	//		sound_sensor(ItemManager::GetInstance().GetItemPos(), 500);
-	//	}
-	//	break;
-	//default:
-	//	break;
-	//}
 
 
 	Sight_Check_Timer++;
@@ -232,16 +207,6 @@ void Enemy::Update(void)
 		if (++Surprised_Timer >= Surprised_time)
 		{
 			eStatus = eSTATUS::Chase;
-
-			//if (ItemManager::GetInstance().GetItemActiveFlag() == false)
-			//{
-			//	eStatus = eSTATUS::Chase;
-
-			//}
-			//else
-			//{
-			//	eStatus = eSTATUS::Vigilance;
-			//}
 		}
 
 		break;

@@ -1,217 +1,303 @@
 #include"item.h"
 
-const float Item::area[(int)ITEM_ID::MAX] = { 0.0f,300.0f,500.0f };
+const unsigned int CItem::m_default_color = 0xffffffff;
+const unsigned int CItem::m_can_pick_up_color = 0xff00ff00;
+const unsigned int CItem::m_picked_up_color = 0xffff00ff;
+const unsigned int CItem::m_throw_color = 0xff00ffff;
 
-Item::Item(ITEM_ID id, ITEM_STATE state, float width, float heght, float radius)
+
+CItem::CItem(ITEM_ID id, ITEM_STATE state, float width, float heght, float radius, float effect_area, int number_of_times)
 	: m_Width(width)
 	, m_Height(heght)
 	, m_Radius(radius)
 	, m_ItemID(id)
 	, m_Position(0.0f, 0.0f)
 	, m_Velocity(0.0f, 0.0f)
-	, m_Color(0xffffffff)
+	, m_Color(m_default_color)
 	, m_Anchor(vivid::Vector2((float)m_Width / 2.0f, (float)m_Height / 2.0f))
 	, m_Rect{ 0, 0, m_Width,m_Height }
 	, m_Scale(1.0f, 1.0f)
 	, m_Rotation(0.0f)
 	, m_ActiveFlag(true)
 	, m_ItemState(state)
-	, catchFlg(false)
-	, iPos(0.0f, 0.0f)
-	, iCenter(0.0f, 0.0f)
-	, item_fall(1.0f)
-	, Ga(1.0f)
+	, m_CatchFlg(false)
+	, m_Fall(1.0f)
+	, m_Ga(1.0f)
+	, m_Falling_Point(0.0f, 0.0f)
 	, ceiling_wall(false)
 	, left_right_wall(false)
 	, ground_wall(false)
 	, m_Active(false)
-	, m_Area(0.0f)
-	, item_active_time(0)
+	, m_Active_Time(0)
+	, m_Effect_Area(effect_area)
 	, m_Effect_Anchor(16.0f, 16.0f)
 	, m_Effect_Scale(0, 0)
 	, m_Effect_Color(0x55ffffff)
 	, m_Effect_Rect{ 0,0,32,32 }
-	, number_of_times(0)
-	, item_priority(0.0f)
+	, m_Number_Of_Times(number_of_times)
+	, m_First(true)
+	, m_Orbit_Position{ vivid::Vector2::ZERO }
+	, m_Place_Flg(true)
 {
 }
 
-Item::~Item(void)
+CItem::~CItem(void)
 {
 }
 
-void Item::Initialize(const vivid::Vector2& position)
+void CItem::Initialize(const vivid::Vector2& position)
 {
-	iPos.x = position.x - m_Width;
-	iPos.y = position.y - m_Height;
-	iColor = 0xffffffff;
-	iCenter.x = (iPos.x + m_Width) / 2;
-	iCenter.y = (iPos.y + m_Height) / 2;
+	m_Position.x = position.x - m_Width;
+	m_Position.y = position.y - m_Height;
+	m_Color = m_default_color;
+	m_Center.x = (m_Position.x + m_Width) / 2;
+	m_Center.y = (m_Position.y + m_Height) / 2;
 	m_ActiveFlag = true;
-	m_GetItemID = m_ItemID;
-	m_Effect_Scale = { m_Area / 32, m_Area / 32 };
+	m_Effect_Scale = { m_Effect_Area / 32, m_Effect_Area / 32 };
 
 }
 
-void Item::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float rHeight, bool check, bool priority)
+void CItem::Update(vivid::Vector2 c_pos, float c_width, float c_height, float r_reight)
 {
 
 
 	switch (m_ItemState)
 	{
 	case ITEM_STATE::GET:	//アイテムが所持している状態
-		GetMove(cPos, cWidth, cHeight);
+		GetMove(c_pos, c_width, c_height);
+		SetOrbitPosition(m_Position, c_pos);
 		break;
 	case ITEM_STATE::USE:	//アイテムが使用されている状態
 		WallCheck();
-		UseMove(cPos);
+		UseMove();
 		break;
 	case ITEM_STATE::PLACE:	//アイテムが置かれた状態
-		CheckObject(cPos, cWidth, cHeight, check, priority);
+		ItemPlace(c_pos);
+		CheckObject(c_pos, c_width, c_height);
 		break;
 	}
 
-	//if (number_of_times <= 0)//使用回数を超えたら消去
-	//{
-	//	m_ActiveFlag= false;
-	//}
+	if (m_Number_Of_Times < 0)//使用回数を超えたら消去
+	{
+		Destroy();
+	}
 
 }
 
-void Item::Draw(void)
+void CItem::Draw(void)
 {
-	vivid::DrawTexture("data\\ball.png", iPos - Character::GetInstance().GetScroll(), iColor);
+	vivid::DrawTexture("data\\ball.png", m_Position - Character::GetInstance().GetScroll(), m_Color);
+	if (m_ItemState == ITEM_STATE::GET)
+	{
+		for (int i = 0; i < 10; i++)
+			vivid::DrawTexture("data\\ball.png", m_Orbit_Position[i] - Character::GetInstance().GetScroll(), 0x66ffffff);
+	}
 }
 
-void Item::Finalize(void)
+void CItem::Finalize(void)
 {
 }
 
-vivid::Vector2 Item::GetPosition(void)
+vivid::Vector2 CItem::GetPosition(void)
 {
-	return iPos;
+	return m_Position;
 }
 
-void Item::SetPosition(const vivid::Vector2& position)
+void CItem::SetPosition(const vivid::Vector2& position)
 {
-	iPos = position;
+	m_Position = position;
 }
 
-vivid::Vector2 Item::GetCenterPosition(void)
+vivid::Vector2 CItem::GetCenterPosition(void)
 {
-	return iPos + vivid::Vector2((float)m_Width / 2.0f, (float)m_Height /
+	return m_Position + vivid::Vector2((float)m_Width / 2.0f, (float)m_Height /
 		2.0f);
 }
 
-float Item::GetRadius(void)
+float CItem::GetRadius(void)
 {
 	return m_Radius;
 }
 
-bool Item::GetActive(void)
+bool CItem::GetActive(void)
 {
 	return m_ActiveFlag;
 }
 
-void Item::SetActive(bool active)
+void CItem::SetActive(bool active)
 {
 	m_ActiveFlag = active;
 }
 
-ITEM_ID Item::GetBulletCategory(void)
+ITEM_ID CItem::GetBulletCategory(void)
 {
 	return m_ItemID;
 }
 
-void Item::WallCheck()
+void CItem::WallCheck()
 {
+	m_First = true;
 	//壁判定
 	//地面判定
-	if (Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height < iPos.y)
+	if (Stage::GetInstance().GetRoundHeight(m_Position, m_Width, m_Height) - m_Height < m_Position.y)
 	{
-		iPos.y = Stage::GetInstance().GetRoundHeight(iPos, m_Width, m_Height) - m_Height;
+		m_Position.y = Stage::GetInstance().GetRoundHeight(m_Position, m_Width, m_Height) - m_Height;
 		ground_wall = true;
 	}
 	//左壁判定
-	if (Stage::GetInstance().GetLWall(iPos, m_Width, m_Height) > iPos.x)
+	if (Stage::GetInstance().GetLWall(m_Position, m_Width, m_Height) > m_Position.x)
 	{
-		iPos.x = Stage::GetInstance().GetLWall(iPos, m_Width, m_Height);
+		m_Position.x = Stage::GetInstance().GetLWall(m_Position, m_Width, m_Height);
 		left_right_wall = true;
 	}
 	//右壁判定
-	if (Stage::GetInstance().GetRWall(iPos, m_Width, m_Height) - m_Width < iPos.x)
+	if (Stage::GetInstance().GetRWall(m_Position, m_Width, m_Height) - m_Width < m_Position.x)
 	{
-		iPos.x = Stage::GetInstance().GetRWall(iPos, m_Width, m_Height) - m_Width;
+		m_Position.x = Stage::GetInstance().GetRWall(m_Position, m_Width, m_Height) - m_Width;
 		left_right_wall = true;
 	}
 	//天井判定
-	if (Stage::GetInstance().GetCeiling(iPos, m_Width, m_Height) > iPos.y)
+	if (Stage::GetInstance().GetCeiling(m_Position, m_Width, m_Height) > m_Position.y)
 	{
-		iPos.y = Stage::GetInstance().GetCeiling(iPos, m_Width, m_Height);
+		m_Position.y = Stage::GetInstance().GetCeiling(m_Position, m_Width, m_Height);
 		ceiling_wall = true;
-		Ga = 1.0f; //天井に当たったら重力加速度をリセット
+		m_Ga = 1.0f; //天井に当たったら重力加速度をリセット
 	}
 }
 
 
-void Item::GetMove(vivid::Vector2 cPos, float cWidth, float cHeight)
+
+void CItem::SetOrbitPosition(vivid::Vector2 position, vivid::Vector2 c_pos)
+{
+	m_Orbit_Position[0] = position;
+	vivid::Vector2 save_position;
+	for (int i = 1; i < 100; ++i)
+	{
+		save_position.x += 3;
+		save_position.y += (m_Fall * m_Ga);
+		m_Ga += 0.981;
+
+		if (i % 10 == 0)
+		{
+			m_Orbit_Position[i / 10] = save_position + position;
+		}
+	}
+	m_Ga = 1.0;
+
+}
+
+void CItem::Found(void)
+{
+	m_CatchFlg = true;
+	ceiling_wall = false;
+	left_right_wall = false;
+	ground_wall = false;
+	m_ItemState = ITEM_STATE::GET;
+}
+
+void CItem::Thrown(void)
+{
+	m_ItemState = ITEM_STATE::USE;
+}
+
+void CItem::Place(vivid::Vector2 c_pos)
+{
+	m_Position.x = c_pos.x;
+	m_CatchFlg = false;
+	m_Place_Flg = true;
+	m_ItemState = ITEM_STATE::PLACE;
+}
+
+void CItem::ItemPlace(vivid::Vector2 c_pos)
+{
+	if (m_Place_Flg)
+	{
+		if (Stage::GetInstance().GetRoundHeight(m_Position, m_Width, m_Height) - m_Height < m_Position.y)
+		{
+			m_Position.y = Stage::GetInstance().GetRoundHeight(m_Position, m_Width, m_Height) - m_Height;
+			m_Place_Flg = false;
+			m_Color = m_default_color;
+			m_Ga = 1.0;
+		}
+		else
+		{
+			m_Position.y += (m_Fall * m_Ga);
+			m_Ga += 0.981;
+		}
+	}
+}
+
+void CItem::GetMove(vivid::Vector2 c_pos, float c_width, float c_height)
 {
 	//Cキーでアイテムを使用状態にする
-	if (catchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
+	if (m_CatchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
+	{
+		m_ItemState = ITEM_STATE::USE;
+	}
+	if (m_CatchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::V))
 	{
 		m_ItemState = ITEM_STATE::USE;
 	}
 
-	if (catchFlg)
+
+	if (m_CatchFlg)
 	{
-		iPos.x = cPos.x + cWidth;
-		iPos.y = cPos.y + (cHeight / 2);
-		iCenter.x = (iPos.x + m_Width) / 2;
-		iCenter.y = (iPos.y + m_Height) / 2;
-		iColor = 0xffff00ff;
+		m_Position.x = c_pos.x + c_width;
+		m_Position.y = c_pos.y + (c_height / 2);
+		m_Center.x = (m_Position.x + m_Width) / 2;
+		m_Center.y = (m_Position.y + m_Height) / 2;
+		m_Color = m_picked_up_color;
 	}
-	Ga = 1.0;
+	m_Ga = 1.0;
 	m_Velocity = vivid::Vector2(0.0f, 0.0f); // 重力加速度をリセット
 }
 
 
 
-void Item::UseMove(vivid::Vector2 c_pos)
+void CItem::UseMove()
 {
 	//アイテムオブジェクトの座標更新
 	if (ground_wall == false)
 	{
-		iPos.x += 3;
-		iPos.y += (item_fall * Ga);
-		iColor = 0xff00ffff;
+		m_Position.x += 3;
+		m_Position.y += (m_Fall * m_Ga);
+		m_Color = m_throw_color;
 	}
 	else
 	{
-		catchFlg = false;
+		m_CatchFlg = false;
 		m_ItemState = ITEM_STATE::PLACE;
-		iColor = 0xffffffff;
+		m_Color = m_default_color;
 	}
-	Ga += 0.981;
+	m_Ga += 0.981;
 }
 
-void Item::CheckObject(vivid::Vector2 cPos, float cWidth, float cHeight, bool check, bool priority)//アイテムを持つ（当たり判定）
+void CItem::CheckObject(vivid::Vector2 c_pos, float c_width, float c_height)//アイテムを持つ（当たり判定）
 {
-	if (cPos.x < iPos.x + m_Width && cPos.x + cWidth > iPos.x
-		&& cPos.y < iPos.y + m_Height && cPos.y + cHeight > iPos.y)
+	if (m_First)
 	{
-		if (priority == true)
-			iColor = 0xff00ff00;
-		item_priority = abs((iPos.x) - cPos.x);
-		if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F) && check == false)
-		{
-			catchFlg = true;
-			ceiling_wall = false;
-			left_right_wall = false;
-			ground_wall = false;
-			m_GetItemID = m_ItemID;
-			m_ItemState = ITEM_STATE::GET;
-
-		}
+		m_Number_Of_Times--;
+		m_First = false;
 	}
+	if (c_pos.x < m_Position.x + m_Width && c_pos.x + c_width > m_Position.x
+		&& c_pos.y < m_Position.y + m_Height && c_pos.y + c_height > m_Position.y)
+	{
+		m_Color = m_can_pick_up_color;
+
+
+		//if (vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::F)&&check==false&&priority==true)
+		//{
+		//	catchFlg		= true;
+		//	ceiling_wall	= false;
+		//	left_right_wall = false;
+		//	ground_wall		= false;
+		//	m_GetItemID		= m_ItemID;
+		//	m_ItemState		= ITEM_STATE::GET;
+		//	
+		//}
+	}
+	else
+		m_Color = m_default_color;
+
 }
 
