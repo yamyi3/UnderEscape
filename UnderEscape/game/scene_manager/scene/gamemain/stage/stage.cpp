@@ -1,4 +1,5 @@
 #include "stage.h"
+#include "stage_id.h"
 #include "../character/character.h"
 #include "../enemy_manager/enemy_manager.h"
 #include "blockmanager/blockmanager.h"
@@ -8,13 +9,10 @@
 #include <fstream>
 
 
-vivid::Vector2 Stage::start_pos = { 0.0f, vivid::WINDOW_HEIGHT - 300.0f };
-vivid::Vector2 Stage::goal_pos = { 0,0 };
+
 
 
 const int Stage::g_map_chip_size = 100;
-//const int Stage::g_map_chip_count_width = 40;
-//const int Stage::g_map_chip_count_height = 26;
 
 Stage& Stage::GetInstance(void)
 {
@@ -24,6 +22,8 @@ Stage& Stage::GetInstance(void)
 
 void Stage::Initialize(void)
 {
+	start_pos = { 0.0f, 0.0f };
+	goal_pos = { 0.0f,0.0f };
 	//g_Map = new MAP_CHIP_ID[g_map_chip_count_height];
 	//for (int i = 0; i < g_map_chip_count_height; i++)
 	//{
@@ -43,44 +43,6 @@ void Stage::Initialize(void)
 			g_map_wall[y][x] = false;
 			g_Map[y][x] = MAP_CHIP_ID::EMPTY;
 		}
-
-
-	////ファイル操作
-
-	//FILE* fp = nullptr;
-	//// ファイルを開く 
-	//fopen_s(&fp, "data\\map.csv", "r");
-	//// サイズを調べる 
-	//fseek(fp, 0, SEEK_END);
-	//int size = ftell(fp);
-	//fseek(fp, 0, SEEK_SET);
-	//// サイズ分だけ入れ物を用意する(一時的なデータ) 
-	//char* buf = new char[size];
-	//// データ(CSVファイル内の文字列)を読み込む 
-	//fread(buf, size, 1, fp);
-	//// ファイルを閉じる
-	//fclose(fp);
-
-	////データ解析
-
-	//	// データのサイズ分繰り返し 
-	//for (int i = 0, k = 0; i < size; ++i)
-	//{
-	//	// 文字の0～11であれば数値に変換する 
-	//	if (buf[i] >= '0' && buf[i] <= '11')
-	//	{
-	//		char t = buf[i];
-	//		g_Map[k / g_map_chip_count_width][k % g_map_chip_count_width] =
-	//			(MAP_CHIP_ID)atoi(&t);
-	//		++k;
-	//	}
-	//}
-	//// 一時的なデータを削除 
-	//delete[] buf;
-	
-	
-
-
 
 // ファイル読み込み
 	FILE* fp = nullptr;
@@ -126,19 +88,19 @@ void Stage::Initialize(void)
 				g_map_flg[y][x] = false;
 				switch (g_Map[y][x])
 				{
-				case Stage::MAP_CHIP_ID::EMPTY:
+				case MAP_CHIP_ID::EMPTY:
 					break;
-				case Stage::MAP_CHIP_ID::BLOCK:
-				case Stage::MAP_CHIP_ID::WALL:
+				case MAP_CHIP_ID::BLOCK:
+				case MAP_CHIP_ID::WALL:
 					GenerateObject(x, y, (int)g_Map[y][x]);
 					break;
-				case Stage::MAP_CHIP_ID::TPSTAIRS:
+				case MAP_CHIP_ID::TPSTAIRS:
 					TPcount++;
 					break;
-				case Stage::MAP_CHIP_ID::START:
+				case MAP_CHIP_ID::START:
 					start_pos = { (float)(x * g_map_chip_size),((y+1) * g_map_chip_size)-Character::GetInstance().GetCharaHeight()};
 					break;
-				case Stage::MAP_CHIP_ID::GOAL:
+				case MAP_CHIP_ID::GOAL:
 					goal_pos = { (float)(x * g_map_chip_size),((y + 1) * g_map_chip_size) - Character::GetInstance().GetCharaHeight() };
 					break;
 				default:
@@ -358,12 +320,12 @@ void Stage::GenerateObject(int x, int y, int Object_ID)
 
 	switch (Ob_ID)
 	{
-	case Stage::MAP_CHIP_ID::BLOCK:
+	case MAP_CHIP_ID::BLOCK:
 		BlockManager::GetInstance().GenerateBlock(ob_pos, y_size, x_size);
 		g_map_terrain[y][x] = true;
 		g_map_wall[y][x] = true;
 		break;
-	case Stage::MAP_CHIP_ID::WALL:
+	case MAP_CHIP_ID::WALL:
 		WallManager::GetInstance().GenerateWall(ob_pos, y_size, x_size,0xff555555);
 		g_map_wall[y][x] = true;
 		break;
