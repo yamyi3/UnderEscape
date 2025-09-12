@@ -92,6 +92,8 @@ public:
 	void StaminaDraw(void);
 	//移動距離を座標に反映する処理
 	void ChangePosition(int);
+	//自機が捕まって死亡判定にする
+	void DeadCharacter(void);
 
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
@@ -111,11 +113,13 @@ public:
 	bool GetShilding(void) { return cShielding; }	//シールド状態の取得
 	//found_flagの取得
 	bool GetFound(void) { return found_flag; }
-
+	//自機の生存フラグの取得
+	bool GetAlive(void) { return cAlive; }
 	//スクロール変数更新用
 	void Scroll_Update();
 	//スクロールの値を返す変数
 	vivid::Vector2 GetScroll() { return Scroll; }
+
 
 	//階段更新
 	void StairsUpData();
@@ -171,7 +175,7 @@ private:
 			"data\\自機\\最終状態\\前走り.png",			//ダッシュ
 			"data\\自機\\通常状態\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
 			"data\\自機\\通常状態\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
-			"data\\自機\\通常状態\\前ジャンプスプレッド.png"		//ジャンプ
+			"data\\自機\\最終状態\\前ジャンプ.png"		//ジャンプ
 		}
 	};
 	vivid::Rect		c_rect;							//画像の描画範囲

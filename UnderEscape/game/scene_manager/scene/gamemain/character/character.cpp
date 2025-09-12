@@ -50,6 +50,7 @@ Character& Character::GetInstance(void)
 //初期化
 void Character::Initialize(vivid::Vector2 rPos)
 {
+	ch_width = nomal_width;
 	accelerator = vivid::Vector2::ZERO;
 	cPos = {100.0f, rPos.y - ch_height};
 	chara_state = CHARA_STATE::WAIT;
@@ -82,6 +83,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	FadeTimer = 0;
 
 	m_SkillConunt = 0;
+	cAlive = true;
 }
 
 void Character::Update(void)
@@ -962,6 +964,11 @@ void Character::StaminaDraw(void)
 			}
 		}
 	}
+}
+
+void Character::DeadCharacter(void)
+{
+	cAlive = false;
 }
 
 //スクロールの更新
