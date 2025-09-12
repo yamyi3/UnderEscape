@@ -30,13 +30,24 @@ public:
 	//ITEM_STATEを取得
 	bool GetItemCheck();
 private:
-	float 				effective_area; //アイテムの有効範囲
-	bool				active;		//アイテムのアクティブフラグ
-	vivid::Vector2		position;	//アイテムの位置
-	ITEM_ID				Item_id;		//アイテムのID
-	using ITEM_LIST = std::list<Item*>;
-	ITEM_LIST m_Item;										// アイテムのリスト
-	ItemManager() = default;								// コンストラクタ
+	bool				priority;			//アイテムの優先フラグ
+	float 				effective_area;		//アイテムの有効範囲
+	bool				active;				//アイテムのアクティブフラグ
+	vivid::Vector2		position;			//アイテムの位置
+	ITEM_ID				Item_id;			//アイテムのID
+	using ITEM_LIST = std::list<CItem*>;
+	ITEM_LIST m_Item;						// アイテムのリスト
+
+	CItem* m_CatchItem;
+
+	//アイテム所持している状態
+	void PickupItem(const vivid::Vector2& center_pos);
+	//投げる動作に移行
+	void ThrowItem(void);
+	//置く動作に移行
+	void PlaceItem(const vivid::Vector2& c_pos);
+
+	ItemManager();								// コンストラクタ
 	ItemManager(const ItemManager&) = delete;				// コピーコンストラクタを削除
 	ItemManager& operator=(const ItemManager&) = delete;	// 代入演算子を削除
 	~ItemManager() = default;								// デストラクタ

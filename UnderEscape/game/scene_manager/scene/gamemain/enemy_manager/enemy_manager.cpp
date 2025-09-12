@@ -70,7 +70,7 @@ void EnemyManager::Initialize()
 			}
 }
 
-void EnemyManager::Update()
+void EnemyManager::Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area)
 {
 	ENEMY_LIST::iterator it = m_Enemy.begin();
 	ENEMY_LIST::iterator end = m_Enemy.end();
@@ -87,7 +87,7 @@ void EnemyManager::Update()
 
 			continue;
 		}
-		(*it)->Update();
+		(*it)->Update(id, pos, active, effect_area);
 
 		++it;
 	}
