@@ -24,10 +24,8 @@ void GameMainScene::Initialize(void)
     Stage::GetInstance().Initialize();
     Character::GetInstance().Initialize(Stage::GetInstance().GetStartpos());
     EnemyManager::GetInstance().Initialize();
-    EnemyManager::GetInstance().GenerateEnemy({ 300.0f, 700.0f }, 300.0f, 500.0f, 1, 700);
-    EnemyManager::GetInstance().GenerateEnemy({ 1000.0f, 700.0f }, 1000.0f, 1200.0f, 1, 700);
     COption::GetInstance().Initialize();
-    
+    CTimer::GetInstance().Initialize();
     ItemManager::GetInstance().Initialize();
 
     ItemManager::GetInstance().CreateItem(vivid::Vector2{200,600}, ITEM_ID::FLASH_ITEM);
@@ -50,25 +48,33 @@ void GameMainScene::Initialize(void)
 void GameMainScene::Update(void)
 {
     Pause();
-    if (pause_menu==false && vivid::mouse::Trigger(vivid::mouse::BUTTON_ID::LEFT))
-    {
-        vivid::Point mpos = vivid::mouse::GetCursorPos();
-        vivid::Vector2 mopos;
-        mopos.x = mpos.x;
-        mopos.y = mpos.y;
-        EnemyManager::GetInstance().sound_sensor(mopos, 300);
-    }
-    if(pause_menu==false)
-    { 
-    EnemyManager::GetInstance().Update();
-    Character::GetInstance().Update();
-    Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight()));
-    Character::GetInstance().CheckHit({0,0},0, 0,
-    EnemyManager::GetInstance().CheckSearchPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
 
-    ItemManager::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
-        Stage::GetInstance().GetRoundHeight({ 150,300 }, 15, 15));
-    
+    if (pause_menu == false)
+    {
+        if (vivid::mouse::Trigger(vivid::mouse::BUTTON_ID::LEFT))
+        {
+            vivid::Point mpos = vivid::mouse::GetCursorPos();
+            vivid::Vector2 mopos;
+            mopos.x = mpos.x;
+            mopos.y = mpos.y;
+            EnemyManager::GetInstance().sound_sensor(mopos, 300);
+        }
+        CTimer::GetInstance().Update();
+        EnemyManager::GetInstance().Update();
+        Character::GetInstance().Update();
+        Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight()));
+        Character::GetInstance().CheckHit({ 0,0 }, 0, 0,
+        EnemyManager::GetInstance().CheckSearchPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()));
+        ItemManager::GetInstance().Update(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight(),
+            Stage::GetInstance().GetRoundHeight({ 150,300 }, 15, 15));
+        if (EnemyManager::GetInstance().CheckHitPlayer(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaHeight(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetShilding()))
+        {
+            Character::GetInstance().DeadCharacter();
+        }
+        if (Character::GetInstance().GetAlive() == false)
+        {
+            SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMEOVER);
+        }
     }
 
     if (pause_menu == true)
@@ -84,9 +90,8 @@ void GameMainScene::Draw(void)
     Character::GetInstance().Draw();
     
     ItemManager::GetInstance().Draw();
+    CTimer::GetInstance().Draw();
 
-    //if (Character::GetInstance().GetCoverColor() >= 0x1000000)
-        //vivid::DrawTexture("data\\Title_背景.png", { 0.0f,0.0f }, Character::GetInstance().GetCoverColor());
     if (pause_menu == true)
     {
         DrawPause();
@@ -96,16 +101,6 @@ void GameMainScene::Draw(void)
         COption::GetInstance().Draw();
     }
 
-#ifdef _DEBUG
-    if (COption::GetInstance().GetOptionFlg() == true)
-        vivid::DrawText(40, "OptionFlag_ON", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 400)), 0.0f), 0xff00ffff);
-    if (COption::GetInstance().GetOptionFlg() == false)
-        vivid::DrawText(40, "OptionFlag_OFF", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 400)), 0.0f), 0xff00ffff);
-    if (COption::GetInstance().GetSoundMenuFlg() == true)
-        vivid::DrawText(40, "SoundMenuFlag_ON", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 450)), 40.0f), 0xff00ffff);
-    if (COption::GetInstance().GetSoundMenuFlg() == false)
-        vivid::DrawText(40, "SoundMenuFlag_OFF", vivid::Vector2(((float)(vivid::WINDOW_WIDTH - 450)), 40.0f), 0xff00ffff);
-#endif
 }
 
 void GameMainScene::Finalize(void)
@@ -114,7 +109,7 @@ void GameMainScene::Finalize(void)
     EnemyManager::GetInstance().Finalize();
     Stage::GetInstance().Finalize();
     COption::GetInstance().Finalize();
-
+    CTimer::GetInstance().Finalize();
     ItemManager::GetInstance().Finalize();
 }
 void GameMainScene::Pause()
