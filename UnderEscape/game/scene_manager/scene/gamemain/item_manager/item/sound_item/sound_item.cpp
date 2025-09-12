@@ -34,6 +34,7 @@ void CSoundItem::Draw(void)
 {
 	vivid::DrawTexture("data\\ball.png", m_Position - Character::GetInstance().GetScroll(), m_Color);
 
+
 	vivid::DrawText(40, "rest:" + std::to_string(m_Number_Of_Times + 1), vivid::Vector2(m_Position.x - (Character::GetInstance().GetScroll().x + 100.0f), m_Position.y - (Character::GetInstance().GetScroll().y + 100.0f)), 0xff00ffff);
 	if (m_ItemState == ITEM_STATE::GET)
 	{
