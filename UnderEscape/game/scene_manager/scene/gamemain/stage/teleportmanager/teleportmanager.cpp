@@ -23,7 +23,7 @@ void TeleportManager::Initialize(const int tp_stairs_count)
     std::vector<std::vector<int>> g_Map(g_map_chip_count_height, std::vector<int>(g_map_chip_count_width));
 
 	const int tp_set_count = tp_stairs_count / 2;
-	for (int i = 0; i < tp_set_count-1; i++)
+	for (int i = 0; i < tp_set_count; i++)
 	{
 		Teleport* teleport = nullptr;
 		teleport = new Teleport();

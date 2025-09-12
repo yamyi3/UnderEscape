@@ -502,7 +502,7 @@ void Enemy::player_check(bool shielding)
 		Vigilance_Timer = 0;
 		eStatus = eSTATUS::Wandering;
 	}
-	else if (eStatus == eSTATUS::Wandering && shielding == false)
+	else if ((eStatus == eSTATUS::Wandering|| eStatus==eSTATUS::Stop) && shielding == false)
 	{
 		eStatus = eSTATUS::Surprised;
 	}

@@ -2,11 +2,9 @@
 #include "../character/character.h"
 #include "../enemy_manager/enemy_manager.h"
 #include "blockmanager/blockmanager.h"
-#include "groundmanager/groundmanager.h"
 #include "wallmanager/wallmanager.h"
 #include "teleportmanager/teleportmanager.h"
 #include <sstream>
-#include <iostream>
 #include <fstream>
 
 
@@ -130,21 +128,10 @@ void Stage::Initialize(void)
 				{
 				case Stage::MAP_CHIP_ID::EMPTY:
 					break;
-				case Stage::MAP_CHIP_ID::GROUND:
 				case Stage::MAP_CHIP_ID::BLOCK:
 				case Stage::MAP_CHIP_ID::WALL:
 					GenerateObject(x, y, (int)g_Map[y][x]);
 					break;
-				case Stage::MAP_CHIP_ID::RSTAIRS:
-					break;
-				case Stage::MAP_CHIP_ID::LSTAIRS:
-					break;
-				case Stage::MAP_CHIP_ID::ENEMY_AREA:
-					g_map_flg[y][x] = true;
-					break;
-				case Stage::MAP_CHIP_ID::R_ENEMY:
-				case Stage::MAP_CHIP_ID::L_ENEMY:
-					GenerateEnemy(x, y, (int)g_Map[y][x]);
 				case Stage::MAP_CHIP_ID::TPSTAIRS:
 					TPcount++;
 					break;
@@ -175,12 +162,10 @@ void Stage::Draw(void)
 
 	vivid::Vector2 scroll = Character::GetInstance().GetScroll();
 	WallManager::GetInstance().Input_scroll(scroll);
-	GroundManager::GetInstance().Input_scroll(scroll);
 	BlockManager::GetInstance().Input_scroll(scroll);
 	TeleportManager::GetInstance().Input_scroll(scroll);
 
 	WallManager::GetInstance().Draw();
-	GroundManager::GetInstance().Draw();
 	BlockManager::GetInstance().Draw();
 	TeleportManager::GetInstance().Draw();
 
@@ -233,50 +218,7 @@ void Stage::MapSizeInitialize(void)
 	g_map_chip_count_width = work[1];
 }
 
-void Stage::ScrollStage(void)
-{
-	////keyboardネームスペースの宣言
-	//namespace keyboard = vivid::keyboard;
 
-	////通常時はスクロール速度が通常速度になる
-	//sc_speed = walk_speed;
-	////左SHIFTを押している間はスクロール速度がダッシュ速度になる
-	//if (keyboard::Button(keyboard::KEY_ID::LSHIFT))
-	//{
-	//	sc_speed = dash_speed;
-	//}
-	////左CTRLを押している間はスクロール速度が歩行速度になる
-	//if (keyboard::Button(keyboard::KEY_ID::LCONTROL))
-	//{
-	//	sc_speed = sneak_speed;
-	//}
-
-	////左方向へのスクロール処理
-	//if (keyboard::Button(keyboard::KEY_ID::A))
-	//{
-	//	//背景のスクロールの処理
-	//	for (int i = 0; i < max_round; i++)
-	//	{
-	//		round_pos[i].x = round_pos[i].x + sc_speed;
-	//		if (round_pos[i].x > round_width)
-	//		{
-	//			round_pos[i].x = -round_width - (round_width - round_pos[i].x);
-	//		}
-	//	}
-	//}
-	////右方向へのスクロール処理
-	//if (keyboard::Button(keyboard::KEY_ID::D))
-	//{
-	//	//背景の右スクロール処理
-	//	for (int i = 0; i < max_round; i++)
-	//	{
-	//		round_pos[i].x = round_pos[i].x - sc_speed;
-	//		if (round_pos[i].x < -round_width) {
-	//			round_pos[i].x = round_width - (-round_width - round_pos[i].x);
-	//		}
-	//	}
-	//}
-}
 
 float Stage::GetRoundHeight(vivid::Vector2 pos, float width, float height, vivid::Vector2 anchor)
 {
@@ -409,58 +351,13 @@ bool Stage::CheckHitWallPlayer(const vivid::Vector2& pos, int height, int width)
 void Stage::GenerateObject(int x, int y, int Object_ID)
 {
 	MAP_CHIP_ID Ob_ID = (MAP_CHIP_ID)Object_ID;
-	//int i = 1; int n = 1;
-	//for (bool loop_flg = true; loop_flg;)
-	//{
-	//	bool y_flg = false; bool x_flg = false;
-	//	for (int j = x; j <= x + n; j++)
-	//		if (g_Map[y + i + 1][j] != Ob_ID && g_map_flg[y + i + 1][j] == false)
-	//			y_flg = true;
-
-	//	if (y_flg == false)
-	//	{
-	//		i++;
-	//		for (int j = x; j <= x + n; j++)
-	//		{
-	//			if ((Ob_ID==MAP_CHIP_ID::GROUND||Ob_ID==MAP_CHIP_ID::BLOCK))
-	//				g_map_terrain[y + i][j] = true;
-	//			g_map_flg[y + i][j] = false;
-	//		}
-	//	}
-
-	//	for (int j = x; j <= x + n; j++)
-	//		if (g_Map[y + i][x + n + 1] != Ob_ID&& g_map_flg[j][x + n] == false)
-	//			x_flg = true;
-
-	//	if (x_flg == false)
-	//	{
-	//		n++;
-	//		for (int j = y; j <= y+i; j++)
-	//		{
-	//			if (Ob_ID == MAP_CHIP_ID::GROUND || Ob_ID == MAP_CHIP_ID::BLOCK)
-	//				g_map_terrain[j][x + n] = true;
-	//			g_map_flg[j][x + n] = false;
-	//		}
-	//	}
-
-	//	if ((y_flg && x_flg)||(((x+n)>=g_map_chip_count_width)||(y+i)>=g_map_chip_count_height)||n>=10||i>=10)
-	//		loop_flg = false;
-	//}
-	//vivid::Vector2 ob_pos = { (float)(x * g_map_chip_size),(float)((y) * g_map_chip_size) };
-	//int y_size = i * g_map_chip_size;
-	//int x_size = n * g_map_chip_size;
-
+	
 	vivid::Vector2 ob_pos = { (float)(x * g_map_chip_size),(float)(y * g_map_chip_size) };
 	int y_size = g_map_chip_size;
 	int x_size = g_map_chip_size;
 
 	switch (Ob_ID)
 	{
-	case Stage::MAP_CHIP_ID::GROUND:
-		GroundManager::GetInstance().GenerateGround(ob_pos, y_size, x_size);
-		g_map_terrain[y][x] = true;
-		g_map_wall[y][x] = true;
-		break;
 	case Stage::MAP_CHIP_ID::BLOCK:
 		BlockManager::GetInstance().GenerateBlock(ob_pos, y_size, x_size);
 		g_map_terrain[y][x] = true;
@@ -475,31 +372,3 @@ void Stage::GenerateObject(int x, int y, int Object_ID)
 	}
 }
 
-void Stage::GenerateEnemy(int x, int y, int Object_ID)
-{
-	MAP_CHIP_ID Ob_ID = (MAP_CHIP_ID)Object_ID;
-	int i = 0; int n = 0;
-	for (bool loop_flg = true; loop_flg;)
-	{
-		bool y_flg = true; bool x_flg = true;
-		if (g_Map[y][x + n + 1] == MAP_CHIP_ID::ENEMY_AREA)
-		{
-			g_map_flg[y][x + ++n] = false;
-			y_flg = false;
-		}
-		if (g_Map[y][x + i - 1] == MAP_CHIP_ID::ENEMY_AREA)
-		{
-			g_map_flg[y][x + --i] = false;
-			x_flg = false;
-		}
-		if (y_flg && x_flg)
-			loop_flg = false;
-	}
-	vivid::Vector2 e_pos = { (float)(x * g_map_chip_size),(float)(y * g_map_chip_size) };
-	float Rw = (x + n) * g_map_chip_size;
-	float Lw = (x + i) * g_map_chip_size;
-	if (Ob_ID==MAP_CHIP_ID::L_ENEMY)
-		EnemyManager::GetInstance().GenerateEnemy(e_pos, Lw, Rw,-1);
-	else
-		EnemyManager::GetInstance().GenerateEnemy(e_pos, Lw, Rw, 1);
-}
