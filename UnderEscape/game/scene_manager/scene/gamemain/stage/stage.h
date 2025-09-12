@@ -19,8 +19,6 @@ public:
 	void Finalize(void);
 	//
 	void MapSizeInitialize(void);
-	//ステージのスクロール処理
-	void ScrollStage(void);
 	//テレポート階段の判定取得
 	bool GetStairsFlg(vivid::Vector2 cpos) { return TeleportManager::GetInstance().GetTeleportFlg(cpos); }
 	//テレポート階段の座標取得
@@ -52,7 +50,6 @@ public:
 
 	void GenerateObject(int x, int y, int Object_ID);
 
-	void GenerateEnemy(int x, int y, int Object_ID);
 
 	int GetStageWidthSize() { return g_map_chip_count_width * g_map_chip_size; }
 	int GetStageHeightSize() { return g_map_chip_count_height * g_map_chip_size; }
@@ -89,17 +86,11 @@ private:
 	enum class MAP_CHIP_ID
 	{
 		EMPTY,			//0
-		GROUND,			//1
-		BLOCK,			//2
-		RSTAIRS,		//3／
-		LSTAIRS,		//4＼
-		WALL,			//5
-		ENEMY_AREA,		//6
-		R_ENEMY,		//7
-		L_ENEMY,		//8
-		TPSTAIRS,		//9
-		START,			//10
-		GOAL,			//11
+		BLOCK,			//1
+		WALL,			//2
+		TPSTAIRS,		//3
+		START,			//4
+		GOAL,			//5
 	};
 
 	//配置データを入れておくための二次元配列(整数) 

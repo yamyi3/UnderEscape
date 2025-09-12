@@ -1,0 +1,11 @@
+#pragma once
+enum class ENEMY_SHEET_ID
+{
+	SPACE,
+	BLOCK,
+	R_SPIDER_ROBO,
+	L_SPIDER_ROBO,
+	R_CREATURE,
+	L_CREATURE,
+	ENEMY_ACT_AREA
+};

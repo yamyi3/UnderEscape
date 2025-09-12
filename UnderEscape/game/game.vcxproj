@@ -177,8 +177,6 @@
     <ClCompile Include="scene_manager\scene\gamemain\item_manager\item\sound_item\sound_item.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\blockmanager\blockmanager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\blockmanager\block\block.cpp" />
-    <ClCompile Include="scene_manager\scene\gamemain\stage\groundmanager\groundmanager.cpp" />
-    <ClCompile Include="scene_manager\scene\gamemain\stage\groundmanager\ground\ground.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\stage.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\teleportmanager\teleportmanager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\teleportmanager\teleport\teleport.cpp" />
@@ -206,6 +204,7 @@
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\creature\creature.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\enemy_id.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy_sheet_id.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy\spider_robo\spider_robo.h" />
     <ClInclude Include="scene_manager\scene\gamemain\enemy_manager\enemy_manager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\gamemain.h" />
@@ -216,8 +215,6 @@
     <ClInclude Include="scene_manager\scene\gamemain\item_manager\item\sound_item\sound_item.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\blockmanager\blockmanager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\blockmanager\block\block.h" />
-    <ClInclude Include="scene_manager\scene\gamemain\stage\groundmanager\groundmanager.h" />
-    <ClInclude Include="scene_manager\scene\gamemain\stage\groundmanager\ground\ground.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\stage.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\teleportmanager\teleportmanager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\teleportmanager\teleport\teleport.h" />
