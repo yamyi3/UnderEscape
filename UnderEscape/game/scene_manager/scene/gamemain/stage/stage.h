@@ -2,6 +2,7 @@
 #include "vivid.h"
 #include <iostream>
 #include <vector>
+#include "stage_id.h"
 #include "teleportmanager/teleportmanager.h"
 
 class Stage
@@ -57,16 +58,18 @@ public:
 	int GetStageWidthCount() { return g_map_chip_count_width; }
 	int GetStageHeightCount() { return g_map_chip_count_height; }
 
-
 	int GetMapChipSize(){ return g_map_chip_size; }
+
+	vivid::Vector2 GetStartPos() { return start_pos; }
+	vivid::Vector2 GetGoalPos() { return goal_pos; }
 private:
 
 
 	//ステージの始点の座標
-	static vivid::Vector2	start_pos;
+	vivid::Vector2	start_pos;
 
 	//ステージの終点の座標
-	static vivid::Vector2	goal_pos;
+	vivid::Vector2	goal_pos;
 
 	//シングルトンパターンの設定
 	Stage(void) = default;
@@ -82,25 +85,11 @@ private:
 	static const int g_map_chip_size;
 	int g_map_chip_count_width;
 	int g_map_chip_count_height;
-	// マップチップ番号を列挙型で定義 
-	enum class MAP_CHIP_ID
-	{
-		EMPTY,			//0
-		BLOCK,			//1
-		WALL,			//2
-		TPSTAIRS,		//3
-		START,			//4
-		GOAL,			//5
-	};
+
 
 	//配置データを入れておくための二次元配列(整数) 
 	std::vector<std::vector<MAP_CHIP_ID>> g_Map;
 	std::vector<std::vector<bool>> g_map_flg;
 	std::vector<std::vector<bool>> g_map_terrain;
 	std::vector<std::vector<bool>> g_map_wall;
-
-	//MAP_CHIP_ID *g_Map;
-	//bool *g_map_flg;
-	//bool *g_map_terrain;
-	//bool *g_map_wall;
 };

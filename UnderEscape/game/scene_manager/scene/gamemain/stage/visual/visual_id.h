@@ -1,0 +1,13 @@
+#pragma once
+enum class VISUAL_ID
+{
+	EMPTY,
+	BLOCK,
+	CLACK_BLOCK,
+	ALMOST_BROKWN_BLOCK,
+	MOSS_BLOCK,
+	UP_STAIRS,
+	DOWN_STAIRS,
+
+	MAX,
+};

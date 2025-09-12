@@ -57,7 +57,7 @@ void Wall::Draw(vivid::Vector2 scroll)
 {
 	if (vivid::WINDOW_WIDTH > w_Pos.x - scroll.x && w_Pos.x - scroll.x + w_WidthSize > 0)
 	{
-		vivid::Rect rect = { 0,0,w_WidthSize,w_HeightSize };
+		vivid::Rect rect = { 0,0,wall_picture_width_size,wall_picture_height_size };
 		vivid::DrawTexture(wall_picture_name, w_Pos - scroll, w_color, rect, { 0,0 }, w_Scale);
 	}
 }

@@ -180,6 +180,7 @@
     <ClCompile Include="scene_manager\scene\gamemain\stage\stage.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\teleportmanager\teleportmanager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\teleportmanager\teleport\teleport.cpp" />
+    <ClCompile Include="scene_manager\scene\gamemain\stage\visual\visual.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\wallmanager\wallmanager.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\stage\wallmanager\wall\wall.cpp" />
     <ClCompile Include="scene_manager\scene\gamemain\timer\timer.cpp" />
@@ -216,8 +217,11 @@
     <ClInclude Include="scene_manager\scene\gamemain\stage\blockmanager\blockmanager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\blockmanager\block\block.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\stage.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\stage\stage_id.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\teleportmanager\teleportmanager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\teleportmanager\teleport\teleport.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\stage\visual\visual.h" />
+    <ClInclude Include="scene_manager\scene\gamemain\stage\visual\visual_id.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\wallmanager\wall\wall.h" />
     <ClInclude Include="scene_manager\scene\gamemain\stage\wallmanager\wallmanager.h" />
     <ClInclude Include="scene_manager\scene\gamemain\timer\timer.h" />
