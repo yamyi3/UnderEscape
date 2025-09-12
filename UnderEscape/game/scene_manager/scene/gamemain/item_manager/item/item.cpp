@@ -65,7 +65,8 @@ void CItem::Update(vivid::Vector2 c_pos, float c_width, float c_height, float r_
 	{
 	case ITEM_STATE::GET:	//アイテムが所持している状態
 		GetMove(c_pos, c_width, c_height);
-		SetOrbitPosition(m_Position, c_pos);
+		//コメントアウトしないと軌道が画面外に行った時エラーが起きる
+		//SetOrbitPosition(m_Position, c_pos);
 		break;
 	case ITEM_STATE::USE:	//アイテムが使用されている状態
 		WallCheck();
