@@ -247,10 +247,12 @@ bool EnemyManager::CheckHitPlayer(const vivid::Vector2& center_pos, int height, 
 bool EnemyManager::CheckSearchPlayer(const vivid::Vector2& center_pos, int height, int width,bool shielding)
 {
 	bool HitPlayerFlg = false;
+	bool invisible = Character::GetInstance().GetFound();
 
 	ENEMY_LIST::iterator it = m_Enemy.begin();
 	ENEMY_LIST::iterator end = m_Enemy.end();
 
+	if (invisible)
 	while (it != end)
 	{
 		Enemy* enemy = (*it);

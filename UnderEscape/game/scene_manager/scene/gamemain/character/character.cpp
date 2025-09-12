@@ -50,6 +50,7 @@ Character& Character::GetInstance(void)
 //èâä˙âª
 void Character::Initialize(vivid::Vector2 rPos)
 {
+	skill_memory = (int)CHARA_SKILL::ANIMALLEG;
 	ch_width = nomal_width;
 	accelerator = vivid::Vector2::ZERO;
 	cPos = {100.0f, rPos.y - ch_height};
