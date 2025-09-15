@@ -1,32 +1,40 @@
-#include "visual.h"
+#include "visualmanager.h"
 #include "..\..\stage\stage.h"
 #include <iostream>
 #include <vector>
 #include <sstream>
 #include <fstream>
 
-const std::string Visual::visual_picture_name[] =
+const std::string VisualManager::visual_picture_name[] =
 {
 	"",
 	"data\\”wŒi—Ş\\ãY—í‚ÈƒuƒƒbƒN.jpg",
 	"data\\”wŒi—Ş\\‚Ğ‚ÑŠ„‚ê‚½ƒuƒƒbƒN.jpg",
 	"data\\”wŒi—Ş\\‰ó‚ê‚©‚¯‚ÌƒuƒƒbƒN.jpg",
 	"data\\”wŒi—Ş\\‘Û‚Ş‚µ‚½ƒuƒƒbƒN.jpg",
+	"data\\”wŒi—Ş\\Šâ’†.png",
+	"data\\”wŒi—Ş\\Šâ‘å.png",
 	"data\\”wŒi—Ş\\‚Ì‚Ú‚èŠK’i.jpg",
-	"data\\”wŒi—Ş\\‚­‚¾‚èŠK’i.jpg"
+	"data\\”wŒi—Ş\\‚­‚¾‚èŠK’i.jpg",
+	"data\\”wŒi—Ş\\PC.png",
+	"data\\”wŒi—Ş\\–{’I.png"
 };
 
-const int Visual::visual_picture_width_size[] =
+const int VisualManager::visual_picture_width_size[] =
 {
 	0,
 	160,
 	160,
 	160,
 	160,
+	200,
+	200,
 	100,
 	100,
+	200,
+	1000
 };
-const int Visual::visual_picture_height_size[] =
+const int VisualManager::visual_picture_height_size[] =
 {
 	0,
 	160,
@@ -34,19 +42,27 @@ const int Visual::visual_picture_height_size[] =
 	160,
 	160,
 	200,
+	100,
 	200,
+	200,
+	100,
+	500,
 };
-const int Visual::visual_draw_width_size[] =
+const int VisualManager::visual_draw_width_size[] =
 {
 	0,
 	100,
 	100,
 	100,
 	100,
+	200,
+	400,
 	100,
 	100,
+	200,
+	200
 };
-const int Visual::visual_draw_height_size[] =
+const int VisualManager::visual_draw_height_size[] =
 {
 	0,
 	100,
@@ -55,16 +71,20 @@ const int Visual::visual_draw_height_size[] =
 	100,
 	200,
 	200,
+	200,
+	200,
+	100,
+	100,
 };
 
-Visual& Visual::GetInstance(void)
+VisualManager& VisualManager::GetInstance(void)
 {
 	// TODO: return ƒXƒe[ƒgƒƒ“ƒg‚ğ‚±‚±‚É‘}“ü‚µ‚Ü‚·
-	static Visual instance;
+	static VisualManager instance;
 	return instance;
 }
 
-void Visual::Initialize(void)
+void VisualManager::Initialize(void)
 {
 	const int g_map_chip_count_width = Stage::GetInstance().GetStageWidthCount();
 	const int g_map_chip_count_height = Stage::GetInstance().GetStageHeightCount();
@@ -107,14 +127,14 @@ void Visual::Initialize(void)
 
 }
 
-void Visual::Update(void)
+void VisualManager::Update(void)
 {
 }
 
-void Visual::Draw(void)
+void VisualManager::Draw(void)
 {
 }
 
-void Visual::Finalize(void)
+void VisualManager::Finalize(void)
 {
 }

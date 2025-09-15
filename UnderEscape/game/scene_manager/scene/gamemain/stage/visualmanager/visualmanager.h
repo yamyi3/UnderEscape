@@ -4,11 +4,11 @@
 #include <iostream>
 #include <vector>
 
-class Visual
+class VisualManager
 {
 public:
 	//インスタンスを生成、取得
-	static Visual& GetInstance(void);
+	static VisualManager& GetInstance(void);
 	//初期化
 	void Initialize(void);
 	//更新
@@ -32,8 +32,8 @@ private:
 	vivid::Vector2 scroll;
 	int map_chip_size;
 	//シングルトンパターンの設定
-	Visual(void) = default;
-	~Visual(void) = default;
-	Visual(const Visual& rhs) = default;
-	Visual& operator = (const Visual& rhs) = default;
+	VisualManager(void) = default;
+	~VisualManager(void) = default;
+	VisualManager(const VisualManager& rhs) = default;
+	VisualManager& operator = (const VisualManager& rhs) = default;
 };
