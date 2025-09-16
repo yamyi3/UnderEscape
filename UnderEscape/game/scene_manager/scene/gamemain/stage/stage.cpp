@@ -5,6 +5,7 @@
 #include "blockmanager/blockmanager.h"
 #include "wallmanager/wallmanager.h"
 #include "teleportmanager/teleportmanager.h"
+#include "visualmanager/visualmanager.h"
 #include <sstream>
 #include <fstream>
 
@@ -112,7 +113,7 @@ void Stage::Initialize(void)
 	}
 
 	TeleportManager::GetInstance().Initialize(TPcount);
-
+	VisualManager::GetInstance().Initialize();
 }
 
 void Stage::Update(void)
@@ -126,10 +127,12 @@ void Stage::Draw(void)
 	WallManager::GetInstance().Input_scroll(scroll);
 	BlockManager::GetInstance().Input_scroll(scroll);
 	TeleportManager::GetInstance().Input_scroll(scroll);
+	VisualManager::GetInstance().Input_scroll(scroll);
 
 	WallManager::GetInstance().Draw();
 	BlockManager::GetInstance().Draw();
 	TeleportManager::GetInstance().Draw();
+	VisualManager::GetInstance().Draw();
 
 	if (cflg)
 	{
