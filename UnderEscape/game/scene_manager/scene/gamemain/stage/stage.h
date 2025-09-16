@@ -27,7 +27,7 @@ public:
 	//地面座標のスタート地点取得
 	vivid::Vector2 GetStartpos(void)
 	{
-		return vivid::Vector2(0.0f, 0.0f);
+		return start_pos;
 	}
 	//地面のゴール地点の座標取得
 	vivid::Vector2 GetGoalpos(void)
