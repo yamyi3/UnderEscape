@@ -3,9 +3,9 @@
 enum class MAP_CHIP_ID
 {
 	EMPTY,			//0
-	BLOCK,			//1
-	WALL,			//2
-	TPSTAIRS,		//3
-	START,			//4
-	GOAL,			//5
+	BLOCK,			//1ブロック
+	WALL,			//2遮蔽
+	TPSTAIRS,		//3テレポート階段
+	START,			//4スタート地点
+	GOAL,			//5ゴール地点
 };
