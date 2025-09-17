@@ -89,9 +89,12 @@ void GameMainScene::Draw(void)
     Stage::GetInstance().Draw();
     EnemyManager::GetInstance().Draw();
     VisualManager::GetInstance().RockDraw();
+    Character::GetInstance().Draw();
     
     ItemManager::GetInstance().Draw();
-    Character::GetInstance().Draw();
+
+    //Character::GetInstance().CoverDraw();
+
     CTimer::GetInstance().Draw();
 
     if (pause_menu == true)
