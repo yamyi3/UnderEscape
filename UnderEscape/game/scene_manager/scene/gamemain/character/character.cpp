@@ -152,7 +152,6 @@ void Character::Draw(void)
 	if (c_stamina_draw)
 		vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 	
-	vivid::DrawTexture("data\\Title_背景.png", { 0.0f,0.0f }, CoverColor);
 	//デバッグモードの時に各必要情報を表示
 #ifdef _DEBUG
 	switch (chara_skill)
@@ -1062,4 +1061,9 @@ void Character::Stairs()
 		StairsFadeFlg = true;
 		FadeTimer = 0;
 	}
+}
+
+void Character::CoverDraw(void)
+{
+	vivid::DrawTexture("data\\Title_背景.png", { 0.0f,0.0f }, CoverColor);
 }

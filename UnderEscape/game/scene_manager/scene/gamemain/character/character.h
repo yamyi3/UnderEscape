@@ -127,8 +127,8 @@ public:
 	void StairsUpData();
 	//階段
 	void Stairs();
-	//フェード色取得用
-	unsigned int GetCoverColor();
+	//階段暗転描画
+	void CoverDraw(void);
 private:
 
 	//スクロール用の変数
