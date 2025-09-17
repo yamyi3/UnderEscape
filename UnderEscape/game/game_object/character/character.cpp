@@ -79,7 +79,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	cool_time_count = 0;
 	c_stamina_draw_count = 0;
 
-	Scroll = { 0.0f, 0.0f };
+	Scroll_Initialize();
 
 	StairsFlg = false;
 	StairsPos = { 0,0 };
@@ -96,9 +96,9 @@ void Character::Update(void)
 	if (StairsFlg==0)
 	{
 		//自機のキーボード操作
-		//KeyboardControl();
+		KeyboardControl();
 		//自機のコントローラー操作
-		ControllerControl();
+		//ControllerControl();
 		//クールタイムの処理
 		CoolTime();
 		//アニメーションの更新
@@ -1028,6 +1028,12 @@ bool Character::GetTriggerLB(void)
 	}
 
 	return false;
+}
+
+void Character::Scroll_Initialize()
+{
+	Scroll = cPos - vivid::Vector2{ vivid::WINDOW_WIDTH / 2, vivid::WINDOW_HEIGHT / 2 } + c_anchor;
+	Scroll.y -= vivid::WINDOW_HEIGHT / 6;
 }
 
 //スクロールの更新
