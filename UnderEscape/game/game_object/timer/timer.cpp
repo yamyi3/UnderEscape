@@ -49,6 +49,11 @@ void CTimer::ChangeTimer(void)
 	}
 }
 
+int CTimer::GetTimer(void)
+{
+	return flame_timer;
+}
+
 CTimer::CTimer(void)
 	: max_timer(300)
 	, m_TimerPosition(vivid::Vector2((float)(vivid::WINDOW_WIDTH - 300),(float)100))

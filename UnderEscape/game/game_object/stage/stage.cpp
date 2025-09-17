@@ -106,7 +106,7 @@ void Stage::Initialize(void)
 					ItemManager::GetInstance().CreateItem({ (float)(x * g_map_chip_size),(float)(y * g_map_chip_size) }, ITEM_ID::FLASH_ITEM);
 					break;
 				case MAP_CHIP_ID::START:
-					start_pos = { (float)(x * g_map_chip_size),((y+1) * g_map_chip_size)-Character::GetInstance().GetCharaHeight()};
+					start_pos = { (float)(x * g_map_chip_size),((y+1) * g_map_chip_size) - Character::GetInstance().GetCharaHeight()};
 					break;
 				case MAP_CHIP_ID::GOAL:
 					goal_pos = { (float)(x * g_map_chip_size),((y + 1) * g_map_chip_size) - Character::GetInstance().GetCharaHeight() };

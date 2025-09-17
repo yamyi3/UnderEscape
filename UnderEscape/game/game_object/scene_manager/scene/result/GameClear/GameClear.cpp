@@ -33,12 +33,12 @@ void GameClear::Draw()
 	//vivid::DrawTexture("data\\ステージクリア.webp",result_pos, defult_color);	//ロゴ
 	//vivid::DrawTexture("data\\次のステージへ.webp", left_pos, defult_color);	//左の選択
 	//vivid::DrawTexture("data\\タイトルにもどる.webp",right_pos, defult_color);	//右の選択
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	vivid::DrawText(40, "GameClearScene", vivid::Vector2(0.0f, 0.0f), 0xffffffff);
-	vivid::DrawText(40, "がめこれあー", result_pos, defult_color);
-	vivid::DrawText(40, "もっかい！", result_pos, defult_color);
-	vivid::DrawText(40, "タイトール", result_pos, defult_color);
-#endif
+	vivid::DrawText(40, "GAMECLEAR", result_pos, defult_color);
+	vivid::DrawText(40, "リトライ", result_pos, defult_color);
+	vivid::DrawText(40, "タイトルへ", result_pos, defult_color);
+//#endif
 }
 
 void GameClear::Finalize()

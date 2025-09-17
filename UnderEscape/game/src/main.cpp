@@ -11,7 +11,7 @@
  */
 
 #include "vivid.h"
-#include "..\scene_manager\scene_manager.h"
+#include "../game_object/scene_manager/scene_manager.h"
 
 
 

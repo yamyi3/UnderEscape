@@ -24,6 +24,7 @@ private:
 	float m_X_Speed;						//飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
 	float m_Y_Speed;						//飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	vivid::Vector2 m_Mouse_Pos;				//自キャラからのマウスの座標
+	vivid::Vector2 m_KeepVector;			//投擲時のスティックの方向を保存する
 
 	static const float m_height;			//アイテムオブジェクトの高さ
 	static const float m_width;				//アイテムオブジェクトの幅
