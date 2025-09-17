@@ -51,6 +51,8 @@ Character& Character::GetInstance(void)
 //初期化
 void Character::Initialize(vivid::Vector2 rPos)
 {
+	stand_flag = false;
+	sneak_flag = false;
 	skill_memory = (int)CHARA_SKILL::ANIMALLEG;
 	ch_width = nomal_width;
 	accelerator = vivid::Vector2::ZERO;
@@ -94,9 +96,9 @@ void Character::Update(void)
 	if (StairsFlg==0)
 	{
 		//自機のキーボード操作
-		KeyboardControl();
+		//KeyboardControl();
 		//自機のコントローラー操作
-		//ControllerControl();
+		ControllerControl();
 		//クールタイムの処理
 		CoolTime();
 		//アニメーションの更新
@@ -209,7 +211,11 @@ void Character::ChangeSize(void)
 		{
 			ch_width = 150;
 			ch_height = 110;
-			cPos.y += (nomal_height - 110);
+			if (sneak_flag == true)
+			{
+				cPos.y += (nomal_height - 110);
+				sneak_flag = false;
+			}
 		}
 		break;
 	}
@@ -450,6 +456,11 @@ void Character::ControllerControl(void)
 		ch_speed = dash_speed;
 		if (m_LandingFlag)
 			chara_state = CHARA_STATE::WAIT;
+	}
+
+	if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::DOWN))
+	{
+		sneak_flag = true;
 	}
 
 	//下ボタンを長押しでしゃがみになる

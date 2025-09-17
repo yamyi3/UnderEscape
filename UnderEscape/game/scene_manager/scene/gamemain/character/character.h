@@ -148,6 +148,7 @@ private:
 	static float ch_height;							//自機の高さ
 	static unsigned int color;						//自機の色
 	bool sneak_flag;								//しゃがんだ時に一度だけ座標に差分を加算するフラグ
+	bool stand_flag;								//立ち上がった時に一度だけ座標に差分を加算するフラグ
 	int	c_anime_frame;								//アニメーションの更新
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
