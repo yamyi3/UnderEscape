@@ -4,6 +4,7 @@
 #include "character/character.h"
 #include "enemy_manager/enemy_manager.h"
 #include "stage/stage.h"
+#include "stage/visualmanager/visualmanager.h"
 #include"item_manager/item_manager.h"
 #include"../../scene_manager.h"
 #include "../../../game_object/game_object.h"
@@ -22,8 +23,8 @@ GameMainScene::GameMainScene(void)
 void GameMainScene::Initialize(void)
 {
     Stage::GetInstance().Initialize();
-    Character::GetInstance().Initialize(Stage::GetInstance().GetStartpos());
     EnemyManager::GetInstance().Initialize();
+    Character::GetInstance().Initialize(Stage::GetInstance().GetStartpos());
     COption::GetInstance().Initialize();
     CTimer::GetInstance().Initialize();
     ItemManager::GetInstance().Initialize();
@@ -85,11 +86,12 @@ void GameMainScene::Update(void)
 
 void GameMainScene::Draw(void)
 {
-    EnemyManager::GetInstance().Draw();
     Stage::GetInstance().Draw();
-    Character::GetInstance().Draw();
+    EnemyManager::GetInstance().Draw();
+    VisualManager::GetInstance().RockDraw();
     
     ItemManager::GetInstance().Draw();
+    Character::GetInstance().Draw();
     CTimer::GetInstance().Draw();
 
     if (pause_menu == true)

@@ -12,6 +12,8 @@ public:
 	void Update(void);
 	//描画
 	void Draw(vivid::Vector2 scroll);
+	//ビジュアルID出力
+	VISUAL_ID GetVisual_ID() { return Visual_ID; }
 	//解放
 	void Finalize(void);
 

@@ -17,6 +17,8 @@ public:
 	void Update(void);
 	//•`‰æ
 	void Draw(void);
+	//Šâ•`‰æ
+	void RockDraw(void);
 	//‰ð•ú
 	void Finalize(void);
 
