@@ -10,9 +10,10 @@ bool	Character::cAlive = true;
 CHARA_SKILL chara_skill = CHARA_SKILL::NORMAL;
 
 const float Character::limit_width	 = 100.0f;			//最終変化の幅
-const float Character::nomal_width	 = 72.0f;				//通常状態の幅
-float		Character::ch_width		 = 72.0f;				//自機の幅
-const float Character::ch_height	 = 180.0f;			//自機の高さ
+const float Character::nomal_width	 = 72.0f;			//通常状態の幅
+const float Character::nomal_height  = 180.0f;			//通常状態の高さ
+float		Character::ch_width		 = 72.0f;			//自機の幅
+float		Character::ch_height	 = 180.0f;			//自機の高さ
 const float Character::walk_speed	 = 1.2f;			//自機の通常移動速度
 const float Character::dash_speed	 = 2.4f;			//自機のダッシュ時の移動速度
 const float Character::sneak_speed	 = 0.6f;			//自機の歩行時の移動速度
@@ -66,6 +67,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	c_change_anime_timer = 6;
 	c_change_anime_frame = 0;
 
+	c_stamina_gauge = c_max_stamina;
 	stamina_anchor = { ((float)stamina_width / 2.0f), ((float)stamina_height / 2.0f) };
 	stamina_scale = { 1.0f, 1.0f };
 
@@ -112,6 +114,7 @@ void Character::Update(void)
 	StageHit();	
 	//スクロールの更新
 	Scroll_Update();
+	ChangeSize();
 }
 
 //描画
@@ -186,6 +189,31 @@ void Character::Draw(void)
 //解放
 void Character::Finalize(void)
 {
+}
+
+void Character::ChangeSize(void)
+{
+	switch (chara_condition)
+	{
+	case CHARA_CONDITION::NORMAL:
+		ch_width = nomal_width;
+		ch_height = nomal_height;
+		break;
+	case CHARA_CONDITION::ANIMAL:
+		ch_width = nomal_width;
+		ch_height = nomal_height;
+		break;
+	case CHARA_CONDITION::MONSTER:
+		ch_width = limit_width;
+		ch_height = nomal_height;
+		if (chara_state == CHARA_STATE::SNEAKWAIT || chara_state == CHARA_STATE::SNEAKWALK)
+		{
+			ch_width = 150;
+			ch_height = 110;
+			cPos.y += (nomal_height - 110);
+		}
+		break;
+	}
 }
 
 //ステージの当たり判定
@@ -731,7 +759,7 @@ void Character::UpdateAnimation(void)
 		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
 			c_change_anime_frame = 15;
 		if (chara_condition == CHARA_CONDITION::MONSTER)
-			c_change_anime_frame = 15;
+			c_change_anime_frame = 9;
 		break;
 	case CHARA_STATE::JUMP:
 		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
@@ -860,12 +888,10 @@ void Character::SkillMove(void)
 			if (m_SkillConunt < m_SkillReference[0])
 			{
 				chara_condition = CHARA_CONDITION::ANIMAL;
-				ch_width = nomal_width;
 			}
 			else
 			{
 				chara_condition = CHARA_CONDITION::MONSTER;
-				ch_width = limit_width;
 			}
 		}
 		//タイマーが規定値を超えたら各数値をリセットする
@@ -892,17 +918,14 @@ void Character::SkillMove(void)
 			if (m_SkillConunt < m_SkillReference[0])
 			{
 				chara_condition = CHARA_CONDITION::NORMAL;
-				ch_width = nomal_width;
 			}
 			else if (m_SkillConunt < m_SkillReference[1])
 			{
 				chara_condition = CHARA_CONDITION::ANIMAL;
-				ch_width = nomal_width;
 			}
 			else
 			{
 				chara_condition = CHARA_CONDITION::MONSTER;
-				ch_width = limit_width;
 			}
 		}
 	}
