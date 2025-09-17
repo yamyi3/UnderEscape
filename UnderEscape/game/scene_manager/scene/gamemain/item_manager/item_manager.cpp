@@ -47,8 +47,8 @@ void ItemManager::Update(vivid::Vector2 cPos, float cWidth, float cHeight, float
 	bool is_throw = vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C);
 	bool is_place = vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::V);
 
-	if (is_pick_up) PickupItem(vivid::Vector2(cPos.x + cWidth / 2.0f, cPos.y + cHeight / 2.0f));
-	if (is_throw)	ThrowItem();
+	if (is_pick_up || Character::GetInstance().GetTriggerA()) PickupItem(vivid::Vector2(cPos.x + cWidth / 2.0f, cPos.y + cHeight / 2.0f));
+	if (is_throw || Character::GetInstance().GetTriggerLB())	ThrowItem();
 	if (is_place)PlaceItem(cPos);
 }
 

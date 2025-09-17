@@ -47,6 +47,8 @@ public:
 	//解放
 	void Finalize(void);
 
+	//自機のサイズ変更処理
+	void ChangeSize(void);
 	//ステージとの当たり判定処理
 	void StageHit();
 	void HStageHit();
@@ -95,6 +97,11 @@ public:
 	//自機が捕まって死亡判定にする
 	void DeadCharacter(void);
 
+	//拾う動作を行っているかを取得する
+	bool GetTriggerA(void);
+	//投げる動作を行っているかを取得する
+	bool GetTriggerLB(void);
+
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
 	//自機の幅の取得
@@ -125,8 +132,8 @@ public:
 	void StairsUpData();
 	//階段
 	void Stairs();
-	//フェード色取得用
-	unsigned int GetCoverColor();
+	//階段暗転描画
+	void CoverDraw(void);
 private:
 
 	//スクロール用の変数
@@ -140,10 +147,13 @@ private:
 	//->自機関係
 	static const float limit_width;					//最終変化状態の幅
 	static const float nomal_width;					//それ以外の状態の幅
+	static const float nomal_height;				//最終状態以外の高さ
 	vivid::Vector2 cPos;							//自機の座標
 	static float ch_width;							//自機の幅
-	static const float ch_height;					//自機の高さ
+	static float ch_height;							//自機の高さ
 	static unsigned int color;						//自機の色
+	bool sneak_flag;								//しゃがんだ時に一度だけ座標に差分を加算するフラグ
+	bool stand_flag;								//立ち上がった時に一度だけ座標に差分を加算するフラグ
 	int	c_anime_frame;								//アニメーションの更新
 	int	c_anime_timer;								//アニメーションタイマー
 	int	c_change_anime_timer;						//アニメーションの切り替え基準値
@@ -170,12 +180,12 @@ private:
 		},
 		//スキル使用過多状態
 		{
-			"data\\自機\\最終状態\\前待機.png",			//待機
-			"data\\自機\\最終状態\\前歩行.png",			//歩行
-			"data\\自機\\最終状態\\前走り.png",			//ダッシュ
-			"data\\自機\\通常状態\\前しゃがみ待機スプレッド.png",	//しゃがみ待機
-			"data\\自機\\通常状態\\前しゃがみ歩きスプレッド.png",	//しゃがみ歩き
-			"data\\自機\\最終状態\\前ジャンプ.png"		//ジャンプ
+			"data\\自機\\最終状態\\前待機.png",				//待機
+			"data\\自機\\最終状態\\前歩行.png",				//歩行
+			"data\\自機\\最終状態\\前走り.png",				//ダッシュ
+			"data\\自機\\最終状態\\しゃがみ前待機.png",	//しゃがみ待機
+			"data\\自機\\最終状態\\しゃがみ前歩き.png",	//しゃがみ歩き
+			"data\\自機\\最終状態\\前ジャンプ.png"			//ジャンプ
 		}
 	};
 	vivid::Rect		c_rect;							//画像の描画範囲

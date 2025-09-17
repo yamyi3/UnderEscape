@@ -10,9 +10,10 @@ bool	Character::cAlive = true;
 CHARA_SKILL chara_skill = CHARA_SKILL::NORMAL;
 
 const float Character::limit_width	 = 100.0f;			//最終変化の幅
-const float Character::nomal_width	 = 72.0f;				//通常状態の幅
-float		Character::ch_width		 = 72.0f;				//自機の幅
-const float Character::ch_height	 = 180.0f;			//自機の高さ
+const float Character::nomal_width	 = 72.0f;			//通常状態の幅
+const float Character::nomal_height  = 180.0f;			//通常状態の高さ
+float		Character::ch_width		 = 72.0f;			//自機の幅
+float		Character::ch_height	 = 180.0f;			//自機の高さ
 const float Character::walk_speed	 = 1.2f;			//自機の通常移動速度
 const float Character::dash_speed	 = 2.4f;			//自機のダッシュ時の移動速度
 const float Character::sneak_speed	 = 0.6f;			//自機の歩行時の移動速度
@@ -50,6 +51,8 @@ Character& Character::GetInstance(void)
 //初期化
 void Character::Initialize(vivid::Vector2 rPos)
 {
+	stand_flag = false;
+	sneak_flag = false;
 	skill_memory = (int)CHARA_SKILL::ANIMALLEG;
 	ch_width = nomal_width;
 	accelerator = vivid::Vector2::ZERO;
@@ -66,6 +69,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	c_change_anime_timer = 6;
 	c_change_anime_frame = 0;
 
+	c_stamina_gauge = c_max_stamina;
 	stamina_anchor = { ((float)stamina_width / 2.0f), ((float)stamina_height / 2.0f) };
 	stamina_scale = { 1.0f, 1.0f };
 
@@ -112,6 +116,7 @@ void Character::Update(void)
 	StageHit();	
 	//スクロールの更新
 	Scroll_Update();
+	ChangeSize();
 }
 
 //描画
@@ -149,7 +154,6 @@ void Character::Draw(void)
 	if (c_stamina_draw)
 		vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 	
-	vivid::DrawTexture("data\\Title_背景.png", { 0.0f,0.0f }, CoverColor);
 	//デバッグモードの時に各必要情報を表示
 #ifdef _DEBUG
 	switch (chara_skill)
@@ -186,6 +190,35 @@ void Character::Draw(void)
 //解放
 void Character::Finalize(void)
 {
+}
+
+void Character::ChangeSize(void)
+{
+	switch (chara_condition)
+	{
+	case CHARA_CONDITION::NORMAL:
+		ch_width = nomal_width;
+		ch_height = nomal_height;
+		break;
+	case CHARA_CONDITION::ANIMAL:
+		ch_width = nomal_width;
+		ch_height = nomal_height;
+		break;
+	case CHARA_CONDITION::MONSTER:
+		ch_width = limit_width;
+		ch_height = nomal_height;
+		if (chara_state == CHARA_STATE::SNEAKWAIT || chara_state == CHARA_STATE::SNEAKWALK)
+		{
+			ch_width = 150;
+			ch_height = 110;
+			if (sneak_flag == true)
+			{
+				cPos.y += (nomal_height - 110);
+				sneak_flag = false;
+			}
+		}
+		break;
+	}
 }
 
 //ステージの当たり判定
@@ -425,6 +458,11 @@ void Character::ControllerControl(void)
 			chara_state = CHARA_STATE::WAIT;
 	}
 
+	if (controller::Trigger(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::DOWN))
+	{
+		sneak_flag = true;
+	}
+
 	//下ボタンを長押しでしゃがみになる
 	if (controller::Button(controller::DEVICE_ID::PLAYER1, controller::BUTTON_ID::DOWN))
 	{
@@ -496,7 +534,7 @@ void Character::ControllerControl(void)
 			skill_active_flag = true;
 		}
 	}
-	
+
 	//スキルの動作処理
 	SkillMove();
 
@@ -731,7 +769,7 @@ void Character::UpdateAnimation(void)
 		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
 			c_change_anime_frame = 15;
 		if (chara_condition == CHARA_CONDITION::MONSTER)
-			c_change_anime_frame = 15;
+			c_change_anime_frame = 9;
 		break;
 	case CHARA_STATE::JUMP:
 		if (chara_condition == CHARA_CONDITION::NORMAL || chara_condition == CHARA_CONDITION::ANIMAL)
@@ -860,12 +898,10 @@ void Character::SkillMove(void)
 			if (m_SkillConunt < m_SkillReference[0])
 			{
 				chara_condition = CHARA_CONDITION::ANIMAL;
-				ch_width = nomal_width;
 			}
 			else
 			{
 				chara_condition = CHARA_CONDITION::MONSTER;
-				ch_width = limit_width;
 			}
 		}
 		//タイマーが規定値を超えたら各数値をリセットする
@@ -892,17 +928,14 @@ void Character::SkillMove(void)
 			if (m_SkillConunt < m_SkillReference[0])
 			{
 				chara_condition = CHARA_CONDITION::NORMAL;
-				ch_width = nomal_width;
 			}
 			else if (m_SkillConunt < m_SkillReference[1])
 			{
 				chara_condition = CHARA_CONDITION::ANIMAL;
-				ch_width = nomal_width;
 			}
 			else
 			{
 				chara_condition = CHARA_CONDITION::MONSTER;
-				ch_width = limit_width;
 			}
 		}
 	}
@@ -972,6 +1005,26 @@ void Character::DeadCharacter(void)
 	cAlive = false;
 }
 
+bool Character::GetTriggerA(void)
+{
+	if (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::A))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Character::GetTriggerLB(void)
+{
+	if (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::LEFT_SHOULDER))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 //スクロールの更新
 void Character::Scroll_Update()
 {
@@ -1039,4 +1092,9 @@ void Character::Stairs()
 		StairsFadeFlg = true;
 		FadeTimer = 0;
 	}
+}
+
+void Character::CoverDraw(void)
+{
+	vivid::DrawTexture("data\\Title_背景.png", { 0.0f,0.0f }, CoverColor);
 }

@@ -3,9 +3,6 @@
 #include "enemy.h"
 #include "..\..\stage\stage.h"
 
-const int Enemy::e_visibility_width_size = 400;
-const int Enemy::e_visibility_height_size = 400;
-
 
 const int Enemy::mark_width_size = 32;		//!の横のドット数
 const int Enemy::mark_height_size = 32;      //!の縦のドット数

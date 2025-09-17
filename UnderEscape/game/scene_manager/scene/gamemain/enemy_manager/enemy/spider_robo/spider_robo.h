@@ -22,6 +22,10 @@ public:
     void    Draw(vivid::Vector2 scroll);
 
 private:
+
+    static const int e_visibility_width_size;
+    static const int e_visibility_height_size;
+
     std::string enemy_picture_name[(int)eSTATUS::MAX]	//蜘蛛ロボの画像のファイル名
         = {
     "data\\敵機\\蜘蛛型\\待機.png" ,	//Stop			//待機

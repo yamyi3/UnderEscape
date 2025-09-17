@@ -47,8 +47,6 @@ public:
 
 
 protected:
-	static const int e_visibility_width_size;
-	static const int e_visibility_height_size;
 
 	int e_width_size;					//エネミーの横のドット数
 	int e_height_size;                 //エネミーの縦のドット数
@@ -107,6 +105,7 @@ protected:
 	bool ViewingAngle;
 
 	std::string enemy_sight = "data\\敵視界.png";
+
 	int AnimationTimer;
 	static const int animation_change_time;
 	int AnimationFrame;

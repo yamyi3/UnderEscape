@@ -189,7 +189,22 @@ void VisualManager::Draw(void)
 
 	while (it != end)
 	{
-		(*it)->Draw(scroll);
+		if ((*it)->GetVisual_ID() != VISUAL_ID::ROCK_M && (*it)->GetVisual_ID() != VISUAL_ID::ROCK_L)
+			(*it)->Draw(scroll);
+
+		++it;
+	}
+}
+
+void VisualManager::RockDraw(void)
+{
+	VISUAL_LIST::iterator it = m_Visual.begin();
+	VISUAL_LIST::iterator end = m_Visual.end();
+
+	while (it != end)
+	{
+		if ((*it)->GetVisual_ID() == VISUAL_ID::ROCK_M || (*it)->GetVisual_ID() == VISUAL_ID::ROCK_L)
+			(*it)->Draw(scroll);
 
 		++it;
 	}
