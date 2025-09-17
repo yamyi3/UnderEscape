@@ -1,9 +1,15 @@
 #include "creature.h"
+
+
+
+const int Creature::e_visibility_width_size = 400;
+const int Creature::e_visibility_height_size = 400;
+
 const int    Creature::m_width = 301;            //!< • 
 const int    Creature::m_height = 190;           //!< ‚‚³ 	
-const float	 Creature::m_circle_radius = 200.0f;    //Ž‹ŠE”ÍˆÍ
-const float  Creature::m_move_speed = 4;       //!< ˆÚ“®‘¬“x 
-const float  Creature::m_chase_move_speed = 6;       //!< ˆÚ“®‘¬“x 
+const float	 Creature::m_circle_radius = 300.0f;    //Ž‹ŠE”ÍˆÍ
+const float  Creature::m_move_speed = 3;       //!< ˆÚ“®‘¬“x 
+const float  Creature::m_chase_move_speed = 9;       //!< ˆÚ“®‘¬“x 
 const float  Creature::m_jump_height = 250.0f;
 const float  Creature::m_jump_upspeed = 3.0f;
 const float  Creature::m_jump_downspeed = 100.0f;

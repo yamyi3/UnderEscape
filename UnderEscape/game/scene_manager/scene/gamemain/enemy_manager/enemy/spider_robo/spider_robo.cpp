@@ -1,4 +1,8 @@
 #include "spider_robo.h"
+
+const int SpiderRobo::e_visibility_width_size = 400;
+const int SpiderRobo::e_visibility_height_size = 400;
+
 const int    SpiderRobo::m_width = 128;            //!< • 
 const int    SpiderRobo::m_height = 98;           //!< ‚‚³ 	
 const float	 SpiderRobo::m_circle_radius = 200.0f;    //Ž‹ŠE”ÍˆÍ
