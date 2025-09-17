@@ -59,6 +59,8 @@ public:
 	void KeyboardControl(void);
 	//自機のコントローラー操作処理
 	void ControllerControl(void);
+	//自機の右スティックの傾きの大きさを取得する
+	vivid::Vector2 GetRightStick(void);
 	//地面をすり抜けないようにする処理
 	void RoundHit(float);
 	//障害物(壁)に完全に隠れている時の処理

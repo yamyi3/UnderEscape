@@ -1,6 +1,6 @@
 //character.cpp
 #include "character.h"
-#include "../stage/stage.h"
+#include "../game_object.h"
 
 float	Character::ch_speed = sneak_speed;
 unsigned Character::color = 0xffffffff;
@@ -56,7 +56,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	skill_memory = (int)CHARA_SKILL::ANIMALLEG;
 	ch_width = nomal_width;
 	accelerator = vivid::Vector2::ZERO;
-	cPos = {100.0f, rPos.y - ch_height};
+	cPos = rPos;
 	chara_state = CHARA_STATE::WAIT;
 	chara_condition = CHARA_CONDITION::NORMAL;
 
@@ -561,6 +561,11 @@ void Character::ControllerControl(void)
 	m_Velocity.x *= m_friction;
 }
 
+vivid::Vector2 Character::GetRightStick(void)
+{
+	return vivid::controller::GetAnalogStickRight(vivid::controller::DEVICE_ID::PLAYER1);
+}
+
 //’n–Ê‚Æ‚Ì“–‚½‚è”»’è
 void Character::RoundHit(float rHeight)
 {
@@ -885,7 +890,7 @@ void Character::SkillMove(void)
 			switch ((skill_memory))
 			{
 			case (int)CHARA_SKILL::ANIMALLEG:
-				accelerator *= 1.6f;
+				accelerator *= 1.4f;
 				chara_skill = CHARA_SKILL::ANIMALLEG;
 				break;
 			case (int)CHARA_SKILL::INVISIBLE:
@@ -910,7 +915,7 @@ void Character::SkillMove(void)
 			switch (skill_memory)
 			{
 			case (int)CHARA_SKILL::ANIMALLEG:
-				accelerator *= 0.625f;
+				accelerator *= (5.0f / 7.0f);
 				break;
 			case (int)CHARA_SKILL::INVISIBLE:
 				color = 0xffffffff;

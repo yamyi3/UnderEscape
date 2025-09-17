@@ -1,4 +1,6 @@
 #include "flash_item.h"
+#include "../../game/game_object/game_object.h"
+
 const float CFlashItem::m_height = 32.0f;
 const float CFlashItem::m_width = 32.0f;
 const int CFlashItem::m_max_time = 50;
@@ -11,9 +13,10 @@ const float CFlashItem::m_radius = 16.0f;
 CFlashItem::CFlashItem()
 	: CItem(ITEM_ID::FLASH_ITEM, ITEM_STATE::PLACE, m_width, m_height, m_radius, m_effect_area, m_number_of_times)
 
-	, m_X_Speed(30.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
-	, m_Y_Speed(30.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
+	, m_X_Speed(10.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
+	, m_Y_Speed(15.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	, m_Mouse_Pos(0.0f, 0.0f)
+	, m_KeepVector(0.0f, 0.0f)
 
 {
 }
@@ -52,20 +55,16 @@ void CFlashItem::Draw(void)
 	{
 		vivid::DrawTexture("data\\ball.png", m_Position - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
 	}
-
-
 }
-
-
 
 void CFlashItem::GetMove(vivid::Vector2 c_pos, float c_width, float c_height)
 {
-	m_Mouse_Pos.x = (vivid::mouse::GetCursorPos().x) + Character::GetInstance().GetScroll().x - c_pos.x;
-	m_Mouse_Pos.y = c_pos.y - (vivid::mouse::GetCursorPos().y + Character::GetInstance().GetScroll().y);
+	m_Mouse_Pos = (Character::GetInstance().GetRightStick() * (vivid::Vector2(m_X_Speed, m_Y_Speed) + vivid::Vector2(300.0f, 300.0f)));
 
-	if (m_CatchFlg == true && vivid::keyboard::Trigger(vivid::keyboard::KEY_ID::C))
+	if (m_CatchFlg == true && Character::GetInstance().GetTriggerLB())
 	{
 		m_ItemState = ITEM_STATE::USE;
+		m_KeepVector = Character::GetInstance().GetRightStick();
 	}
 
 	if (m_CatchFlg)
@@ -86,7 +85,6 @@ void CFlashItem::UseMove()
 	//アイテムオブジェクトの座標更新
 
 //catchFlg = false;
-
 
 	m_Velocity.y = -(m_Mouse_Pos.y / m_Y_Speed);
 	m_Velocity.x = (m_Mouse_Pos.x / m_X_Speed);

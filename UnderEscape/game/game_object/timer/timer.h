@@ -14,6 +14,8 @@ public:
 
 	void ChangeTimer(void);
 
+	int GetTimer(void);
+
 private:
 	vivid::Vector2	m_TimerPosition;	//タイマーの表示座標
 	int max_timer;					//1ステージの最大秒数

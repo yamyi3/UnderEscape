@@ -1,13 +1,6 @@
 #include "gamemain.h"
 #include "vivid.h"
-
-#include "character/character.h"
-#include "enemy_manager/enemy_manager.h"
-#include "stage/stage.h"
-#include "stage/visualmanager/visualmanager.h"
-#include"item_manager/item_manager.h"
-#include"../../scene_manager.h"
-#include "../../../game_object/game_object.h"
+#include "../../../../game_object/game_object.h"
 
 //Gameobject gameobject;
 
@@ -72,10 +65,13 @@ void GameMainScene::Update(void)
         {
             Character::GetInstance().DeadCharacter();
         }
-        if (Character::GetInstance().GetAlive() == false)
+        //敵機に捕まるかタイマーが0になるとゲームオーバー
+        if (Character::GetInstance().GetAlive() == false || CTimer::GetInstance().GetTimer() <= 0)
         {
             SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMEOVER);
         }
+        //自機が捕まらずにゴール地点にたどり着いたらゲームクリア
+        
     }
 
     if (pause_menu == true)
