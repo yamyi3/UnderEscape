@@ -93,7 +93,7 @@ void GameMainScene::Draw(void)
     
     ItemManager::GetInstance().Draw();
 
-    //Character::GetInstance().CoverDraw();
+    Character::GetInstance().CoverDraw();
 
     CTimer::GetInstance().Draw();
 
