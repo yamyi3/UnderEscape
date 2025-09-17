@@ -23,7 +23,6 @@ CItem::CItem(ITEM_ID id, ITEM_STATE state, float width, float heght, float radiu
 	, m_CatchFlg(false)
 	, m_Fall(1.0f)
 	, m_Ga(1.0f)
-	, m_Falling_Point(0.0f, 0.0f)
 	, ceiling_wall(false)
 	, left_right_wall(false)
 	, ground_wall(false)
@@ -226,6 +225,72 @@ void CItem::ItemPlace(vivid::Vector2 c_pos)
 			m_Ga += 0.981;
 		}
 	}
+}
+
+bool CItem::GroundCheck(vivid::Vector2 position)
+{
+	//地面判定
+	if (Stage::GetInstance().GetRoundHeight(position, m_Width, m_Height) - m_Height < position.y)
+	{
+		return false;
+	}
+
+		return true;
+	
+}
+
+bool CItem::CelingCheck(vivid::Vector2 position)
+{
+	//天井判定
+	if (Stage::GetInstance().GetCeiling(position, m_Width, m_Height) > m_Position.y)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool CItem::LeftWallCheck(vivid::Vector2 position)
+{
+	//左壁判定
+	if (Stage::GetInstance().GetLWall(position, m_Width, m_Height) > position.x)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool CItem::RightWallCheck(vivid::Vector2 position)
+{
+	//右壁判定
+	if (Stage::GetInstance().GetRWall(position, m_Width, m_Height) - m_Width < m_Position.x)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool CItem::WallCheck(vivid::Vector2 position)
+{
+	//左壁判定
+	if (Stage::GetInstance().GetLWall(position, m_Width, m_Height) > position.x)
+	{
+		return false;
+	}
+	//右壁判定
+	if (Stage::GetInstance().GetRWall(position, m_Width, m_Height) - m_Width < m_Position.x)
+	{
+		return false;
+	}
+	//天井判定
+	if (Stage::GetInstance().GetCeiling(position, m_Width, m_Height) > m_Position.y)
+	{
+			return false;
+	}
+
+	return true;
 }
 
 void CItem::GetMove(vivid::Vector2 c_pos, float c_width, float c_height)
