@@ -534,7 +534,7 @@ void Character::ControllerControl(void)
 			skill_active_flag = true;
 		}
 	}
-	
+
 	//スキルの動作処理
 	SkillMove();
 
@@ -1003,6 +1003,26 @@ void Character::StaminaDraw(void)
 void Character::DeadCharacter(void)
 {
 	cAlive = false;
+}
+
+bool Character::GetTriggerA(void)
+{
+	if (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::A))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Character::GetTriggerLB(void)
+{
+	if (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::LEFT_SHOULDER))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 //スクロールの更新
