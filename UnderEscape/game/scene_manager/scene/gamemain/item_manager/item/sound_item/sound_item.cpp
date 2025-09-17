@@ -38,7 +38,7 @@ void CSoundItem::Draw(void)
 	vivid::DrawText(40, "rest:" + std::to_string(m_Number_Of_Times + 1), vivid::Vector2(m_Position.x - (Character::GetInstance().GetScroll().x + 100.0f), m_Position.y - (Character::GetInstance().GetScroll().y + 100.0f)), 0xff00ffff);
 	if (m_ItemState == ITEM_STATE::GET)
 	{
-		vivid::DrawTexture("data\\ball.png", m_Falling_Point - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
+		//vivid::DrawTexture("data\\ball.png", m_Falling_Point - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
 
 		for (int i = 0; i < 10; i++)
 			vivid::DrawTexture("data\\ball.png", m_Orbit_Position[i] - Character::GetInstance().GetScroll(), m_Effect_Color);
@@ -156,12 +156,12 @@ void CSoundItem::SetOrbitPosition(vivid::Vector2 position, vivid::Vector2 c_pos)
 
 
 
-		if (Stage::GetInstance().GetRoundHeight(save_position, m_Width, m_Height) - m_Height < save_position.y && fall == false)
-		{
-			fall = true;
-			m_Falling_Point.y = Stage::GetInstance().GetRoundHeight(save_position, m_Width, m_Height) - m_Height;
-			m_Falling_Point.x = save_position.x;
-		}
+		//if (Stage::GetInstance().GetRoundHeight(save_position, m_Width, m_Height) - m_Height < save_position.y && fall == false)
+		//{
+		//	fall = true;
+		//	m_Falling_Point.y = Stage::GetInstance().GetRoundHeight(save_position, m_Width, m_Height) - m_Height;
+		//	m_Falling_Point.x = save_position.x;
+		//}
 
 	}
 	m_Ga = 1.0;
