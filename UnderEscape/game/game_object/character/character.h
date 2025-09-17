@@ -124,6 +124,9 @@ public:
 	bool GetFound(void) { return found_flag; }
 	//自機の生存フラグの取得
 	bool GetAlive(void) { return cAlive; }
+
+	//スクロール変数初期化用
+	void Scroll_Initialize();
 	//スクロール変数更新用
 	void Scroll_Update();
 	//スクロールの値を返す変数
