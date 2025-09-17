@@ -288,6 +288,8 @@ vivid::Vector2 Enemy::GetCircleCenterPos(void)
 
 bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width, bool shielding)
 {
+	if (ViewingAngle && ((eVector == -1 && cPos.x > ePos.x) || (eVector == 1 && cPos.x < ePos.x)))
+		return false;
 	vivid::Vector2 Ch_Pos;
 	Ch_Pos.x = cPos.x + c_width / 2;
 	Ch_Pos.y = cPos.y;

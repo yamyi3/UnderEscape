@@ -6,6 +6,8 @@ enum class MAP_CHIP_ID
 	BLOCK,			//1ブロック
 	WALL,			//2遮蔽
 	TPSTAIRS,		//3テレポート階段
-	START,			//4スタート地点
-	GOAL,			//5ゴール地点
+	S_ITEM,			//4音アイテム
+	F_ITEM,			//5光アイテム
+	START,			//6スタート地点
+	GOAL,			//7ゴール地点
 };

@@ -2,6 +2,7 @@
 #include "stage_id.h"
 #include "../character/character.h"
 #include "../enemy_manager/enemy_manager.h"
+#include "../item_manager/item_manager.h"
 #include "blockmanager/blockmanager.h"
 #include "wallmanager/wallmanager.h"
 #include "teleportmanager/teleportmanager.h"
@@ -98,6 +99,12 @@ void Stage::Initialize(void)
 				case MAP_CHIP_ID::TPSTAIRS:
 					TPcount++;
 					break;
+				case MAP_CHIP_ID::S_ITEM:
+					ItemManager::GetInstance().CreateItem({ (float)(x * g_map_chip_size),(float)(y * g_map_chip_size) }, ITEM_ID::SOUND_ITEM);
+					break;
+				case MAP_CHIP_ID::F_ITEM:
+					ItemManager::GetInstance().CreateItem({ (float)(x * g_map_chip_size),(float)(y * g_map_chip_size) }, ITEM_ID::FLASH_ITEM);
+					break;
 				case MAP_CHIP_ID::START:
 					start_pos = { (float)(x * g_map_chip_size),((y+1) * g_map_chip_size)-Character::GetInstance().GetCharaHeight()};
 					break;
@@ -179,7 +186,7 @@ void Stage::MapSizeInitialize(void)
 		}
 	}
 
-	g_map_chip_count_height = work[0];
+	g_map_chip_count_height = work[0]+1;
 	g_map_chip_count_width = work[1];
 }
 
