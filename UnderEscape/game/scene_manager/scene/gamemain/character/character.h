@@ -97,6 +97,11 @@ public:
 	//自機が捕まって死亡判定にする
 	void DeadCharacter(void);
 
+	//拾う動作を行っているかを取得する
+	bool GetTriggerA(void);
+	//投げる動作を行っているかを取得する
+	bool GetTriggerLB(void);
+
 	//座標の取得
 	vivid::Vector2 GetCharapos(void) { return cPos; }
 	//自機の幅の取得
