@@ -106,7 +106,11 @@ public:
 
     //置く動作
     void ItemPlace(vivid::Vector2 c_pos);
-
+    bool WallCheck(vivid::Vector2 position);
+    bool GroundCheck(vivid::Vector2 position );
+    bool CelingCheck(vivid::Vector2 position);
+    bool LeftWallCheck(vivid::Vector2 position);
+    bool RightWallCheck(vivid::Vector2 position);
 protected:
 
     //プレイヤーが持っている状態の処理
@@ -137,7 +141,6 @@ protected:
     vivid::Vector2              m_Center;			//アイテムオブジェクトの中心点
     vivid::Vector2              m_Scale;            //!< 拡大率 
     vivid::Rect                 m_Rect;             //!< 読み込み範囲 
-    vivid::Vector2  m_Falling_Point;
 
     unsigned int                m_Color;            //!< 色 
     bool                        m_ActiveFlag;       //!< アクティブフラグ 
