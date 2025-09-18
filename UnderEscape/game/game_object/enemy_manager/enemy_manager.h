@@ -14,7 +14,7 @@ public:
 	// ‰Šú‰»
 	void Initialize();
 	// XV
-	void Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area);
+	void Update();
 	// •`‰æ
 	void Draw();
 	// ŠJ•ú
@@ -35,6 +35,7 @@ public:
 
 	bool CheckHitPlayer(const vivid::Vector2& center_pos, int height, int width, bool shielding);
 	bool CheckSearchPlayer(const vivid::Vector2& center_pos, int height, int width,bool shielding);
+	void ItemCheck(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area);
 	void sound_sensor(vivid::Vector2 sound_source, float sound_size);	//‰¹‚Ì”»’è
 
 

@@ -103,10 +103,12 @@ void CFlashItem::UseMove()
 		{
 			m_Position.y += (m_Fall * m_Ga);
 		}
+		CItem::V_WallCheck();
 	}
 	else
 	{
 		m_Active = true;
+		CItem::CheckActiveItem();
 		if (m_Active_Time++ > m_max_time)
 		{
 			m_ItemState = ITEM_STATE::PLACE;
@@ -122,6 +124,7 @@ void CFlashItem::UseMove()
 	if (ceiling_wall == false && left_right_wall == false && ground_wall == false)
 	{
 		m_Position.x += m_Velocity.x;
+		CItem::H_WallCheck();
 	}
 	else
 		ceiling_wall = true;

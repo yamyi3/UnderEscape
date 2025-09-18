@@ -1,4 +1,5 @@
 #include"item.h"
+#include "..\..\enemy_manager\enemy_manager.h"
 
 const unsigned int CItem::m_default_color = 0xffffffff;
 const unsigned int CItem::m_can_pick_up_color = 0xff00ff00;
@@ -68,8 +69,8 @@ void CItem::Update(vivid::Vector2 c_pos, float c_width, float c_height, float r_
 		SetOrbitPosition(m_Position, c_pos);
 		break;
 	case ITEM_STATE::USE:	//アイテムが使用されている状態
-		WallCheck();
 		UseMove();
+		//WallCheck();
 		break;
 	case ITEM_STATE::PLACE:	//アイテムが置かれた状態
 		ItemPlace(c_pos);
@@ -155,6 +156,39 @@ void CItem::WallCheck()
 	{
 		m_Position.x = Stage::GetInstance().GetRWall(m_Position, m_Width, m_Height) - m_Width;
 		left_right_wall = true;
+	}
+	//天井判定
+	if (Stage::GetInstance().GetCeiling(m_Position, m_Width, m_Height) > m_Position.y)
+	{
+		m_Position.y = Stage::GetInstance().GetCeiling(m_Position, m_Width, m_Height);
+		ceiling_wall = true;
+		m_Ga = 1.0f; //天井に当たったら重力加速度をリセット
+	}
+}
+
+void CItem::H_WallCheck(void)
+{
+	//左壁判定
+	if (Stage::GetInstance().GetLWall(m_Position, m_Width, m_Height) > m_Position.x)
+	{
+		m_Position.x = Stage::GetInstance().GetLWall(m_Position, m_Width, m_Height);
+		left_right_wall = true;
+	}
+	//右壁判定
+	if (Stage::GetInstance().GetRWall(m_Position, m_Width, m_Height) - m_Width < m_Position.x)
+	{
+		m_Position.x = Stage::GetInstance().GetRWall(m_Position, m_Width, m_Height) - m_Width;
+		left_right_wall = true;
+	}
+}
+
+void CItem::V_WallCheck(void)
+{
+	//地面判定
+	if (Stage::GetInstance().GetRoundHeight(m_Position, m_Width, m_Height) - m_Height < m_Position.y)
+	{
+		m_Position.y = Stage::GetInstance().GetRoundHeight(m_Position, m_Width, m_Height) - m_Height;
+		ground_wall = true;
 	}
 	//天井判定
 	if (Stage::GetInstance().GetCeiling(m_Position, m_Width, m_Height) > m_Position.y)
@@ -270,6 +304,11 @@ bool CItem::RightWallCheck(vivid::Vector2 position)
 	}
 
 	return true;
+}
+
+void CItem::CheckActiveItem()
+{
+	EnemyManager::GetInstance().ItemCheck(m_ItemID,m_Position, m_Active, m_Effect_Area);
 }
 
 bool CItem::WallCheck(vivid::Vector2 position)

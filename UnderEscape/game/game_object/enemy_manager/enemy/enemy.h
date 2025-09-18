@@ -13,7 +13,7 @@ public:
 	virtual void Initialize(vivid::Vector2 pos, float L, float R);//初期化
 	virtual void Initialize(vivid::Vector2 pos);//初期化
 	virtual void Initialize(void);
-	virtual void Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area);
+	virtual void Update();
 	virtual void Draw(vivid::Vector2 scroll);
 	virtual void Finalize(void);
 
@@ -45,7 +45,7 @@ public:
 	);
 	void player_check(bool shielding);	//敵の索敵範囲内に自キャラがいると追いかけられる
 
-
+	void ItemCheck(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area);
 protected:
 
 	int e_width_size;					//エネミーの横のドット数
