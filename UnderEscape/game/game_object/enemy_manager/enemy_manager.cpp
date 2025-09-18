@@ -70,7 +70,7 @@ void EnemyManager::Initialize()
 			}
 }
 
-void EnemyManager::Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area)
+void EnemyManager::Update()
 {
 	ENEMY_LIST::iterator it = m_Enemy.begin();
 	ENEMY_LIST::iterator end = m_Enemy.end();
@@ -87,7 +87,7 @@ void EnemyManager::Update(ITEM_ID id, vivid::Vector2 pos, bool active, float eff
 
 			continue;
 		}
-		(*it)->Update(id, pos, active, effect_area);
+		(*it)->Update();
 
 		++it;
 	}
@@ -267,6 +267,24 @@ bool EnemyManager::CheckSearchPlayer(const vivid::Vector2& center_pos, int heigh
 		++it;
 	}
 	return HitPlayerFlg;
+}
+
+void EnemyManager::ItemCheck(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area)
+{
+	//id, pos, active, effect_area
+	bool HitPlayerFlg = false;
+	bool invisible = Character::GetInstance().GetFound();
+
+	ENEMY_LIST::iterator it = m_Enemy.begin();
+	ENEMY_LIST::iterator end = m_Enemy.end();
+
+	if (invisible)
+		while (it != end)
+		{
+			Enemy* enemy = (*it);
+			enemy->ItemCheck(id, pos, active, effect_area);
+			++it;
+		}
 }
 
 void EnemyManager::sound_sensor(vivid::Vector2 sound_source, float sound_size)

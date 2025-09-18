@@ -70,6 +70,10 @@ public:
     }
     //アイテムの当たり判定
     void WallCheck(void);
+    //アイテムの当たり判定
+    void H_WallCheck(void);
+    //アイテムの当たり判定
+    void V_WallCheck(void);
 
     //アイテムの効果が有効かどうかを取得
     bool GetItemActive(void) { return m_Active; }
@@ -111,6 +115,8 @@ public:
     bool CelingCheck(vivid::Vector2 position);
     bool LeftWallCheck(vivid::Vector2 position);
     bool RightWallCheck(vivid::Vector2 position);
+
+    void CheckActiveItem();
 protected:
 
     //プレイヤーが持っている状態の処理

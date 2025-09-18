@@ -60,6 +60,7 @@ void Character::Initialize(vivid::Vector2 rPos)
 	chara_state = CHARA_STATE::WAIT;
 	chara_condition = CHARA_CONDITION::NORMAL;
 
+	m_GoalPos = Stage::GetInstance().GetGoalPos();
 	c_anchor	= {ch_width / 2,ch_height / 2 };
 	c_scale		= {  1.0f,1.0f };
 	c_rotate	= 0.0f;
@@ -96,9 +97,9 @@ void Character::Update(void)
 	if (StairsFlg==0)
 	{
 		//自機のキーボード操作
-		KeyboardControl();
+		//KeyboardControl();
 		//自機のコントローラー操作
-		//ControllerControl();
+		ControllerControl();
 		//クールタイムの処理
 		CoolTime();
 		//アニメーションの更新
@@ -1008,6 +1009,12 @@ void Character::StaminaDraw(void)
 void Character::DeadCharacter(void)
 {
 	cAlive = false;
+}
+
+void Character::CheckGoal()
+{
+	//m_GoalPos
+
 }
 
 bool Character::GetTriggerA(void)

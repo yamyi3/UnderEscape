@@ -99,6 +99,8 @@ public:
 	//自機が捕まって死亡判定にする
 	void DeadCharacter(void);
 
+	void CheckGoal();
+
 	//拾う動作を行っているかを取得する
 	bool GetTriggerA(void);
 	//投げる動作を行っているかを取得する
@@ -124,6 +126,8 @@ public:
 	bool GetFound(void) { return found_flag; }
 	//自機の生存フラグの取得
 	bool GetAlive(void) { return cAlive; }
+	//ゴールフラグの取得
+	bool GetGoal(void) { return c_GoalFlag; }
 
 	//スクロール変数初期化用
 	void Scroll_Initialize();
@@ -255,10 +259,13 @@ private:
 	static bool m_LandingFlag;			//接地フラグ
 	static bool cCatch;					//オブジェクトを所持しているか判別するフラグ
 	static bool cAlive;					//生存フラグ
+	bool c_GoalFlag;					//ゴールに到達したか判定するフラグ
 	bool cShielding;					//遮蔽に入っているか判定するフラグ
 	CHARA_STATE chara_state;			//自機の状態
 	CHARA_SKILL chara_skill;			//スキルの使用状態
 	CHARA_CONDITION	chara_condition;	//自機のスキル使用回数による状態
+
+	vivid::Vector2 m_GoalPos;	//ゴールの座標
 
 	//階段用
 	static const int stairs_fade_speed;

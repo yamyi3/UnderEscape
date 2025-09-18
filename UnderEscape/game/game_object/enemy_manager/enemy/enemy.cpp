@@ -101,34 +101,9 @@ void Enemy::Initialize(void)
 	Enemy::Initialize({ 300.0f, 500.0f }, 300.0f, 600.0f);
 }
 
-void Enemy::Update(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area)
+void Enemy::Update()
 {
-	switch (id)
-	{
-	case ITEM_ID::FLASH_ITEM:	//閃光弾
-		item_pos = pos;
-		item_pos.x = abs((item_pos.x) - ePos.x);										//アイテムとエネミーの横の距離
-		item_pos.y = abs((item_pos.y) - ePos.y);										//アイテムとエネミーの縦の距離
-		if (active)		//平方根で距離を求め比べる 300は効果範囲
-		{
-			if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= effect_area)
-			{
-				Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
-				Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
-				eStatus = eSTATUS::Surprised;
-			}
-		}
-
-		break;
-	case ITEM_ID::SOUND_ITEM:	//音爆弾
-		if (active == true)
-		{
-			sound_sensor(pos, effect_area);
-		}
-		break;
-	default:
-		break;
-	}
+	
 
 
 	Sight_Check_Timer++;
@@ -471,4 +446,34 @@ void Enemy::player_check(bool shielding)
 		eStatus = eSTATUS::Surprised;
 	}
 
+}
+
+void Enemy::ItemCheck(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_area)
+{
+	switch (id)
+	{
+	case ITEM_ID::FLASH_ITEM:	//閃光弾
+		item_pos = pos;
+		item_pos.x = abs((item_pos.x) - ePos.x);										//アイテムとエネミーの横の距離
+		item_pos.y = abs((item_pos.y) - ePos.y);										//アイテムとエネミーの縦の距離
+		if (active)		//平方根で距離を求め比べる 300は効果範囲
+		{
+			if (sqrt((item_pos.x * item_pos.x) + (item_pos.y * item_pos.y)) <= effect_area)
+			{
+				Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
+				Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
+				eStatus = eSTATUS::Surprised;
+			}
+		}
+
+		break;
+	case ITEM_ID::SOUND_ITEM:	//音爆弾
+		if (active == true)
+		{
+			sound_sensor(pos, effect_area);
+		}
+		break;
+	default:
+		break;
+	}
 }

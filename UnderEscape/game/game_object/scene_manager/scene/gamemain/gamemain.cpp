@@ -54,7 +54,7 @@ void GameMainScene::Update(void)
             EnemyManager::GetInstance().sound_sensor(mopos, 300);
         }
         CTimer::GetInstance().Update();
-        EnemyManager::GetInstance().Update(ItemManager::GetInstance().GetItemID(), ItemManager::GetInstance().GetItemPos(), ItemManager::GetInstance().GetItemActiveFlag(), ItemManager::GetInstance().GetEfectiveArea());
+        EnemyManager::GetInstance().Update();
         Character::GetInstance().Update();
         Character::GetInstance().RoundHit(Stage::GetInstance().GetRoundHeight(Character::GetInstance().GetCharapos(), Character::GetInstance().GetCharaWidth(), Character::GetInstance().GetCharaHeight()));
         Character::GetInstance().CheckHit({ 0,0 }, 0, 0,
@@ -72,7 +72,7 @@ void GameMainScene::Update(void)
         }
         //自機が捕まらずにゴール地点にたどり着いたらゲームクリア
         
-    }
+    }//ItemManager::GetInstance().GetItemID(), ItemManager::GetInstance().GetItemPos(), ItemManager::GetInstance().GetItemActiveFlag(), ItemManager::GetInstance().GetEfectiveArea()
 
     if (pause_menu == true)
     {
