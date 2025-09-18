@@ -265,13 +265,14 @@ bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width
 {
 	if (ViewingAngle && ((eVector == -1 && cPos.x > ePos.x) || (eVector == 1 && cPos.x < ePos.x)))
 		return false;
+	int e_width_hit_size = e_width_size / 2;
 	vivid::Vector2 Ch_Pos;
 	Ch_Pos.x = cPos.x + c_width / 2;
 	Ch_Pos.y = cPos.y;
 	if (Ch_Pos.y <= ePos.y + e_height_size
 		&& Ch_Pos.y + c_height >= ePos.y
-		&& Ch_Pos.x <= ePos.x + e_width_size
-		&& Ch_Pos.x + c_width >= ePos.x
+		&& Ch_Pos.x <= ePos.x-eAnchor.x + e_width_size
+		&& Ch_Pos.x + c_width >= ePos.x-eAnchor.x + e_width_hit_size/2
 		&& shielding==false)
 	{
 		if (eStatus != eSTATUS::Kill)
