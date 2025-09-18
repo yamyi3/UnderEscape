@@ -97,9 +97,9 @@ void Character::Update(void)
 	if (StairsFlg==0)
 	{
 		//自機のキーボード操作
-		KeyboardControl();
+		//KeyboardControl();
 		//自機のコントローラー操作
-		//ControllerControl();
+		ControllerControl();
 		//クールタイムの処理
 		CoolTime();
 		//アニメーションの更新
