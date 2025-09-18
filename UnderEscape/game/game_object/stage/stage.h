@@ -72,7 +72,7 @@ private:
 	vivid::Vector2	goal_pos;
 
 	//シングルトンパターンの設定
-	Stage(void) = default;
+	Stage(void);
 	~Stage(void) = default;
 	Stage(const Stage& rhs) = default;
 	Stage& operator = (const Stage& rhs) = default;

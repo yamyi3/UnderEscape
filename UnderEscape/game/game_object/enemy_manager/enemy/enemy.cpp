@@ -345,6 +345,7 @@ void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 		if (eStatus == eSTATUS::Wandering || eStatus == eSTATUS::Vigilance)
 		{
 			eStatus = eSTATUS::Surprised;
+			ChasePos = sound_source;
 			Surprised_Timer = 0;
 		}
 
@@ -440,7 +441,7 @@ void Enemy::player_check(bool shielding)
 	if (shielding == true)
 	{
 		Vigilance_Timer = 0;
-		eStatus = eSTATUS::Wandering;
+		eStatus = eSTATUS::Vigilance;
 	}
 	else if ((eStatus == eSTATUS::Wandering|| eStatus==eSTATUS::Stop) && shielding == false)
 	{
@@ -464,6 +465,7 @@ void Enemy::ItemCheck(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_
 				Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
 				Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
 				eStatus = eSTATUS::Surprised;
+				ChasePos = pos;
 			}
 		}
 

@@ -16,6 +16,11 @@
 
 const int Stage::g_map_chip_size = 100;
 
+Stage::Stage(void)
+	
+{}
+
+
 Stage& Stage::GetInstance(void)
 {
 	static Stage	instance;
