@@ -31,11 +31,11 @@ void Stage::Initialize(void)
 {
 	start_pos = { 0.0f, 0.0f };
 	goal_pos = { 0.0f,0.0f };
-	//g_Map = new MAP_CHIP_ID[g_map_chip_count_height];
-	//for (int i = 0; i < g_map_chip_count_height; i++)
-	//{
-	//	g_Map = new MAP_CHIP_ID[g_map_chip_count_width];
-	//}
+
+	BlockManager::GetInstance().Initialize();
+	WallManager::GetInstance().Initialize();
+
+
 	MapSizeInitialize();
 	g_Map.resize(g_map_chip_count_height, std::vector<MAP_CHIP_ID>(g_map_chip_count_width));
 	g_map_flg.resize(g_map_chip_count_height, std::vector<bool>(g_map_chip_count_width));

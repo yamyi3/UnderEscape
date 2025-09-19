@@ -103,7 +103,7 @@ VisualManager& VisualManager::GetInstance(void)
 
 void VisualManager::Initialize(void)
 {
-
+	m_Visual.clear();
 	const int g_map_chip_count_width = Stage::GetInstance().GetStageWidthCount();
 	const int g_map_chip_count_height = Stage::GetInstance().GetStageHeightCount();
 	map_chip_size = Stage::GetInstance().GetMapChipSize();

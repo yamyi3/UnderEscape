@@ -16,6 +16,8 @@ TeleportManager& TeleportManager::GetInstance()
 
 void TeleportManager::Initialize(const int tp_stairs_count)
 {
+
+	m_Teleport.clear();
     const int g_map_chip_count_width=Stage::GetInstance().GetStageWidthCount();
     const int g_map_chip_count_height = Stage::GetInstance().GetStageHeightCount();
     map_chip_size = Stage::GetInstance().GetMapChipSize();

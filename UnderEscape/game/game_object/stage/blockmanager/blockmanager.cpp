@@ -16,6 +16,7 @@ BlockManager& BlockManager::GetInstance()
 
 void BlockManager::Initialize()
 {
+	m_Block.clear();
 }
 
 void BlockManager::Update()

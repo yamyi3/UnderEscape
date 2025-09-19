@@ -16,6 +16,7 @@ WallManager& WallManager::GetInstance()
 
 void WallManager::Initialize()
 {
+	m_Wall.clear();
 }
 
 void WallManager::Update()
