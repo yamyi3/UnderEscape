@@ -336,7 +336,7 @@ bool Enemy::CheckSearchPlayer(const vivid::Vector2& cPos, int c_height, int c_wi
 //音の判定
 void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 {
-	float sound_work = 1.0f;														//音の大きさの倍率
+	float sound_work = 2.0f;														//音の大きさの倍率
 	vivid::Vector2 work;															//音源とエネミーの距離を測るのに使う
 	work.x = abs(sound_source.x - ePos.x);										//音源とエネミーの横の距離
 	work.y = abs(sound_source.y - ePos.y);										//音源とエネミーの縦の距離

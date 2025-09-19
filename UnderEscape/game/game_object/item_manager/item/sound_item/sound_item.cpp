@@ -9,7 +9,7 @@ const int CSoundItem::m_max_time = 10;
 const int CSoundItem::m_number_of_times = 3;
 
 CSoundItem::CSoundItem()
-	: CItem(ITEM_ID::FLASH_ITEM, ITEM_STATE::PLACE, m_width, m_height, m_radius, m_effect_area, m_number_of_times)
+	: CItem(ITEM_ID::SOUND_ITEM, ITEM_STATE::PLACE, m_width, m_height, m_radius, m_effect_area, m_number_of_times)
 
 	, m_X_Speed(10.0f) //飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
 	, m_Y_Speed(15.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
