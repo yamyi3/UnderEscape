@@ -31,11 +31,13 @@ private:
     "data\\敵機\\怪物\\右歩行.png" ,	//Wandering		//徘徊
     "data\\敵機\\怪物\\右追跡.png" ,	//Chase			//追跡
     "data\\敵機\\怪物\\右待機.png",		//Vigilance		//警戒
-    "data\\敵機\\怪物\\右待機.png" ,	//Surprised		//スタン
+    "data\\敵機\\怪物\\右待機.png" ,	//Surprised		//驚く
+    "data\\敵機\\怪物\\右待機.png" ,	//STUN  		//スタン
     "data\\敵機\\怪物\\右捕獲モーション.png" };	//Kill
 
     static const int    m_width;            //!< 幅 
     static const int    m_height;           //!< 高さ 	
+    static const int    m_stun_time;        //!< スタン時間
     static const float	m_circle_radius;    //視界範囲
     static const float  m_move_speed;       //!< 移動速度 
     static const float  m_chase_move_speed;       //!< 追跡移動速度 

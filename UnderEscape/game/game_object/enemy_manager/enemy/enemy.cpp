@@ -19,7 +19,7 @@ const int Enemy::animation_change_time = 5;
 
 
 
-Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,float jump_height,float jump_upspeed,float jump_downspeed,float circle_radius, bool viewing_angle)
+Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,float jump_height,float jump_upspeed,float jump_downspeed,float circle_radius, bool viewing_angle,int stun)
 	: e_width_size(w_size)
 	, e_height_size(h_size)
 	, eSpeed(speed)
@@ -29,6 +29,7 @@ Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,float jump_hei
 	, enemy_jump_downspeed(jump_downspeed)
 	, eCircleRadius(circle_radius)
 	, ViewingAngle(viewing_angle)
+	, stun_time(stun)
 	, ePos(300.0f, 500.0f)
 	, eAnchor(e_width_size / 2.0f, e_height_size / 2.0f)
 	, eScale(1.0f, 1.0f)
@@ -47,6 +48,7 @@ Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,float jump_hei
 	, WallTouchPosX(0.0f)
 	, AnimationTimer(0)
 	, AnimationFrame(0)
+	, StunTimer(0)
 
 	, item_area(false)
 	, item_pos({ 0.0f, 0.0f })
@@ -182,6 +184,15 @@ void Enemy::Update()
 		}
 
 		break;
+	case eSTATUS::STUN:
+
+
+		if (++StunTimer >= stun_time)
+		{
+			eStatus = eSTATUS::Vigilance;
+		}
+
+		break;
 	default:
 		break;
 	}
@@ -285,10 +296,10 @@ bool Enemy::CheckHitPlayer(const vivid::Vector2& cPos, int c_height, int c_width
 	return false;
 }
 
-bool Enemy::CheckSearchPlayer(const vivid::Vector2& cPos, int c_height, int c_width)
+bool Enemy::CheckSearchPlayer(const vivid::Vector2& cPos, int c_height, int c_width,bool shielding)
 {
 
-	if (ViewingAngle && ((eVector == -1 && cPos.x > ePos.x) || (eVector == 1 && cPos.x < ePos.x)))
+	if (shielding||(ViewingAngle && ((eVector == -1 && cPos.x > ePos.x) || (eVector == 1 && cPos.x < ePos.x))))
 		return false;
 	//点と矩形の判定その1(横長)
 	bool result_h = ePos.x > cPos.x - eCircleRadius
@@ -389,6 +400,8 @@ bool Enemy::e_wool_jump()
 		break;
 	case eSTATUS::Surprised:
 		break;
+	case eSTATUS::STUN:
+		break;
 	case eSTATUS::Kill:
 		break;
 	case eSTATUS::MAX:
@@ -441,6 +454,7 @@ void Enemy::player_check(bool shielding)
 	if (shielding == true)
 	{
 		Vigilance_Timer = 0;
+		if (eStatus == eSTATUS::Chase)
 		eStatus = eSTATUS::Vigilance;
 	}
 	else if ((eStatus == eSTATUS::Wandering|| eStatus==eSTATUS::Stop) && shielding == false)
@@ -464,8 +478,7 @@ void Enemy::ItemCheck(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_
 			{
 				Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
 				Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
-				eStatus = eSTATUS::Surprised;
-				ChasePos = pos;
+				eStatus = eSTATUS::STUN;
 			}
 		}
 
