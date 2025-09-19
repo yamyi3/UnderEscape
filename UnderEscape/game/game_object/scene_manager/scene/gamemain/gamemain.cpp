@@ -71,7 +71,10 @@ void GameMainScene::Update(void)
             SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMEOVER);
         }
         //自機が捕まらずにゴール地点にたどり着いたらゲームクリア
-        
+		if (Character::GetInstance().GetGoal() == true)
+		{
+			SceneManager::GetInstance().ChangeScene(SCENE_ID::GAMECLEAR);
+		}
     }//ItemManager::GetInstance().GetItemID(), ItemManager::GetInstance().GetItemPos(), ItemManager::GetInstance().GetItemActiveFlag(), ItemManager::GetInstance().GetEfectiveArea()
 
     if (pause_menu == true)

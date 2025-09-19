@@ -61,6 +61,8 @@ void Character::Initialize(vivid::Vector2 rPos)
 	chara_condition = CHARA_CONDITION::NORMAL;
 
 	m_GoalPos = Stage::GetInstance().GetGoalPos();
+	c_GoalFlag = false;
+
 	c_anchor	= {ch_width / 2,ch_height / 2 };
 	c_scale		= {  1.0f,1.0f };
 	c_rotate	= 0.0f;
@@ -106,6 +108,8 @@ void Character::Update(void)
 		UpdateAnimation();
 		//スタミナの描画切り替え
 		StaminaDraw();
+		//ゴール判定
+		CheckGoal();
 	}
 	if (StairsFlg)
 	{
@@ -1014,7 +1018,12 @@ void Character::DeadCharacter(void)
 void Character::CheckGoal()
 {
 	//m_GoalPos
-
+	int map_chip_size = Stage::GetInstance().GetMapChipSize();
+	if (m_GoalPos.x <= cPos.x + ch_width &&
+		m_GoalPos.x + map_chip_size >= cPos.x &&
+		m_GoalPos.y <= cPos.y + ch_height &&
+		m_GoalPos.y + map_chip_size >= cPos.y)
+		c_GoalFlag = true;
 }
 
 bool Character::GetTriggerA(void)
