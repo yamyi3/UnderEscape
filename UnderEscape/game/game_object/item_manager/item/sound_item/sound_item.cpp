@@ -40,7 +40,7 @@ void CSoundItem::Draw(void)
 
 	if (m_ItemState == ITEM_STATE::GET)
 	{
-		vivid::DrawTexture("data\\ball.png", m_Orbit_Position[9], m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
+		vivid::DrawTexture("data\\ball.png", m_Orbit_Position[9] - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
 
 		for (int i = 0; i < 9; i++)
 			vivid::DrawTexture("data\\ball.png", m_Orbit_Position[i] - Character::GetInstance().GetScroll(), m_Effect_Color);
@@ -136,7 +136,10 @@ void CSoundItem::SetOrbitPosition(vivid::Vector2 position, vivid::Vector2 c_pos)
 {
 	m_Orbit_Position[0] = m_Position;
 	vivid::Vector2 save_position = m_Position;
-	bool fall = true;
+	bool vertical_move = true;//たて
+	bool beside_move = true;//横
+	bool right_beside_move = true;
+	bool left_beside_move = true;
 
 	for (int i = 1; i < 100; ++i)
 	{
@@ -144,16 +147,48 @@ void CSoundItem::SetOrbitPosition(vivid::Vector2 position, vivid::Vector2 c_pos)
 		m_Velocity.y = -(m_Mouse_Pos.y / m_Y_Speed);
 		m_Velocity.x = (m_Mouse_Pos.x / m_X_Speed);
 		//壁に触れたらその場で自由落下
-		if (CelingCheck(save_position))
-			//fall = false;
-			if (GroundCheck(save_position))
+
+		if (!beside_move)
+		{
+			if (!right_beside_move)
 			{
-				if (LeftWallCheck(save_position) && RightWallCheck(save_position) && fall)
-				{
-					save_position.x += m_Velocity.x;
-				}
-				save_position.y += m_Velocity.y + (m_Fall * m_Ga);
+				save_position.x = Stage::GetInstance().GetRWall(save_position, m_Width, m_Height);
 			}
+			if (!left_beside_move)
+			{
+				save_position.x = Stage::GetInstance().GetLWall(save_position, m_Width, m_Height);
+			}
+		}
+
+		if (vertical_move)
+		{
+			save_position.y += m_Velocity.y + (m_Fall * m_Ga);
+			if (beside_move)
+			{
+				save_position.x += m_Velocity.x;
+			}
+
+		}
+		else
+		{
+			save_position.y = Stage::GetInstance().GetRoundHeight(save_position, m_Width, m_Height) - m_Height;
+		}
+
+
+		if (!GroundCheck(save_position))
+		{
+			vertical_move = false;
+			if (!LeftWallCheck(save_position) || !RightWallCheck(save_position))
+			{
+				beside_move = false;
+				if (!LeftWallCheck(save_position))
+				{
+					left_beside_move = false;
+				}
+				else
+					right_beside_move = false;
+			}
+		}
 
 		if (i % 10 == 0)
 		{
