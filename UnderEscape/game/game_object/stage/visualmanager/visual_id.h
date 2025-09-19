@@ -15,6 +15,7 @@ enum class VISUAL_ID
 	PIPE,
 	PC,
 	BOOK_SHELF,
+	EXIT,
 
 	MAX,
 };

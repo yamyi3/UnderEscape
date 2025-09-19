@@ -478,6 +478,7 @@ void Enemy::ItemCheck(ITEM_ID id, vivid::Vector2 pos, bool active, float effect_
 			{
 				Surprised_Timer = 0;	//アイテムの効果範囲内にいる場合はSurprised_Timerをリセット
 				Vigilance_Timer = 0; 	//アイテムの効果範囲内にいる場合はVigilance_Timerをリセット
+				StunTimer = 0;		//アイテムの効果範囲内にいる場合はStunTimerをリセット
 				eStatus = eSTATUS::STUN;
 			}
 		}

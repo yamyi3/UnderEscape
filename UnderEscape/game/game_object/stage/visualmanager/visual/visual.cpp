@@ -17,7 +17,8 @@ const std::string Visual::visual_picture_name[] =
 	"data\\îwåióﬁ\\Ç–Ç—äÑÇÍï«.png",			//10
 	"data\\îwåióﬁ\\ÉpÉCÉv.png",				//11
 	"data\\îwåióﬁ\\PC.png",					//12
-	"data\\îwåióﬁ\\ñ{íI.png"				//13
+	"data\\îwåióﬁ\\ñ{íI.png",				//13
+	"data\\îwåióﬁ\\èoå˚.png"				//14
 };
 
 const int Visual::visual_picture_width_size[] =
@@ -35,7 +36,8 @@ const int Visual::visual_picture_width_size[] =
 	40,
 	50,
 	200,
-	1000
+	1000,
+	600
 };
 const int Visual::visual_picture_height_size[] =
 {
@@ -53,6 +55,7 @@ const int Visual::visual_picture_height_size[] =
 	50,
 	100,
 	500,
+	600
 };
 const int Visual::visual_draw_width_size[] =
 {
@@ -69,7 +72,8 @@ const int Visual::visual_draw_width_size[] =
 	100,
 	100,
 	200,
-	200
+	200,
+	100
 };
 const int Visual::visual_draw_height_size[] =
 {
@@ -87,6 +91,7 @@ const int Visual::visual_draw_height_size[] =
 	100,
 	100,
 	100,
+	100
 };
 
 Visual::Visual()
