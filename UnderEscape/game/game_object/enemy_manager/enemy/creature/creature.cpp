@@ -7,6 +7,7 @@ const int Creature::e_visibility_height_size = 400;
 
 const int    Creature::m_width = 301;            //!< 幅 
 const int    Creature::m_height = 190;           //!< 高さ 	
+const int    Creature::m_stun_time = 120;           //!< スタン時間
 const float	 Creature::m_circle_radius = 300.0f;    //視界範囲
 const float  Creature::m_move_speed = 3;       //!< 移動速度 
 const float  Creature::m_chase_move_speed = 9;       //!< 移動速度 
@@ -15,7 +16,7 @@ const float  Creature::m_jump_upspeed = 3.0f;
 const float  Creature::m_jump_downspeed = 100.0f;
 const bool   Creature::viewing_angle = 1;
 Creature::Creature(void)
-	:Enemy(m_width, m_height, m_move_speed, m_chase_move_speed, m_jump_height, m_jump_upspeed, m_jump_downspeed, m_circle_radius, viewing_angle)
+	:Enemy(m_width, m_height, m_move_speed, m_chase_move_speed, m_jump_height, m_jump_upspeed, m_jump_downspeed, m_circle_radius, viewing_angle, m_stun_time)
 {
 }
 
@@ -31,6 +32,7 @@ void Creature::Initialize(vivid::Vector2 pos, float L, float R, float vector, fl
 	AnimationMaxFrame[(int)eSTATUS::Chase] = 7;
 	AnimationMaxFrame[(int)eSTATUS::Vigilance] = 8;
 	AnimationMaxFrame[(int)eSTATUS::Surprised] = 8;
+	AnimationMaxFrame[(int)eSTATUS::STUN] = 2;
 	AnimationMaxFrame[(int)eSTATUS::Kill] = 6;
 }
 

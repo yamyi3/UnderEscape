@@ -5,7 +5,7 @@
 class Enemy
 {
 public:
-	Enemy::Enemy(int w_size, int h_size, float speed, float chase_speed,float jump_height, float jump_upspeed, float jump_downspeed, float circle_radius ,bool viewing_angle);
+	Enemy::Enemy(int w_size, int h_size, float speed, float chase_speed,float jump_height, float jump_upspeed, float jump_downspeed, float circle_radius ,bool viewing_angle,int stun);
 	~Enemy(void) = default;
 
 	virtual void Initialize(vivid::Vector2 pos, float L, float R, float vector, float ground);//初期化
@@ -24,7 +24,7 @@ public:
 	vivid::Vector2	GetCircleCenterPos(void);
 
 	bool CheckHitPlayer(const vivid::Vector2& center_c_pos, int c_height, int c_width ,bool shielding);
-	bool CheckSearchPlayer(const vivid::Vector2& center_c_pos, int c_height, int c_width);
+	bool CheckSearchPlayer(const vivid::Vector2& center_c_pos, int c_height, int c_width, bool shielding);
 
 	bool IsActive(void)const { return m_ActiveFlag; }
 	void Destroy(void) { m_ActiveFlag = false; }
@@ -96,6 +96,9 @@ protected:
 	float WallTouchPosX;	//壁に触れた時の位置
 
 	bool m_ActiveFlag;	//アクティブフラグ
+
+	int stun_time;
+	int StunTimer;	//スタン時間用
 
 	/*
 	エネミーの視野角用

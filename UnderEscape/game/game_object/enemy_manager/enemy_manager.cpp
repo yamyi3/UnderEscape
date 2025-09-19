@@ -257,7 +257,7 @@ bool EnemyManager::CheckSearchPlayer(const vivid::Vector2& center_pos, int heigh
 	{
 		Enemy* enemy = (*it);
 
-		if ((*it)->CheckSearchPlayer(center_pos, height, width))
+		if ((*it)->CheckSearchPlayer(center_pos, height, width, shielding))
 		{
 			HitPlayerFlg = true;
 			(*it)->input_player_pos(center_pos);

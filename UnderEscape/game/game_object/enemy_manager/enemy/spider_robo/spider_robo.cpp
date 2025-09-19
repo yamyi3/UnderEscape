@@ -4,7 +4,8 @@ const int SpiderRobo::e_visibility_width_size = 400;
 const int SpiderRobo::e_visibility_height_size = 400;
 
 const int    SpiderRobo::m_width = 128;            //!< 幅 
-const int    SpiderRobo::m_height = 98;           //!< 高さ 	
+const int    SpiderRobo::m_height = 98;           //!< 高さ 
+const int    SpiderRobo::m_stun_time = 120;           //!< スタン時間	
 const float	 SpiderRobo::m_circle_radius = 200.0f;    //視界範囲
 const float  SpiderRobo::m_move_speed = 4;       //!< 移動速度 
 const float  SpiderRobo::m_chase_move_speed = 6;       //!< 移動速度 
@@ -13,7 +14,7 @@ const float  SpiderRobo::m_jump_upspeed = 3.0f;
 const float  SpiderRobo::m_jump_downspeed = 100.0f;
 const bool   SpiderRobo::viewing_angle = 0;
 SpiderRobo::SpiderRobo(void)
-	:Enemy(m_width,m_height,m_move_speed,m_chase_move_speed,m_jump_height,m_jump_upspeed,m_jump_downspeed,m_circle_radius, viewing_angle)
+	:Enemy(m_width,m_height,m_move_speed,m_chase_move_speed,m_jump_height,m_jump_upspeed,m_jump_downspeed,m_circle_radius, viewing_angle, m_stun_time)
 {
 }
 
@@ -29,6 +30,7 @@ void SpiderRobo::Initialize(vivid::Vector2 pos, float L, float R, float vector, 
 	AnimationMaxFrame[(int)eSTATUS::Chase] = 8;
 	AnimationMaxFrame[(int)eSTATUS::Vigilance] = 16;
 	AnimationMaxFrame[(int)eSTATUS::Surprised] = 16;
+	AnimationMaxFrame[(int)eSTATUS::STUN] = 2;
 	AnimationMaxFrame[(int)eSTATUS::Kill] = 8;
 }
 

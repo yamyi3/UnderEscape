@@ -32,11 +32,13 @@ private:
     "data\\“G‹@\\’wåŒ^\\¶ˆÚ“®.png" ,	//Wandering		//œpœj
     "data\\“G‹@\\’wåŒ^\\¶’ÇÕ.png" ,	//Chase			//’ÇÕ
     "data\\“G‹@\\’wåŒ^\\‘Ò‹@.png",		//Vigilance		//Œx‰ú
-    "data\\“G‹@\\’wåŒ^\\‘Ò‹@.png" ,	//Surprised		//ƒXƒ^ƒ“
+    "data\\“G‹@\\’wåŒ^\\‘Ò‹@.png" ,	//Surprised		//‹Á‚­
+    "data\\“G‹@\\’wåŒ^\\‘Ò‹@.png" ,	//STUN  		//ƒXƒ^ƒ“
     "data\\“G‹@\\’wåŒ^\\‰E•ßŠlƒ‚[ƒVƒ‡ƒ“.png" };	//Kill
 
     static const int    m_width;            //!< • 
     static const int    m_height;           //!< ‚‚³ 	
+    static const int    m_stun_time;        //!< ƒXƒ^ƒ“ŠÔ
     static const float	m_circle_radius;    //‹ŠE”ÍˆÍ
     static const float  m_move_speed;       //!< ˆÚ“®‘¬“x 
     static const float  m_chase_move_speed;       //!< ’ÇÕˆÚ“®‘¬“x 

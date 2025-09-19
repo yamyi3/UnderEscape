@@ -11,6 +11,7 @@ enum class eSTATUS									//エネミーの状態の種類
 	Chase,		//追いかける
 	Vigilance,	//警戒
 	Surprised,	//驚く
+	STUN,		//スタン
 	Kill,		//キル
 
 	MAX,		//eSTATUSの最大値
