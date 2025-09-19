@@ -56,7 +56,8 @@ protected:
 
 	float eSpeed;						//エネミーの巡回中の移動速度
 	float eChaseSpeed;					//エネミーのプレイヤー追跡中の移動速度
-	static const int Source_End_Range;				//警戒座標とのｘ軸の差がこの数値より短くなったら追跡を終了する。
+	static const int Sight_Source_End_Range;				//警戒座標とのｘ軸の差がこの数値より短くなったら追跡を終了する。
+	int Hearing_Source_End_Range;				//警戒座標とのｘ軸の差がこの数値より短くなったら追跡を終了する。
 	static const int Vigilance_time;				//追跡目標地点到達後の待機フレーム数
 
 	static const int Surprised_time;				//追跡開始前の停止フレーム数

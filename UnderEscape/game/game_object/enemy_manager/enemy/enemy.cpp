@@ -7,7 +7,8 @@
 const int Enemy::mark_width_size = 32;		//!の横のドット数
 const int Enemy::mark_height_size = 32;      //!の縦のドット数
 
-const int Enemy::Source_End_Range = 4;				//警戒座標とのｘ軸の差がこの数値より短くなったら追跡を終了する。
+const int Enemy::Sight_Source_End_Range = 4;		//視界追跡時警戒座標とのｘ軸の差がこの数値より短くなったら追跡を終了する。
+
 const int Enemy::Vigilance_time = 150;				//追跡目標地点到達後の待機フレーム数
 
 const int Enemy::Surprised_time = 30;				//追跡開始前の停止フレーム数
@@ -30,6 +31,7 @@ Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,float jump_hei
 	, eCircleRadius(circle_radius)
 	, ViewingAngle(viewing_angle)
 	, stun_time(stun)
+	, Hearing_Source_End_Range(w_size)
 	, ePos(300.0f, 500.0f)
 	, eAnchor(e_width_size / 2.0f, e_height_size / 2.0f)
 	, eScale(1.0f, 1.0f)
@@ -49,6 +51,7 @@ Enemy::Enemy(int w_size ,int h_size,float speed,float chase_speed,float jump_hei
 	, AnimationTimer(0)
 	, AnimationFrame(0)
 	, StunTimer(0)
+	, eChaseStatus(eCHASE_STATUS::Hearing)
 
 	, item_area(false)
 	, item_pos({ 0.0f, 0.0f })
@@ -138,7 +141,15 @@ void Enemy::Update()
 		break;
 	case eSTATUS::Chase:
 
-
+		int Source_End_Range;
+		if (eChaseStatus==eCHASE_STATUS::Sight)
+		{
+			Source_End_Range = Sight_Source_End_Range;
+		}
+		else
+		{
+			Source_End_Range = Hearing_Source_End_Range;
+		}
 
 		if (ChasePos.x > ePos.x)
 		{
@@ -330,7 +341,7 @@ bool Enemy::CheckSearchPlayer(const vivid::Vector2& cPos, int c_height, int c_wi
 	if (result_h || result_v || result_lu || result_ru || result_ld || result_rd)
 	{
 		Sight_Check_Timer = 0;
-		eChaseStatus = eCHASE_STATUS::Hearing;
+		eChaseStatus = eCHASE_STATUS::Sight;
 		if (eStatus == eSTATUS::Wandering || eStatus == eSTATUS::Vigilance)
 		{
 			eStatus = eSTATUS::Surprised;
@@ -356,7 +367,7 @@ void Enemy::sound_sensor(vivid::Vector2 sound_source, float sound_size)
 		if (eStatus == eSTATUS::Wandering || eStatus == eSTATUS::Vigilance)
 		{
 			eStatus = eSTATUS::Surprised;
-			ChasePos = sound_source;
+			eChaseStatus = eCHASE_STATUS::Hearing;
 			Surprised_Timer = 0;
 		}
 
