@@ -16,6 +16,10 @@ enum class VISUAL_ID
 	PC,
 	BOOK_SHELF,
 	EXIT,
+	BG1,
+	BG2,
+	BG3,
+	DARK_WALL,
 
 	MAX,
 };
