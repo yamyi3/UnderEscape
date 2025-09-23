@@ -1,8 +1,8 @@
 #include "flash_item.h"
 #include "../../game/game_object/game_object.h"
 
-const float CFlashItem::m_height = 32.0f;
-const float CFlashItem::m_width = 32.0f;
+const float CFlashItem::m_height = 80.0f;
+const float CFlashItem::m_width = 73.0f;
 const int CFlashItem::m_max_time = 50;
 const int CFlashItem::m_number_of_times = 3;
 const float CFlashItem::m_effect_area = 300.0f;
@@ -39,21 +39,21 @@ void CFlashItem::Initialize(vivid::Vector2 position)
 void CFlashItem::Draw(void)
 {
 
-	vivid::DrawTexture("data\\ball.png", m_Position - Character::GetInstance().GetScroll(), m_Color);
+	vivid::DrawTexture("data\\アイテム\\閃光玉.png", m_Position - Character::GetInstance().GetScroll(), m_Color);
 
 	vivid::DrawText(40, "rest：" + std::to_string(m_Number_Of_Times + 1), vivid::Vector2(m_Position.x - (Character::GetInstance().GetScroll().x + 100.0f), m_Position.y - (Character::GetInstance().GetScroll().y + 100.0f)), 0xff00ffff);
 	if (m_ItemState == ITEM_STATE::GET)
 	{
-		vivid::DrawTexture("data\\ball.png", m_Orbit_Position[9], m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
+		vivid::DrawTexture("data\\アイテム\\閃光玉.png", m_Orbit_Position[9], m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
 
 		for (int i = 0; i < 9; i++)
-			vivid::DrawTexture("data\\ball.png", m_Orbit_Position[i] - Character::GetInstance().GetScroll(), m_Effect_Color);
+			vivid::DrawTexture("data\\アイテム\\閃光玉.png", m_Orbit_Position[i] - Character::GetInstance().GetScroll(), m_Effect_Color);
 
 	}
 
 	if (m_Active == true)
 	{
-		vivid::DrawTexture("data\\ball.png", m_Position - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
+		vivid::DrawTexture("data\\アイテム\\閃光玉.png", m_Position - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
 	}
 }
 

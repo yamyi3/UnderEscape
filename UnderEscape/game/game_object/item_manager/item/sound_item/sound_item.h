@@ -21,6 +21,7 @@ public:
 	void SetOrbitPosition(vivid::Vector2 position, vivid::Vector2 c_pos);
 
 private:
+	std::string	SoundBom;
 	float m_X_Speed;						//飛距離のマイナス倍率(X軸)値を小さくすると飛距離が伸びる
 	float m_Y_Speed;						//飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	vivid::Vector2 m_Mouse_Pos;				//自キャラからのマウスの座標
