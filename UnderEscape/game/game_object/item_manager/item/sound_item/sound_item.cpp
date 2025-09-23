@@ -1,8 +1,8 @@
 #include "sound_item.h"
 #include "../../game/game_object/game_object.h"
 
-const float CSoundItem::m_height = 32.0f;
-const float CSoundItem::m_width = 32.0f;
+const float CSoundItem::m_height = 80.0f;
+const float CSoundItem::m_width = 73.0f;
 const float CSoundItem::m_radius = 16.0f;
 const float CSoundItem::m_effect_area = 500.0f;
 const int CSoundItem::m_max_time = 10;
@@ -15,6 +15,7 @@ CSoundItem::CSoundItem()
 	, m_Y_Speed(15.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	, m_Mouse_Pos(0.0f, 0.0f)
 	, m_KeepVector(0.0f, 0.0f)
+	, SoundBom( "data\\アイテム\\音爆弾.png")
 {
 }
 
@@ -35,21 +36,21 @@ void CSoundItem::Initialize(vivid::Vector2 position)
 
 void CSoundItem::Draw(void)
 {
-	vivid::DrawTexture("data\\ball.png", m_Position - Character::GetInstance().GetScroll(), m_Color);
+	vivid::DrawTexture(SoundBom, m_Position - Character::GetInstance().GetScroll(), m_Color);
 
 
 	if (m_ItemState == ITEM_STATE::GET)
 	{
-		vivid::DrawTexture("data\\ball.png", m_Orbit_Position[9] - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
+		vivid::DrawTexture(SoundBom, m_Orbit_Position[9] - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
 
 		for (int i = 0; i < 9; i++)
-			vivid::DrawTexture("data\\ball.png", m_Orbit_Position[i] - Character::GetInstance().GetScroll(), m_Effect_Color);
+			vivid::DrawTexture(SoundBom, m_Orbit_Position[i] - Character::GetInstance().GetScroll(), m_Effect_Color);
 
 	}
 
 	if (m_Active == true)
 	{
-		vivid::DrawTexture("data\\ball.png", m_Position - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
+		vivid::DrawTexture(SoundBom, m_Position - Character::GetInstance().GetScroll(), m_Effect_Color, vivid::Rect{ 0,0,(int)m_Width,(int)m_Height }, vivid::Vector2{ m_Radius,m_Radius }, vivid::Vector2{ m_Effect_Area / m_Width,m_Effect_Area / m_Height });
 	}
 }
 
