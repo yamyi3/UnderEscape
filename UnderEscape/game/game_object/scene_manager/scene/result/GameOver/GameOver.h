@@ -10,6 +10,7 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+	void DrawCursor();
 	void Finalize();
 	void Scene();		//ƒV[ƒ“‚ÌØ‚è‘Ö‚¦
 private:

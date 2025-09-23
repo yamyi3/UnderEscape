@@ -31,13 +31,12 @@ void  GameOver::Update()
 //描画
 void  GameOver::Draw()
 {
-//#ifdef _DEBUG
-	DrawCursor();
-	vivid::DrawText(40, "GameOverScene", vivid::Vector2(0.0f, 0.0f), 0xffffffff);
-	vivid::DrawText(40, "GAMEOVER", (result_pos - vivid::Vector2(-300, 200)), defult_color);
-	vivid::DrawText(40, "リトライ", menu_pos[0],  defult_color);
-	vivid::DrawText(40, "タイトルへ", (menu_pos[1]),  defult_color);
-//#endif
+	
+	vivid::DrawTexture("data\\文字関係\\ゲームオーバー背景.png", vivid::Vector2(0.0f, 0.0f), 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\GAMEOVER.png", result_pos, 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\オーバーリトライ.png", menu_pos[0], 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\オーバータイトルへ戻る.png", menu_pos[1], 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\ゲームオーバーカーソル.png", cursor_pos, 0xffffffff);
 }
 
 void  GameOver::Finalize()

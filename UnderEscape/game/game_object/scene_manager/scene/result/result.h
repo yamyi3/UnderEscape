@@ -16,7 +16,6 @@ public:
 
 	void CursorMove();		//カーソルの移動
 	bool GetCursor();		//カーソルの取得
-	void DrawCursor();		//カーソルの描画
 private:
 	enum class RESULT		//リザルトの分岐
 	{

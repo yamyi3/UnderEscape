@@ -31,13 +31,11 @@ void GameClear::Update()
 //描画
 void GameClear::Draw()
 {
-//#ifdef _DEBUG
-	DrawCursor();
-	vivid::DrawText(40, "GameClearScene", vivid::Vector2(0.0f, 0.0f), 0xffffffff);
-	vivid::DrawText(40, "GAMECLEAR", (result_pos - vivid::Vector2(-300, 200)), defult_color);
-	vivid::DrawText(40, "リトライ", menu_pos[0], defult_color);
-	vivid::DrawText(40, "タイトルへ", (menu_pos[1]), defult_color);
-//#endif
+	vivid::DrawTexture("data\\文字関係\\ゲームクリア背景.png", vivid::Vector2(0.0f, 0.0f), 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\GAMECLEAR.png", result_pos, 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\クリア後リトライ.png", menu_pos[0], 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\クリア後タイトルへ戻る.png", menu_pos[1], 0xffffffff);
+	vivid::DrawTexture("data\\文字関係\\カーソル.png", cursor_pos, 0xffffff00);
 }
 
 void GameClear::Finalize()

@@ -23,7 +23,37 @@ void CTimer::Update(void)
 
 void CTimer::Draw(void)
 {
-	vivid::DrawText(40, std::to_string(m_SecondTimer), m_TimerPosition, 0xff00ffff);
+	//100の位の表示範囲
+	vivid::Rect h_rect;
+	h_rect.left = m_SecondTimer / 100 * 40;
+	h_rect.right = h_rect.left + 40;
+	h_rect.top = 0;
+	h_rect.bottom = h_rect.top + 60;
+	//10の位の表示範囲
+	vivid::Rect t_rect;
+	t_rect.left = (m_SecondTimer % 100) / 10 * 40;
+	t_rect.right = t_rect.left + 40;
+	t_rect.top = 0;
+	t_rect.bottom = t_rect.top + 60;
+	//1の位の表示範囲
+	vivid::Rect o_rect;
+	o_rect.left = ((m_SecondTimer % 100) % 10) * 40;
+	o_rect.right = o_rect.left + 40;
+	o_rect.top = 0;
+	o_rect.bottom = o_rect.top + 60;
+
+	/*vivid::DrawText(40, std::to_string(m_SecondTimer), m_TimerPosition, 0xff00ffff);*/
+	if (m_SecondTimer >= 100)
+	{
+		vivid::DrawTexture("data\\タイマー\\通常フレーム.png", m_TimerPosition + vivid::Vector2(-80.0f, -35.0f), 0xffffffff);
+	}
+	else
+	{
+		vivid::DrawTexture("data\\タイマー\\危険フレーム.png", m_TimerPosition + vivid::Vector2(-80.0f, -35.0f), 0xffffffff);
+	}
+	vivid::DrawTexture("data\\タイマー\\数字.png", m_TimerPosition + vivid::Vector2(10.0f, 10.0f), 0xffffffff, h_rect);
+	vivid::DrawTexture("data\\タイマー\\数字.png", m_TimerPosition + vivid::Vector2(50.0f, 10.0f), 0xffffffff, t_rect);
+	vivid::DrawTexture("data\\タイマー\\数字.png", m_TimerPosition + vivid::Vector2(90.0f, 10.0f), 0xffffffff, o_rect);
 }
 
 void CTimer::Finalize(void)
