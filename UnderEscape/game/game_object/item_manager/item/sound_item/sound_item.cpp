@@ -1,8 +1,8 @@
 #include "sound_item.h"
 #include "../../game/game_object/game_object.h"
 
-const float CSoundItem::m_height = 80.0f;
-const float CSoundItem::m_width = 73.0f;
+const float CSoundItem::m_height = 32.0f;
+const float CSoundItem::m_width = 32.0f;
 const float CSoundItem::m_radius = 16.0f;
 const float CSoundItem::m_effect_area = 500.0f;
 const int CSoundItem::m_max_time = 10;
@@ -15,7 +15,7 @@ CSoundItem::CSoundItem()
 	, m_Y_Speed(15.0f) //飛距離のマイナス倍率(Y軸)値を小さくすると飛距離が伸びる
 	, m_Mouse_Pos(0.0f, 0.0f)
 	, m_KeepVector(0.0f, 0.0f)
-	, SoundBom( "data\\アイテム\\音爆弾.png")
+	, SoundBom( "data\\ball.png")
 {
 }
 
