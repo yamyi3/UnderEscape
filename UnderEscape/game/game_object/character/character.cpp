@@ -19,6 +19,8 @@ const float Character::dash_speed	 = 2.4f;			//自機のダッシュ時の移動速度
 const float Character::sneak_speed	 = 0.6f;			//自機の歩行時の移動速度
 const float Character::fatigue_speed = 0.3f;			//自機の疲労時の移動速度
 
+const int	Character::m_IconWidth			= 264;		//スキルアイコンの幅
+const int	Character::m_IconHeight			= 264;		//スキルアイコンの高さ
 const int	Character::m_SkillReference[2]	= {3, 5};	//スキル使用回数による状態変化の基準値
 int			Character::skill_memory			= 1;		//選択状態のスキルの記憶
 const int	Character::skill_cool_time		= 300;		//スキルのクールタイムの最大数(60フレーム換算5秒)
@@ -72,10 +74,16 @@ void Character::Initialize(vivid::Vector2 rPos)
 	c_change_anime_timer = 6;
 	c_change_anime_frame = 0;
 
+	c_stamina_draw = false;
 	c_stamina_gauge = c_max_stamina;
 	stamina_anchor = { ((float)stamina_width / 2.0f), ((float)stamina_height / 2.0f) };
 	stamina_scale = { 1.0f, 1.0f };
 
+	m_IconScale[0] = vivid::Vector2(0.5f, 0.5f);
+	m_IconScale[1] = vivid::Vector2(0.2f, 0.2f);
+	m_IconPosition[0] = vivid::Vector2((float)(vivid::WINDOW_WIDTH / 8.0f * 7.0f - m_IconWidth / 2.0f), (float)(vivid::WINDOW_HEIGHT / 7.0f * 6.0f - m_IconHeight / 2.0f));
+	m_IconPosition[1] = m_IconPosition[0] + (m_IconScale[0] * vivid::Vector2((float)(m_IconWidth), (float)(m_IconHeight))) + vivid::Vector2(-10.0f, -90.0f);
+	m_ArrowPosition = m_IconPosition[0] + (m_IconScale[0] * vivid::Vector2((float)(m_IconWidth), (float)(m_IconHeight))) + vivid::Vector2(30.0f, -25.0f);
 	skill_active_flag = false;
 	skill_cool_flag = false;
 	active_count = 0;
@@ -159,6 +167,7 @@ void Character::Draw(void)
 	if (c_stamina_draw)
 		vivid::DrawTexture(c_dash_image[c_stamina_dash], stamina_pos - Scroll, 0xffffffff, stamina_rect, stamina_anchor, stamina_scale);
 	
+	DrawSkillIcon();
 	//デバッグモードの時に各必要情報を表示
 #ifdef _DEBUG
 	switch (chara_skill)
@@ -981,6 +990,51 @@ void Character::CoolTime(void)
 			skill_cool_flag = false;
 		}
 	}
+}
+
+void Character::DrawSkillIcon(void)
+{
+	int cool_time = (cool_time_count / 60);
+	//自機の状態ごとにrect範囲指定(スキル使用可能状態に描画するものの範囲)
+	vivid::Rect rect;
+	rect.left = m_IconWidth * (int)chara_condition;
+	rect.top = 0;
+	rect.right = rect.left + m_IconWidth;
+	rect.bottom = rect.top + m_IconHeight;
+
+	vivid::Rect cool_rect;
+	cool_rect.left =1320 - (cool_time + 1) * m_IconWidth;
+	cool_rect.top = 0;
+	cool_rect.right = cool_rect.left + (m_IconWidth);
+	cool_rect.bottom = cool_rect.top + (m_IconHeight);
+
+	switch (skill_memory)
+	{
+
+	case (int)CHARA_SKILL::ANIMALLEG:
+		//クールタイムの描画
+		vivid::DrawTexture(m_SkillIcon[0][0], m_IconPosition[0] + vivid::Vector2(2.0f, -1.0f), 0xffffffff, cool_rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[0]);
+		vivid::DrawTexture(m_SkillIcon[1][0], m_IconPosition[1] + vivid::Vector2(2.0f, -1.0f), 0xffffffff, cool_rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[1]);
+		//使用可能状態状態のスキルアイコンの描画
+		if (skill_active_flag == false && skill_cool_flag == false)
+		{
+			vivid::DrawTexture(m_SkillIcon[0][1], m_IconPosition[0], 0xffffffff, rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[0]);
+			vivid::DrawTexture(m_SkillIcon[1][1], m_IconPosition[1], 0xffffffff, rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[1]);
+		}
+		break;
+	case (int)CHARA_SKILL::INVISIBLE:
+		//クールタイムの描画
+		vivid::DrawTexture(m_SkillIcon[1][0], m_IconPosition[0] + vivid::Vector2(2.0f, -1.0f), 0xffffffff, cool_rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[0]);
+		vivid::DrawTexture(m_SkillIcon[0][0], m_IconPosition[1] + vivid::Vector2(2.0f, -1.0f), 0xffffffff, cool_rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[1]);
+		//使用可能状態のスキルアイコンの描画
+		if (skill_active_flag == false && skill_cool_flag == false)
+		{
+			vivid::DrawTexture(m_SkillIcon[1][1], m_IconPosition[0], 0xffffffff, rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[0]);
+			vivid::DrawTexture(m_SkillIcon[0][1], m_IconPosition[1], 0xffffffff, rect, vivid::Vector2(m_IconWidth / 2.0f, m_IconHeight / 2.0f), m_IconScale[1]);
+		}
+		break;
+	}
+	vivid::DrawTexture(m_ChangeArrow, m_ArrowPosition, 0xffffffff);
 }
 
 //スタミナの描画を切り替える処理

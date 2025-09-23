@@ -92,6 +92,8 @@ public:
 	void ChangeSkill(void);
 	//クールタイムの処理
 	void CoolTime(void);
+	//スキルアイコンの描画処理
+	void DrawSkillIcon(void);
 	//スタミナの描画切り替え処理
 	void StaminaDraw(void);
 	//移動距離を座標に反映する処理
@@ -244,6 +246,23 @@ private:
 	//<-スタミナ関係
 
 	//->スキル関係
+	std::string			m_SkillIcon[2][2] =
+	{//スキルアイコン
+		{	//加速スキル
+			"data\\スキル\\加速スキルクールタイム.png",
+			"data\\スキル\\加速スキル変貌.png"
+		},
+		{	//透明化スキル
+			"data\\スキル\\透明化スキルクールタイム.png",
+			"data\\スキル\\透明化スキル変貌.png"
+		}
+	};
+	std::string			m_ChangeArrow = "data\\スキル\\スキル切り替え矢印.png";
+	vivid::Vector2		m_IconPosition[2];	//スキルアイコンの座標
+	vivid::Vector2		m_ArrowPosition;	//切り替え矢印の座標
+	vivid::Vector2		m_IconScale[2];		//スキルアイコンの拡大率
+	static const int	m_IconWidth;		//スキルアイコンの幅
+	static const int	m_IconHeight;		//スキルアイコンの高さ
 	int					m_SkillConunt;		//スキルの使用回数
 	static const int	m_SkillReference[2];//スキル使用回数による状態変化の基準値
 	static const int	activation_time;	//スキルの発動後の効果時間
