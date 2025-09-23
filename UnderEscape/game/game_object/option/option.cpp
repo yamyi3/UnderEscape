@@ -48,7 +48,7 @@ void COption::Update(void)
 			switch (m_MenuCursor)
 			{
 			case 0:
-				ControllerMenu();
+				m_ControllerMenu = true;
 				break;
 			case 1:
 				m_SoundMenu = true;
@@ -90,6 +90,11 @@ void COption::Update(void)
 			}
 		}
 	}
+	if (m_ControllerMenu == true)
+	{
+		ControllerMenu();
+	}
+
 	if (m_SoundMenu == true)
 	{
 		SoundMenu();
@@ -103,6 +108,11 @@ void COption::Draw(void)
 	for (int i = 0; i < 3; ++i)
 	{
 		vivid::DrawText(m_FontSize, m_MenuList[i], m_MenuPos[i], m_MenuColor[i]);
+	}
+
+	if (m_ControllerMenu == true)
+	{
+		DrawController();
 	}
 
 	if (m_SoundMenu == true)
@@ -125,6 +135,7 @@ void COption::SetVolume(void)
 
 void COption::ControllerMenu(void)
 {
+	
 	if (vivid::controller::Trigger(vivid::controller::DEVICE_ID::PLAYER1, vivid::controller::BUTTON_ID::A) && m_TriggerAButton == false)
 	{
 		m_TriggerAButton = true;
@@ -275,6 +286,12 @@ void COption::ChangeSound(int cursor)
 		}
 		m_VolumeColor[cursor] = m_ColorList[2];
 	}
+}
+
+void COption::DrawController(void)
+{
+	vivid::DrawTexture("data\\•¶ŽšŠÖŒW\\ƒRƒ“ƒgƒ[ƒ‰[.png", vivid::Vector2((vivid::WINDOW_WIDTH / 2.0f - 587 / 2.0f), (vivid::WINDOW_HEIGHT / 2.0f - 993 / 2.0f)), 0xffffffff);
+	vivid::DrawTexture("data\\•¶ŽšŠÖŒW\\•Â‚¶‚é”’.png", vivid::Vector2((vivid::WINDOW_WIDTH / 2.0f - 235 / 2.0f), (vivid::WINDOW_HEIGHT / 3.0f * 2.0f)));
 }
 
 void COption::DrawSoundMenu(void)

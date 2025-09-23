@@ -45,6 +45,9 @@ public:
 	//音量調整
 	void ChangeSound(int);
 
+	//コントローラーメニューの描画処理
+	void DrawController(void);
+
 	//サウンドメニューの描画処理
 	void DrawSoundMenu(void);
 
