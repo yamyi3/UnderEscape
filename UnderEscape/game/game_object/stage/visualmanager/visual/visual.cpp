@@ -18,7 +18,11 @@ const std::string Visual::visual_picture_name[] =
 	"data\\îwåióﬁ\\ÉpÉCÉv.png",				//11
 	"data\\îwåióﬁ\\PC.png",					//12
 	"data\\îwåióﬁ\\ñ{íI.png",				//13
-	"data\\îwåióﬁ\\èoå˚.png"				//14
+	"data\\îwåióﬁ\\èoå˚.png",				//14
+	"data\\îwåióﬁ\\îwåi1.png",				//15
+	"data\\îwåióﬁ\\îwåi2.png",				//16
+	"data\\îwåióﬁ\\îwåi3.png",				//17
+	"data\\îwåióﬁ\\à√Ç¢ï«.png"				//18
 };
 
 const int Visual::visual_picture_width_size[] =
@@ -37,7 +41,11 @@ const int Visual::visual_picture_width_size[] =
 	50,
 	200,
 	1000,
-	600
+	600,
+	640,
+	640,
+	640,
+	20
 };
 const int Visual::visual_picture_height_size[] =
 {
@@ -55,7 +63,11 @@ const int Visual::visual_picture_height_size[] =
 	50,
 	100,
 	500,
-	600
+	600,
+	215,
+	215,
+	215,
+	20
 };
 const int Visual::visual_draw_width_size[] =
 {
@@ -73,6 +85,10 @@ const int Visual::visual_draw_width_size[] =
 	100,
 	200,
 	200,
+	100,
+	2083,
+	2083,
+	2083,
 	100
 };
 const int Visual::visual_draw_height_size[] =
@@ -91,6 +107,10 @@ const int Visual::visual_draw_height_size[] =
 	100,
 	100,
 	100,
+	100,
+	700,
+	700,
+	700,
 	100
 };
 
@@ -106,6 +126,9 @@ void Visual::Initialize(VISUAL_ID v_id, int x, int y)
 	Rect = { 0,0,visual_picture_width_size[(int)Visual_ID],visual_picture_height_size[(int)Visual_ID] };
 	Scale = { (float)visual_draw_width_size[(int)Visual_ID] / (float)visual_picture_width_size[(int)Visual_ID]
 			,(float)visual_draw_height_size[(int)Visual_ID] / (float)visual_picture_height_size[(int)Visual_ID] };
+	if (Visual_ID == VISUAL_ID::BG1 || Visual_ID == VISUAL_ID::BG2 || Visual_ID == VISUAL_ID::BG3)
+		Scale = { (float)visual_draw_height_size[(int)Visual_ID] / (float)visual_picture_height_size[(int)Visual_ID]
+				,(float)visual_draw_height_size[(int)Visual_ID] / (float)visual_picture_height_size[(int)Visual_ID] };
 }
 
 void Visual::Update(void)
